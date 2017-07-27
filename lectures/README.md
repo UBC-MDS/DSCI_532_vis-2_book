@@ -1,1 +1,1 @@
-Lecture slides in Keynote format.
+Lecture slides
