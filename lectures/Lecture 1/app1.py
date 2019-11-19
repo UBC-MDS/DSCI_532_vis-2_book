@@ -11,17 +11,22 @@ app.title = 'Dash app with pure Altair HTML'
 app.layout = html.Div([
 
     ### ADD CONTENT HERE like: html.H1('text'),
-
-    ### Let's now add an iframe to bring in HTML content
+    html.H1('This is my first dashboard'),
+    html.H2('This is a subtitle'),
+    html.H5('Here is my actual plot:'),
 
     html.Iframe(
         sandbox='allow-scripts',
         id='plot',
-        height='1500',
-        width='2000',
-        style={'border-width': '5px'},
+        height='2000',
+        width='1800',
+        style={'border-width': '0'},
+
+        ################ The magic happens here
         srcDoc=open('complex_chart.html').read()
+        ################ The magic happens here
         ),
+    #html.Img(src ='test.png')
 ])
 
 if __name__ == '__main__':
