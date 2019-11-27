@@ -110,10 +110,6 @@ app.layout = html.Div([
         dcc.Tab(label='Lecture 4', value='tab-4'), 
     ]),    
 
-    ### ADD CONTENT HERE like: html.H1('text'),
-    html.H1('This is my first dashboard'),
-    html.H2('This is a subtitle'),
-
     html.H3('Here is an image'),
     html.Img(src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Unico_Anello.png/1920px-Unico_Anello.png', 
             width='10%'),
@@ -129,28 +125,7 @@ app.layout = html.Div([
         srcDoc=make_plot().to_html()
         ################ The magic happens here
         ),
-
-    dcc.Markdown('''
-    ### Dash and Markdown
-                '''),
-
-    ## these two components are related to dropdown
-
-    # Let's comment out the demo-dropdown and dd-output to de-clutter our app a bit
-    dcc.Dropdown(
-        id='demo-dropdown',
-        options=[
-            {'label': 'New York City', 'value': 'NYC'},
-            {'label': 'Montreal', 'value': 'MTL'},
-            {'label': 'San Francisco', 'value': 'SF'}
-        ],
-        value='NYC',
-        style=dict(width='45%',
-              verticalAlign="middle"
-              )
-        ),
-        html.Div(id='dd-output'),
-        
+    
         # Just to add some space
         html.Iframe(height='50', width='10',style={'border-width': '0'}),
 
@@ -170,18 +145,6 @@ app.layout = html.Div([
         # Just to add some space
         html.Iframe(height='200', width='10',style={'border-width': '0'})
 ])
-
-# This first callback inserts raw text into an html.Div with id 'dd-output'
-#       We normally omit the 'children' property as it is always the first property but this
-#       just tells Dash to show the text. Every dash component has a 'children' property
-# Note that the input argument needs to be provided as a list
-# update_output is simply the function that runs when `demo-dropdown` is changed
-# Let's comment out this to de-clutter our app once we know how it works
-@app.callback(
-    dash.dependencies.Output('dd-output', 'children'),
-    [dash.dependencies.Input('demo-dropdown', 'value')])
-def update_output(value):
-    return '\n \n You have selected {}\n \n'.format(value)
 
 # This second callback tells Dash the output is the `plot` IFrame; srcDoc is a 
 # special property that takes in RAW html as an input and renders it

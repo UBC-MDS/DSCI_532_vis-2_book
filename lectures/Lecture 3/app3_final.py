@@ -102,21 +102,10 @@ app.layout = html.Div([
         children=[
             html.Div('Plotly Dash', className="app-header--title")
         ]
-    ),    
-
-    ### Add Tabs to the top of the page
-    dcc.Tabs(id='tabs', value='tab1', children=[
-        dcc.Tab(label='Lecture 1', value='tab-1'),
-        dcc.Tab(label='Lecture 2', value='tab-2'),
-        dcc.Tab(label='Lecture 3', value='tab-3'), 
-        dcc.Tab(label='Lecture 4', value='tab-4'), 
-    ]),    
+    ),
 
     ### ADD CONTENT HERE like: html.H1('text'),
     html.H1('This is my first dashboard'),
-    html.H2('This is a subtitle'),
-
-    html.H3('Here is an image'),
     html.Img(src='https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Unico_Anello.png/1920px-Unico_Anello.png', 
             width='10%'),
 
@@ -136,20 +125,20 @@ app.layout = html.Div([
         dcc.Dropdown(
         id='dd-chart-x',
         options=[
-            {'label': 'Miles_per_Gallon', 'value': 'Miles_per_Gallon'},
+            {'label': 'Fuel Efficiency', 'value': 'Miles_per_Gallon'},
             {'label': 'Cylinders', 'value': 'Cylinders'},
             {'label': 'Displacement', 'value': 'Displacement'},
             {'label': 'Horsepower', 'value': 'Horsepower'}
         ],
-        value='Displacement',
+        value='Horsepower',
         style=dict(width='45%',
                    verticalAlign="middle")
         ),
-
+        
         dcc.Dropdown(
         id='dd-chart-y',
         options=[
-            {'label': 'Miles_per_Gallon', 'value': 'Miles_per_Gallon'},
+            {'label': 'Fuel Efficiency', 'value': 'Miles_per_Gallon'},
             {'label': 'Cylinders', 'value': 'Cylinders'},
             {'label': 'Displacement', 'value': 'Displacement'},
             {'label': 'Horsepower', 'value': 'Horsepower'}
