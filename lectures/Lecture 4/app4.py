@@ -167,7 +167,7 @@ content = dbc.Container([
                         value='Displacement'
                         ), width=2
                     )
-                ]
+                ],no_gutters=True,
             )
     ]
 )
