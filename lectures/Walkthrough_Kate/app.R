@@ -1,3 +1,5 @@
+#This app gives us a really simple dashboard in R
+
 library(dash)
 library(dashCoreComponents)
 library(dashHtmlComponents)

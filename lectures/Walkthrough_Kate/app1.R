@@ -1,3 +1,5 @@
+# This version uses text styles, markdown, and ggplotly
+
 library(dash)
 library(dashCoreComponents)
 library(dashHtmlComponents)
