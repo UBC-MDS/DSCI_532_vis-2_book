@@ -11,6 +11,7 @@ library(gapminder)
 app <- Dash$new(external_stylesheets = "https://codepen.io/chriddyp/pen/bWLwgP.css")
 
 # Selection components
+#We can get the years from the dataset to make ticks on the slider
 yearMarks <- lapply(unique(gapminder$year), as.character)
 names(yearMarks) <- unique(gapminder$year)
 yearSlider <- dccRangeSlider(
@@ -24,11 +25,13 @@ yearSlider <- dccRangeSlider(
 )
 
 continentDropdown <- dccDropdown(
+  # lapply can be used as a shortcut instead of writing the whole list
+  # especially useful if you wanted to filter by country!
   options = lapply(
     levels(gapminder$continent), function(x){
     list(label=x, value=x)
   }),
-  value = levels(gapminder$continent),
+  value = levels(gapminder$continent), #Selects all by default
   multi = TRUE
 )
 
