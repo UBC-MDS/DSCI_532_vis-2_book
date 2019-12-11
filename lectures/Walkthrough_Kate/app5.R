@@ -1,4 +1,4 @@
-# Adding full interactivity
+# Adding linked interactivity
 
 library(dash)
 library(dashCoreComponents)
@@ -10,7 +10,9 @@ library(gapminder)
 
 app <- Dash$new(external_stylesheets = "https://codepen.io/chriddyp/pen/bWLwgP.css")
 
-# Selection components
+
+# Create selection components ---------------------------------------------
+
 
 #We can get the years from the dataset to make ticks on the slider
 yearMarks <- lapply(unique(gapminder$year), as.character)
@@ -47,8 +49,11 @@ yaxisDropdown <- dccDropdown(
   value = "gdpPercap"
 )
 
-# Use a function make_graph() to create the graph
 
+# Generating graphs and tables --------------------------------------------
+
+
+# Use a function make_graph() to create the graph
 # Uses default parameters such as all_continents for initial graph
 all_continents <- unique(gapminder$continent)
 make_graph <- function(years=c(1952, 2007), 
@@ -63,10 +68,13 @@ make_graph <- function(years=c(1952, 2007),
     filter(year >= years[1] & year <= years[2]) %>%
     filter(continent %in% continents)
  
-  # make the plot!
+  # make the plot! Notes on arguments: 
   # on converting yaxis string to col reference (quosure) by `!!sym()`
   # see: https://github.com/r-lib/rlang/issues/116
-  p <- ggplot(data, aes(x=year, y=!!sym(yaxis), colour=continent)) +
+  # NEW: the customdata mapping adds country to the tooltip and allows
+  # its selection using clickData.
+  p <- ggplot(data, aes(x=year, y=!!sym(yaxis), colour=continent, 
+                        customdata=country)) +
     geom_point(alpha=0.6) +
     scale_color_manual(name="Continent", values=continent_colors) +
     scale_x_continuous(breaks = unique(data$year))+
@@ -76,6 +84,8 @@ make_graph <- function(years=c(1952, 2007),
     theme_bw()
   
   ggplotly(p) %>%
+    # NEW: this is optional but changes how the graph appears on click
+    # more layout stuff: https://plotly-r.com/improving-ggplotly.html
     layout(clickmode = 'event+select')
 }
 
@@ -85,7 +95,7 @@ graph <- dccGraph(
   figure=make_graph() # gets initial data using argument defaults
 )
 
-# make a second graph with one country
+# NEW: make a second graph with one country
 make_country_graph <- function(years=c(1952, 2007), 
                        country_select="Canada",
                        yaxis="gdpPercap"){
@@ -151,17 +161,11 @@ table <- dashDataTable(
   sort_action="native"
 )
 
+
+# Create app layout -------------------------------------------------------
+
+
 app$layout(
-  htmlDiv(
-    list(
-      dccMarkdown(
-        "
-        **Click Data**
-        Click on points in the graph.
-        "
-      ), htmlPre(id='click-data')
-      ), className='three columns'
-      ),
   htmlDiv(
     list(
       htmlH1('Gapminder Dash Demo'),
@@ -174,20 +178,24 @@ app$layout(
       continentDropdown,
       htmlLabel('Select y-axis metric:'),
       yaxisDropdown,
-      #graph and table
+      #graphs and table
       graph,
       htmlIframe(height=20, width=10, style=list(borderWidth = 0)), #space
-      country_graph,
+      country_graph, # NEW
       htmlIframe(height=20, width=10, style=list(borderWidth = 0)), #space
       htmlLabel('Try sorting by table columns!'),
       table,
       htmlIframe(height=20, width=10, style=list(borderWidth = 0)), #space
       dccMarkdown("[Data Source](https://cran.r-project.org/web/packages/gapminder/README.html)")
     )
+    
   )
 )
 
-# Adding callbacks for interactivity
+
+# Adding callbacks for interactivity --------------------------------------
+
+
 # We need separate callbacks to update graph and table
 # BUT can use multiple inputs for each!
 app$callback(
@@ -202,23 +210,29 @@ app$callback(
     make_graph(year_value, continent_value, yaxis_value)
   })
 
-# adding linked interactivity to our two graphs
+# NEW: updates our second graph using linked interactivity
 app$callback(output = list(id = 'country-graph', property = 'figure'),
             params = list(input(id='year', property='value'),
                           input(id='y-axis', property='value'),
+                          # Here's where we check for graph interactions!
                           input(id='gap-graph', property='clickData')),
             function(year_value, yaxis_value, clickData) {
-              country_name = clickData$points[[1]]$country
-              make_country_graph(year_value, "Canada", yaxis_value)
+              # clickData contains $x, $y and $customdata
+              # you can't access these by gapminder column name!
+              country_name = clickData$points[[1]]$customdata
+              make_country_graph(year_value, country_name, yaxis_value)
             })
 
+# Note: you could add filtering by clicked country to this, but it 
+# wouldn't let you go back to all countries unless you add another 
+# interactive element such as a reset button.
 app$callback(
   #update data of gap-table
   output=list(id='gap-table', property='data'),
   params=list(input(id='year', property='value'),
               input(id='continent', property='value')),
   function(year_value, continent_value) {
-    make_table(year_value, continent_value)
+    make_table(year_value, continent_value, country_name)
   })
 
 app$run_server()
