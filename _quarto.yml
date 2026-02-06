@@ -1,0 +1,60 @@
+project:
+  type: website
+  preview:
+    port: 9708
+    watch-inputs: true
+  render:
+    - "./*.qmd"
+    - "slides/*.qmd"
+  resources:
+    - slides
+
+website:
+  title: "DSCI 532: Data Visualization 2"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+
+
+    right:
+      - icon: github
+        href: https://github.com/UBC-MDS/DSCI_532_vis-2_book
+
+  page-footer: |
+      <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book">UBC DSCI 532: Data Visualization 2</a>
+
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - section: "Lecture 1"
+        contents:
+          - 010-intro_dashboards.qmd
+          - 010-intro_shiny.qmd
+          - 010-first_app.qmd
+      - section: "Lecture 2"
+        contents:
+          - 020-
+
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
+
+editor:
+  render-on-save: true
+
+
+brand: _brand.yml
+
+filters:
+  - shinylive
+  - quarto
+  - line-highlight
+  - countdown
+  - embedio

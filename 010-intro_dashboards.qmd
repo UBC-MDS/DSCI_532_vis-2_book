@@ -1,0 +1,5 @@
+---
+title: Introduction to dashboards
+---
+
+{{< pdf "archive/2024-2025/lectures/slides-lec1.pdf" >}}

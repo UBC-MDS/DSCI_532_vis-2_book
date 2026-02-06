@@ -1,0 +1,4 @@
+1. Understand what dashboards are
+2. Explain the advantages of using dashboards
+3. Define what constitutes an effective dashboard layout
+4. Explain the advantages of using interactive visualizations

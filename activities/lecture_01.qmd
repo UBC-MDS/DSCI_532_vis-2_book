@@ -1,0 +1,2 @@
+- [Don’t rush into coding](https://engineering-shiny.org/dont-rush-into-coding.html#dont-rush-into-coding) Sections 7.1.1, 7.2.1, 7.2.2.
+- [UX Matters](https://engineering-shiny.org/ux-matters.html#ux-matters) Sections 6, 6.1, 6.1.1 (until the first code chunk), 6.1.2.

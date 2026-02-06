@@ -1,0 +1,19 @@
+---
+title: Your first app
+---
+
+:::{.column-page-inset-right}
+
+{{< revealjs file="slides/02-first_shiny.html" height="500px" class="ratio ratio-16x9" >}}
+
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| layout: horizontal
+#| viewerHeight: 500
+
+{{< include code/app-first-shiny.py >}}
+```
+
+:::

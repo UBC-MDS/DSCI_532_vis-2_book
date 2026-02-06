@@ -1,0 +1,19 @@
+---
+title: "DSCI 532: Data Visualization 2"
+---
+
+Course textbook for DSCI 532: Data Visualization 2 about dashboarding.
+
+## Learning Objectives and Readings
+
+Lecture 1
+
+::: {.columns}
+::: {.column}
+{{< include /learning_objectives/lecture_01.qmd >}}
+:::
+::: {.column}
+{{< include /activities/lecture_01.qmd >}}
+:::
+:::
+<!-- end columns -->
