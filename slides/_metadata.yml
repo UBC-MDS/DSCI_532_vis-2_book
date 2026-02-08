@@ -1,0 +1,6 @@
+format:
+  revealjs:
+    footer: "DSCI 532: Data Visualization 2 <https://github.com/UBC-MDS/DSCI_532_vis-2_book>"
+    slide-number: true
+    show-slide-number: all
+    smaller: true
