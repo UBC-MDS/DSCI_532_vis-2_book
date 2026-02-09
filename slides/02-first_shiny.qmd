@@ -197,3 +197,13 @@ Don’t forget to return the object you want displayed in the function! Otherwis
 
 {{< include /code/lecture01/app-05-core-altair-first_app.py >}}
 ```
+
+## Shiny + Altair
+
+Components gallery docs are in a PR deployment preview (this is all very new docs!)
+
+<https://pr-326--pyshiny.netlify.app/components/outputs/plot-altair/>
+
+These docs will eventually be on the official components page
+
+<https://shiny.posit.co/py/components/>
