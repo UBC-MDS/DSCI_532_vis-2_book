@@ -53,7 +53,7 @@
     "href": "slides/02-first_shiny.html#radio-buttons-options",
     "title": "Your first Shiny application",
     "section": "Radio Buttons: options",
-    "text": "Radio Buttons: options\nhttps://shiny.posit.co/py/api/express/express.ui.input_radio_buttons.html\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| components: [editor, viewer]\n#| layout: horizontal\n\nfrom shiny import App, ui\n\napp_ui = ui.page_fluid(\n    ui.input_radio_buttons(\n        id=\"species\",\n        label=\"Species\",\n        choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n    )\n)\n\n\ndef server(input, output, session):\n    pass\n\n\napp = App(app_ui, server)"
+    "text": "Radio Buttons: options\nhttps://shiny.posit.co/py/api/core/ui.input_radio_buttons.html\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| components: [editor, viewer]\n#| layout: horizontal\n\nfrom shiny import App, ui\n\napp_ui = ui.page_fluid(\n    ui.input_radio_buttons(\n        id=\"species\",\n        label=\"Species\",\n        choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n        inline=True,\n    )\n)\n\n\ndef server(input, output, session):\n    pass\n\n\napp = App(app_ui, server)"
   },
   {
     "objectID": "slides/02-first_shiny.html#add-in-the-figure",

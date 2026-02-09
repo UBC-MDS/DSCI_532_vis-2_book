@@ -74,7 +74,7 @@ shiny run --reload app.py
 
 ## Radio Buttons: options
 
-<https://shiny.posit.co/py/api/express/express.ui.input_radio_buttons.html>
+<https://shiny.posit.co/py/api/core/ui.input_radio_buttons.html>
 
 ```{shinylive-python}
 #| standalone: true
