@@ -1,7 +1,7 @@
 import altair as alt
 from palmerpenguins import load_penguins
 
-dat = load_penguins()
+dat = load_penguins().dropna()
 
 species = "Adelie"  # selected species
 sel = dat.loc[dat.species == species]  # selected data

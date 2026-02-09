@@ -3,7 +3,7 @@ import altair as alt
 from palmerpenguins import load_penguins
 from shinywidgets import render_altair, output_widget
 
-dat = load_penguins()
+dat = load_penguins().dropna()
 
 app_ui = ui.page_fluid(
     ui.input_radio_buttons(

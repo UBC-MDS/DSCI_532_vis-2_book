@@ -2,7 +2,7 @@ from shiny import ui, render, App
 import altair as alt
 from palmerpenguins import load_penguins
 
-dat = load_penguins()
+dat = load_penguins().dropna()
 
 app_ui = ui.page_fluid(
     ui.input_radio_buttons(
@@ -15,8 +15,6 @@ app_ui = ui.page_fluid(
 
 
 def server(input, output, session):
-    dat = load_penguins()
-
     species = "Gentoo"  # selected species
     sel = dat.loc[dat.species == species]  # selected data
 

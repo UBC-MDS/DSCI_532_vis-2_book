@@ -1,7 +1,7 @@
 from palmerpenguins import load_penguins
 from plotnine import aes, geom_histogram, ggplot, theme_minimal
 
-dat = load_penguins()
+dat = load_penguins().dropna()
 dat.head()
 
 species = "Gentoo"  # change species

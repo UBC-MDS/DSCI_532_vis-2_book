@@ -10,7 +10,7 @@ ui.input_radio_buttons(
     inline=True,
 )
 
-dat = load_penguins()
+dat = load_penguins().dropna()
 species = "Adelie"
 sel = dat.loc[dat.species == species]
 

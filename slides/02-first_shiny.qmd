@@ -60,6 +60,10 @@ title: "Your first Shiny application"
 
 ![](/img/positron-run.png){width="300px" fig-align="center"}
 
+:::{.callout-tip}
+Begin your application file names with `app-*` so you can use the play button.
+:::
+
 2. Command line:
 
 ```bash
