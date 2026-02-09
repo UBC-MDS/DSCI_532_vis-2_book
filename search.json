@@ -39,7 +39,7 @@
     "href": "slides/02-first_shiny.html#radio-buttons",
     "title": "Your first Shiny application",
     "section": "Radio Buttons",
-    "text": "Radio Buttons\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | components: [editor, viewer]\n# | layout: horizontal\nfrom shiny.express import ui\n\nui.input_radio_buttons(\n    id=\"species\",\n    label=\"Species\",\n    choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n)"
+    "text": "Radio Buttons\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | components: [editor, viewer]\n# | layout: horizontal\n\nfrom shiny import App, ui\n\napp_ui = ui.page_fluid(\n    ui.input_radio_buttons(\n        id=\"species\",\n        label=\"Species\",\n        choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n    )\n)\n\n\ndef server(input, output, session):\n    pass\n\n\napp = App(app_ui, server)"
   },
   {
     "objectID": "slides/02-first_shiny.html#run-your-application",
@@ -53,7 +53,7 @@
     "href": "slides/02-first_shiny.html#radio-buttons-options",
     "title": "Your first Shiny application",
     "section": "Radio Buttons: options",
-    "text": "Radio Buttons: options\nhttps://shiny.posit.co/py/api/express/express.ui.input_radio_buttons.html\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | components: [editor, viewer]\n# | layout: horizontal\nfrom shiny.express import ui\n\nui.input_radio_buttons(\n    id=\"species\",\n    label=\"Species\",\n    choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n    inline=True,\n)"
+    "text": "Radio Buttons: options\nhttps://shiny.posit.co/py/api/express/express.ui.input_radio_buttons.html\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | components: [editor, viewer]\n# | layout: horizontal\n\nfrom shiny import App, ui\n\napp_ui = ui.page_fluid(\n    ui.input_radio_buttons(\n        id=\"species\",\n        label=\"Species\",\n        choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n    )\n)\n\n\ndef server(input, output, session):\n    pass\n\n\napp = App(app_ui, server)"
   },
   {
     "objectID": "slides/02-first_shiny.html#add-in-the-figure",
@@ -67,87 +67,63 @@
     "href": "slides/02-first_shiny.html#output-will-error",
     "title": "Your first Shiny application",
     "section": "Output will error",
-    "text": "Output will error\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | components: [editor, viewer]\n# | layout: horizontal\nfrom shiny.express import ui\n\nfrom palmerpenguins import load_penguins\nfrom plotnine import aes, geom_histogram, ggplot, theme_minimal\n\nui.input_radio_buttons(\n    id=\"species\",\n    label=\"Species\",\n    choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n    inline=True,\n)\n\ndat = load_penguins()\nspecies = \"Adelie\"\nsel = dat.loc[dat.species == species]\n\n# this will cause a TypeError: Invalid tag item type\n(\n    ggplot(aes(x=\"bill_length_mm\"))\n    + geom_histogram(dat, fill=\"#C2C2C4\", binwidth=1)\n    + geom_histogram(sel, fill=\"#447099\", binwidth=1)\n    + theme_minimal()\n)"
+    "text": "Output will error\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | components: [editor, viewer]\n# | layout: horizontal\n\nfrom shiny import ui, render, App\nimport altair as alt\nfrom palmerpenguins import load_penguins\n\ndat = load_penguins()\n\napp_ui = ui.page_fluid(\n    ui.input_radio_buttons(\n        id=\"species\",\n        label=\"Species\",\n        choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n        inline=True,\n    )\n)\n\n\ndef server(input, output, session):\n    dat = load_penguins()\n\n    species = \"Gentoo\"  # selected species\n    sel = dat.loc[dat.species == species]  # selected data\n\n    # Base histogram for all data\n    base = (\n        alt.Chart(dat)\n        .mark_bar(color=\"#C2C2C4\", binSpacing=0)\n        .encode(\n            alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1), title=\"bill_length_mm\"),\n            alt.Y(\"count()\", title=\"count\"),\n        )\n    )\n\n    # Overlay histogram for selected species\n    overlay = (\n        alt.Chart(sel)\n        .mark_bar(color=\"#447099\", binSpacing=0)\n        .encode(alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1)), alt.Y(\"count()\"))\n    )\n\n    return base + overlay\n\n\napp = App(app_ui, server)"
   },
   {
-    "objectID": "slides/02-first_shiny.html#outputs",
-    "href": "slides/02-first_shiny.html#outputs",
+    "objectID": "slides/02-first_shiny.html#outputs-python-core-syntax-r",
+    "href": "slides/02-first_shiny.html#outputs-python-core-syntax-r",
     "title": "Your first Shiny application",
-    "section": "Outputs",
-    "text": "Outputs\n\nEach output needs to be wrapped in it’s own function with the corresponding output decorator.\n\nhttps://shiny.posit.co/py/components/#outputs\n\nWe now need to use one of the built-in Shiny output components,\nSpecifically, one that can render a plotnine figure (which is based on matplotlib), plot output component.\nFor example, we want to return a plot, so we will need to wrap our plotnine code, and decorate it with the @render.plot decorator."
+    "section": "Outputs (python core syntax + R)",
+    "text": "Outputs (python core syntax + R)\n\nEach output component has 2 parts:\n\nui.output_* call in the UI part of the application\neach output needs to be wrapped in it’s own function with the corresponding output decorator. https://shiny.posit.co/py/components/#outputs\n\nWe now need to use one of the built-in Shiny output components,\nplotnine figure (which is based on matplotlib), plot output component.\nFor example, we want to return a plot, so we will need to wrap our plotnine code, and decorate it with the @render.plot decorator.\nFor altair (and jupyter widgets) we need to use the shinywidgets package"
   },
   {
     "objectID": "slides/02-first_shiny.html#render-plot-output",
     "href": "slides/02-first_shiny.html#render-plot-output",
     "title": "Your first Shiny application",
     "section": "Render plot output",
-    "text": "Render plot output\n@render.plot #&lt;&lt;\ndef plot(): #&lt;&lt;\n    return ( #&lt;&lt;\n        ggplot(aes(x=\"bill_length_mm\"))\n        + geom_histogram(dat, fill=\"#C2C2C4\", binwidth=1)\n        + geom_histogram(sel, fill=\"#447099\", binwidth=1)\n        + theme_minimal()\n    )\n\n\n\n\n\n\nReturn the output\n\n\nDon’t forget to return the object you want displayed in the function! Otherwise the output will not render."
+    "text": "Render plot output\n...\nfrom shinywidgets import render_altair, output_widget\n...\n\napp_ui = ui.page_fluid(\n    ...\n\n    output_widget(\"plot\"),\n\n\ndef server(input, output, session):\n    @render_altair\n    def plot():\n        dat = load_penguins().dropna()\n        ...\n\n\n\n\n\n\nReturn the output\n\n\nDon’t forget to return the object you want displayed in the function! Otherwise the output will not render."
   },
   {
     "objectID": "slides/02-first_shiny.html#render-plot-output-1",
     "href": "slides/02-first_shiny.html#render-plot-output-1",
     "title": "Your first Shiny application",
     "section": "Render plot output",
-    "text": "Render plot output\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | components: [editor, viewer]\n# | layout: horizontal\nfrom shiny.express import ui, render\n\nfrom palmerpenguins import load_penguins\nfrom plotnine import aes, geom_histogram, ggplot, theme_minimal\n\nui.input_radio_buttons(\n    id=\"species\",\n    label=\"Species\",\n    choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n    inline=True,\n)\n\ndat = load_penguins()\nspecies = \"Adelie\"\nsel = dat.loc[dat.species == species]\n\n@render.plot #&lt;&lt;\ndef plot(): #&lt;&lt;\n    return ( #&lt;&lt;\n        ggplot(aes(x=\"bill_length_mm\"))\n        + geom_histogram(dat, fill=\"#C2C2C4\", binwidth=1)\n        + geom_histogram(sel, fill=\"#447099\", binwidth=1)\n        + theme_minimal()\n    )"
+    "text": "Render plot output\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | components: [editor, viewer]\n# | layout: horizontal\n\nfrom shiny import ui, render, App\nimport altair as alt\nfrom palmerpenguins import load_penguins\nfrom shinywidgets import render_altair, output_widget\n\ndat = load_penguins()\n\napp_ui = ui.page_fluid(\n    ui.input_radio_buttons(\n        id=\"species\",\n        label=\"Species\",\n        choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n        inline=True,\n    ),\n    output_widget(\"plot\"),\n)\n\n\ndef server(input, output, session):\n    @render_altair\n    def plot():\n        dat = load_penguins().dropna()\n\n        species = \"Gentoo\"  # selected species\n        sel = dat.loc[dat.species == species]  # selected data\n\n        # Base histogram for all data\n        base = (\n            alt.Chart(dat)\n            .mark_bar(color=\"#C2C2C4\", binSpacing=0)\n            .encode(\n                alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1), title=\"bill_length_mm\"),\n                alt.Y(\"count()\", title=\"count\"),\n            )\n        )\n\n        # Overlay histogram for selected species\n        overlay = (\n            alt.Chart(sel)\n            .mark_bar(color=\"#447099\", binSpacing=0)\n            .encode(alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1)), alt.Y(\"count()\"))\n        )\n\n        return base + overlay\n\n\napp = App(app_ui, server)"
   },
   {
     "objectID": "slides/02-first_shiny.html#reactivity",
     "href": "slides/02-first_shiny.html#reactivity",
     "title": "Your first Shiny application",
     "section": "Reactivity",
-    "text": "Reactivity\n\nBut the radio buttons don’t change anything\nWe didn’t connect the input component to the output component\nReactivity is what makes Shiny unique"
+    "text": "Reactivity\n\nBut the radio buttons don’t change anything\nWe didn’t connect the input component to the output component\nReactivity is what makes Shiny unique\n\nMore about reactivity next lecture\ntl;dr: use input.ID() to read the input component value"
   },
   {
     "objectID": "slides/02-first_shiny.html#the-data-reacts-to-the-input",
     "href": "slides/02-first_shiny.html#the-data-reacts-to-the-input",
     "title": "Your first Shiny application",
     "section": "The data reacts to the input",
-    "text": "The data reacts to the input\ndat = load_penguins()\n\n@render.plot\ndef plot():\n    species = input.species() #&lt;&lt;\n    sel = dat.loc[dat.species == species] #&lt;&lt;\n\n    return (\n        ggplot(aes(x=\"bill_length_mm\"))\n        + geom_histogram(dat, fill=\"#C2C2C4\", binwidth=1)\n        + geom_histogram(sel, fill=\"#447099\", binwidth=1)\n        + theme_minimal()\n    )"
+    "text": "The data reacts to the input\n...\n    ui.input_radio_buttons(\n        id=\"species\",\n        label=\"Species\",\n        choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n        inline=True,\n    ),\n...\n\n        species = input.species()\n..."
   },
   {
-    "objectID": "slides/02-first_shiny.html#your-first-application",
-    "href": "slides/02-first_shiny.html#your-first-application",
+    "objectID": "slides/02-first_shiny.html#your-first-application-altair",
+    "href": "slides/02-first_shiny.html#your-first-application-altair",
     "title": "Your first Shiny application",
-    "section": "Your first application",
-    "text": "Your first application\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| components: [editor, viewer]\n#| layout: horizontal\n#| viewerHeight: 500\n\nfrom palmerpenguins import load_penguins\nfrom plotnine import aes, geom_histogram, ggplot, theme_minimal\nfrom shiny.express import input, render, ui\n\ndat = load_penguins()\nspecies = dat[\"species\"].unique().tolist()\n\nui.input_radio_buttons(\"species\", \"Species\", species, inline=True)\n\n\n@render.plot\ndef plot():\n    sel = dat[dat[\"species\"] == input.species()]\n    return (\n        ggplot(aes(x=\"bill_length_mm\"))\n        + geom_histogram(dat, fill=\"#C2C2C4\", binwidth=1)\n        + geom_histogram(sel, fill=\"#447099\", binwidth=1)\n        + theme_minimal()\n    )"
+    "section": "Your first application: altair",
+    "text": "Your first application: altair\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| components: [editor, viewer]\n#| layout: horizontal\n#| viewerHeight: 500\n\nfrom shiny import ui, render, App\nimport altair as alt\nfrom palmerpenguins import load_penguins\nfrom shinywidgets import render_altair, output_widget\n\ndat = load_penguins().dropna()\n\napp_ui = ui.page_fluid(\n    ui.input_radio_buttons(\n        id=\"species\",\n        label=\"Species\",\n        choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n        inline=True,\n    ),\n    output_widget(\"plot\"),\n)\n\n\ndef server(input, output, session):\n    @render_altair\n    def plot():\n\n        species = input.species()  # selected species\n        sel = dat.loc[dat.species == species]  # selected data\n\n        # Base histogram for all data\n        base = (\n            alt.Chart(dat)\n            .mark_bar(color=\"#C2C2C4\", binSpacing=0)\n            .encode(\n                alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1), title=\"bill_length_mm\"),\n                alt.Y(\"count()\", title=\"count\"),\n            )\n        )\n\n        # Overlay histogram for selected species\n        overlay = (\n            alt.Chart(sel)\n            .mark_bar(color=\"#447099\", binSpacing=0)\n            .encode(alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1)), alt.Y(\"count()\"))\n        )\n\n        return base + overlay\n\n\napp = App(app_ui, server)"
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "DSCI 532: Data Visualization 2",
+    "objectID": "setup.html",
+    "href": "setup.html",
+    "title": "Setup",
     "section": "",
-    "text": "Course textbook for DSCI 532: Data Visualization 2 about dashboarding."
+    "text": "requirements.txt\njupyter\nshiny\naltair\nplotnine\npandas\npolars\nnarwhals\npalmerpenguins\nshinylive\nshinywidgets"
   },
   {
-    "objectID": "index.html#learning-objectives-and-readings",
-    "href": "index.html#learning-objectives-and-readings",
-    "title": "DSCI 532: Data Visualization 2",
-    "section": "Learning Objectives and Readings",
-    "text": "Learning Objectives and Readings\nLecture 1\n\n\n\nUnderstand what dashboards are\nExplain the advantages of using dashboards\nDefine what constitutes an effective dashboard layout\nExplain the advantages of using interactive visualizations\n\n\n\nDon’t rush into coding Sections 7.1.1, 7.2.1, 7.2.2.\nUX Matters Sections 6, 6.1, 6.1.1 (until the first code chunk), 6.1.2."
-  },
-  {
-    "objectID": "010-intro_shiny.html",
-    "href": "010-intro_shiny.html",
-    "title": "Introduction to shiny",
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
     "section": "",
-    "text": "View slides in full screen",
-    "crumbs": [
-      "Home",
-      "Lecture 1",
-      "Introduction to shiny"
-    ]
-  },
-  {
-    "objectID": "010-first_app.html",
-    "href": "010-first_app.html",
-    "title": "Your first app",
-    "section": "",
-    "text": "View slides in full screen\n       \n      \n    \n  \n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| components: [editor, viewer]\n#| layout: horizontal\n#| viewerHeight: 500\n\nfrom palmerpenguins import load_penguins\nfrom plotnine import aes, geom_histogram, ggplot, theme_minimal\nfrom shiny.express import input, render, ui\n\ndat = load_penguins()\nspecies = dat[\"species\"].unique().tolist()\n\nui.input_radio_buttons(\"species\", \"Species\", species, inline=True)\n\n\n@render.plot\ndef plot():\n    sel = dat[dat[\"species\"] == input.species()]\n    return (\n        ggplot(aes(x=\"bill_length_mm\"))\n        + geom_histogram(dat, fill=\"#C2C2C4\", binwidth=1)\n        + geom_histogram(sel, fill=\"#447099\", binwidth=1)\n        + theme_minimal()\n    )",
-    "crumbs": [
-      "Home",
-      "Lecture 1",
-      "Your first app"
-    ]
+    "text": "About this site"
   },
   {
     "objectID": "010-intro_dashboards.html",
@@ -162,11 +138,42 @@
     ]
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "010-first_app.html",
+    "href": "010-first_app.html",
+    "title": "Your first app",
     "section": "",
-    "text": "About this site"
+    "text": "View slides in full screen\n       \n      \n    \n  \n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| components: [editor, viewer]\n#| layout: horizontal\n#| viewerHeight: 500\n\nfrom shiny import ui, render, App\nimport altair as alt\nfrom palmerpenguins import load_penguins\nfrom shinywidgets import render_altair, output_widget\n\ndat = load_penguins().dropna()\n\napp_ui = ui.page_fluid(\n    ui.input_radio_buttons(\n        id=\"species\",\n        label=\"Species\",\n        choices=[\"Adelie\", \"Gentoo\", \"Chinstrap\"],\n        inline=True,\n    ),\n    output_widget(\"plot\"),\n)\n\n\ndef server(input, output, session):\n    @render_altair\n    def plot():\n\n        species = input.species()  # selected species\n        sel = dat.loc[dat.species == species]  # selected data\n\n        # Base histogram for all data\n        base = (\n            alt.Chart(dat)\n            .mark_bar(color=\"#C2C2C4\", binSpacing=0)\n            .encode(\n                alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1), title=\"bill_length_mm\"),\n                alt.Y(\"count()\", title=\"count\"),\n            )\n        )\n\n        # Overlay histogram for selected species\n        overlay = (\n            alt.Chart(sel)\n            .mark_bar(color=\"#447099\", binSpacing=0)\n            .encode(alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1)), alt.Y(\"count()\"))\n        )\n\n        return base + overlay\n\n\napp = App(app_ui, server)",
+    "crumbs": [
+      "Home",
+      "Lecture 1",
+      "Your first app"
+    ]
+  },
+  {
+    "objectID": "010-intro_shiny.html",
+    "href": "010-intro_shiny.html",
+    "title": "Introduction to shiny",
+    "section": "",
+    "text": "View slides in full screen",
+    "crumbs": [
+      "Home",
+      "Lecture 1",
+      "Introduction to shiny"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "DSCI 532: Data Visualization 2",
+    "section": "",
+    "text": "Course textbook for DSCI 532: Data Visualization 2 about dashboarding."
+  },
+  {
+    "objectID": "index.html#learning-objectives-and-readings",
+    "href": "index.html#learning-objectives-and-readings",
+    "title": "DSCI 532: Data Visualization 2",
+    "section": "Learning Objectives and Readings",
+    "text": "Learning Objectives and Readings\nLecture 1\n\n\n\nUnderstand what dashboards are\nExplain the advantages of using dashboards\nDefine what constitutes an effective dashboard layout\nExplain the advantages of using interactive visualizations\n\n\n\nDon’t rush into coding Sections 7.1.1, 7.2.1, 7.2.2.\nUX Matters Sections 6, 6.1, 6.1.1 (until the first code chunk), 6.1.2."
   },
   {
     "objectID": "slides/01-intro_shiny.html#what-is-a-shiny-app",
@@ -244,5 +251,12 @@
     "title": "Introduction to Shiny",
     "section": "Why Shiny for Python?",
     "text": "Why Shiny for Python?\nShiny lets you quickly create reactive web apps without worrying about:\n\ncache\nstate\ncallbacks\n…or even HTML, CSS, and JavaScript\n\nAnd, these apps can scale from prototype to production-ready."
+  },
+  {
+    "objectID": "slides/01-intro_shiny.html#shiny-syntax",
+    "href": "slides/01-intro_shiny.html#shiny-syntax",
+    "title": "Introduction to Shiny",
+    "section": "Shiny Syntax",
+    "text": "Shiny Syntax\n\nShiny for R\nShiny for Python\n\nCore syntax: similar to Shiny for R\nExpress syntax: similar to Streamlit"
   }
 ]

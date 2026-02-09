@@ -131,3 +131,10 @@ Shiny lets you quickly create reactive web apps without worrying about:
 - ...or even HTML, CSS, and JavaScript
 
 And, these apps can scale from prototype to production-ready.
+
+## Shiny Syntax
+
+- Shiny for R
+- Shiny for Python
+  - Core syntax: similar to Shiny for R
+  - Express syntax: similar to Streamlit

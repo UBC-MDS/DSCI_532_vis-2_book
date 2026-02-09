@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.19">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>Your first app – DSCI 532: Data Visualization 2</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -40,10 +37,10 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-3f61aac59b63c3a2d0e87c59ee7d0662.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-d470ac74185ab465c3a4486a1cfd3869.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-29a19b5acbeac218a8c860e48340d4df.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
 <meta name="shinylive:serviceworker_dir" content=".">
 <script src="site_libs/quarto-contrib/shinylive-0.10.7/shinylive/load-shinylive-sw.js" type="module"></script>
@@ -177,20 +174,6 @@ ul.task-list li input[type="checkbox"] {
 </li>
       </ul>
   </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Lecture 2</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
- <span class="menu-text">020-</span>
-  </li>
-      </ul>
-  </li>
     </ul>
     </div>
 </nav>
@@ -235,25 +218,52 @@ ul.task-list li input[type="checkbox"] {
 #| layout: horizontal
 #| viewerHeight: 500
 
+from shiny import ui, render, App
+import altair as alt
 from palmerpenguins import load_penguins
-from plotnine import aes, geom_histogram, ggplot, theme_minimal
-from shiny.express import input, render, ui
+from shinywidgets import render_altair, output_widget
 
-dat = load_penguins()
-species = dat["species"].unique().tolist()
+dat = load_penguins().dropna()
 
-ui.input_radio_buttons("species", "Species", species, inline=True)
+app_ui = ui.page_fluid(
+    ui.input_radio_buttons(
+        id="species",
+        label="Species",
+        choices=["Adelie", "Gentoo", "Chinstrap"],
+        inline=True,
+    ),
+    output_widget("plot"),
+)
 
 
-@render.plot
-def plot():
-    sel = dat[dat["species"] == input.species()]
-    return (
-        ggplot(aes(x="bill_length_mm"))
-        + geom_histogram(dat, fill="#C2C2C4", binwidth=1)
-        + geom_histogram(sel, fill="#447099", binwidth=1)
-        + theme_minimal()
-    )
+def server(input, output, session):
+    @render_altair
+    def plot():
+
+        species = input.species()  # selected species
+        sel = dat.loc[dat.species == species]  # selected data
+
+        # Base histogram for all data
+        base = (
+            alt.Chart(dat)
+            .mark_bar(color="#C2C2C4", binSpacing=0)
+            .encode(
+                alt.X("bill_length_mm:Q", bin=alt.Bin(step=1), title="bill_length_mm"),
+                alt.Y("count()", title="count"),
+            )
+        )
+
+        # Overlay histogram for selected species
+        overlay = (
+            alt.Chart(sel)
+            .mark_bar(color="#447099", binSpacing=0)
+            .encode(alt.X("bill_length_mm:Q", bin=alt.Bin(step=1)), alt.Y("count()"))
+        )
+
+        return base + overlay
+
+
+app = App(app_ui, server)
 </code></pre>
 </div>
 
@@ -333,7 +343,7 @@ def plot():
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/UBC-MDS\.github\.io\/DSCI_532_vis-2_book\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
