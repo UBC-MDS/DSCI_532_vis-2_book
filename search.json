@@ -11,14 +11,14 @@
     "href": "slides/02-first_shiny.html#visualizing-penguin-data",
     "title": "Your first Shiny application",
     "section": "Visualizing penguin data",
-    "text": "Visualizing penguin data"
+    "text": "Visualizing penguin data\n\n\nimport altair as alt\nfrom palmerpenguins import load_penguins\n\ndat = load_penguins().dropna()\n\nspecies = \"Adelie\"  # selected species\nsel = dat.loc[dat.species == species]  # selected data\n\n# base histogram for all data\nbase = (\n    alt.Chart(dat)\n    .mark_bar(color=\"#C2C2C4\", binSpacing=0)\n    .encode(\n        alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1), title=\"bill_length_mm\"),\n        alt.Y(\"count()\", title=\"count\"),\n    )\n)\n\n# overlay histogram for selected species\noverlay = (\n    alt.Chart(sel)\n    .mark_bar(color=\"#447099\", binSpacing=0)\n    .encode(alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1)), alt.Y(\"count()\"))\n)\n\n# layer the charts\nbase + overlay"
   },
   {
     "objectID": "slides/02-first_shiny.html#change-the-species",
     "href": "slides/02-first_shiny.html#change-the-species",
     "title": "Your first Shiny application",
     "section": "Change the species",
-    "text": "Change the species"
+    "text": "Change the species\n\n\nimport altair as alt\nfrom palmerpenguins import load_penguins\n\ndat = load_penguins().dropna()\n\nspecies = \"Gentoo\"  # selected species\nsel = dat.loc[dat.species == species]  # selected data\n\n# base histogram for all data\nbase = (\n    alt.Chart(dat)\n    .mark_bar(color=\"#C2C2C4\", binSpacing=0)\n    .encode(\n        alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1), title=\"bill_length_mm\"),\n        alt.Y(\"count()\", title=\"count\"),\n    )\n)\n\n# overlay histogram for selected species\noverlay = (\n    alt.Chart(sel)\n    .mark_bar(color=\"#447099\", binSpacing=0)\n    .encode(alt.X(\"bill_length_mm:Q\", bin=alt.Bin(step=1)), alt.Y(\"count()\"))\n)\n\n# layer the charts\nbase + overlay"
   },
   {
     "objectID": "slides/02-first_shiny.html#your-turn",

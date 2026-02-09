@@ -9,16 +9,20 @@ title: "Your first Shiny application"
 
 ## Visualizing penguin data
 
+<!--TODO: #| output-location: slide is broken -->
+
 ```{python}
-#| output-location: slide
+#| echo: true
 
 {{< include /code/lecture01/01-vis-altair.py >}}
 ```
 
 ## Change the species
 
+<!-- TODO: #| output-location: slide is broken -->
+
 ```{python}
-#| output-location: slide
+#| echo: true
 
 {{< include /code/lecture01/02-vis-altair-change_species.py >}}
 ```
