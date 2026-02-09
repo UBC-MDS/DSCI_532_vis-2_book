@@ -5,6 +5,7 @@ app_ui = ui.page_fluid(
         id="species",
         label="Species",
         choices=["Adelie", "Gentoo", "Chinstrap"],
+        inline=True,
     )
 )
 
