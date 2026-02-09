@@ -10,7 +10,7 @@ title: "Your first Shiny application"
 ## Visualizing penguin data
 
 ```{python}
-# | output-location: slide
+#| output-location: slide
 
 {{< include /code/lecture01/01-vis-altair.py >}}
 ```
@@ -18,7 +18,7 @@ title: "Your first Shiny application"
 ## Change the species
 
 ```{python}
-# | output-location: slide
+#| output-location: slide
 
 {{< include /code/lecture01/02-vis-altair-change_species.py >}}
 ```
@@ -47,9 +47,9 @@ title: "Your first Shiny application"
 ## Radio Buttons
 
 ```{shinylive-python}
-# | standalone: true
-# | components: [editor, viewer]
-# | layout: horizontal
+#| standalone: true
+#| components: [editor, viewer]
+#| layout: horizontal
 
 {{< include /code/lecture01/app-01-core-radio.py >}}
 ```
@@ -73,9 +73,9 @@ shiny run --reload app.py
 <https://shiny.posit.co/py/api/express/express.ui.input_radio_buttons.html>
 
 ```{shinylive-python}
-# | standalone: true
-# | components: [editor, viewer]
-# | layout: horizontal
+#| standalone: true
+#| components: [editor, viewer]
+#| layout: horizontal
 
 {{< include /code/lecture01/app-02-core-radio-options.py >}}
 
@@ -93,9 +93,9 @@ the application errors because it does not know what to do with the figure that'
 ## Output will error
 
 ```{shinylive-python}
-# | standalone: true
-# | components: [editor, viewer]
-# | layout: horizontal
+#| standalone: true
+#| components: [editor, viewer]
+#| layout: horizontal
 
 {{< include /code/lecture01/app-03-core-altair-error.py >}}
 ```
@@ -147,9 +147,9 @@ Don’t forget to return the object you want displayed in the function! Otherwis
 ## Render plot output
 
 ```{shinylive-python}
-# | standalone: true
-# | components: [editor, viewer]
-# | layout: horizontal
+#| standalone: true
+#| components: [editor, viewer]
+#| layout: horizontal
 
 {{< include /code/lecture01/app-04-core-altair-output.py >}}
 ```
