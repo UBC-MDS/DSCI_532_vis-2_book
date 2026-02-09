@@ -13,7 +13,7 @@ title: Your first app
 #| layout: horizontal
 #| viewerHeight: 500
 
-{{< include code/app-first-shiny.py >}}
+{{< include /code/lecture01/app-05-core-altair-first_app.py >}}
 ```
 
 :::
