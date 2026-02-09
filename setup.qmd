@@ -1,0 +1,10 @@
+---
+title: Setup
+---
+
+
+`requirements.txt`
+
+```
+{{< include requirements.txt >}}
+```

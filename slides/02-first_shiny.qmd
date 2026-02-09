@@ -12,43 +12,15 @@ title: "Your first Shiny application"
 ```{python}
 # | output-location: slide
 
-from palmerpenguins import load_penguins
-from plotnine import aes, geom_histogram, ggplot, theme_minimal
-
-dat = load_penguins()
-dat.head()
-
-species = "Adelie"  # selected species
-sel = dat.loc[dat.species == species]  # selected data
-
-(
-    ggplot(aes(x="bill_length_mm"))
-    + geom_histogram(dat, fill="#C2C2C4", binwidth=1)
-    + geom_histogram(sel, fill="#447099", binwidth=1)
-    + theme_minimal()
-)
+{{< include /code/lecture01/01-vis-altair.py >}}
 ```
 
 ## Change the species
 
 ```{python}
-#| output-location: slide
+# | output-location: slide
 
-from palmerpenguins import load_penguins
-from plotnine import aes, geom_histogram, ggplot, theme_minimal
-
-dat = load_penguins()
-dat.head()
-
-species = "Gentoo"  # change species
-sel = dat.loc[dat.species == species]
-
-(
-    ggplot(aes(x="bill_length_mm"))
-    + geom_histogram(dat, fill="#C2C2C4", binwidth=1)
-    + geom_histogram(sel, fill="#447099", binwidth=1)
-    + theme_minimal()
-)
+{{< include /code/lecture01/02-vis-altair-change_species.py >}}
 ```
 
 ## Your Turn
@@ -60,21 +32,7 @@ sel = dat.loc[dat.species == species]
 ```{python}
 #| output: false
 
-from palmerpenguins import load_penguins
-from plotnine import aes, geom_histogram, ggplot, theme_minimal
-
-dat = load_penguins()
-dat.head()
-
-species = "Gentoo"  # Adelie, Gentoo, Chinstrap
-sel = dat.loc[dat.species == species]
-
-(
-    ggplot(aes(x="bill_length_mm"))
-    + geom_histogram(dat, fill="#C2C2C4", binwidth=1)
-    + geom_histogram(sel, fill="#447099", binwidth=1)
-    + theme_minimal()
-)
+{{< include /code/lecture01/02-vis-altair-change_species.py >}}
 ```
 
 ## The user interface
@@ -92,14 +50,8 @@ sel = dat.loc[dat.species == species]
 # | standalone: true
 # | components: [editor, viewer]
 # | layout: horizontal
-from shiny.express import ui
 
-ui.input_radio_buttons(
-    id="species",
-    label="Species",
-    choices=["Adelie", "Gentoo", "Chinstrap"],
-)
-
+{{< include /code/lecture01/app-01-core-radio.py >}}
 ```
 
 ## Run your application
@@ -124,14 +76,8 @@ shiny run --reload app.py
 # | standalone: true
 # | components: [editor, viewer]
 # | layout: horizontal
-from shiny.express import ui
 
-ui.input_radio_buttons(
-    id="species",
-    label="Species",
-    choices=["Adelie", "Gentoo", "Chinstrap"],
-    inline=True,
-)
+{{< include /code/lecture01/app-02-core-radio-options.py >}}
 
 ```
 
@@ -150,58 +96,46 @@ the application errors because it does not know what to do with the figure that'
 # | standalone: true
 # | components: [editor, viewer]
 # | layout: horizontal
-from shiny.express import ui
 
-from palmerpenguins import load_penguins
-from plotnine import aes, geom_histogram, ggplot, theme_minimal
-
-ui.input_radio_buttons(
-    id="species",
-    label="Species",
-    choices=["Adelie", "Gentoo", "Chinstrap"],
-    inline=True,
-)
-
-dat = load_penguins()
-species = "Adelie"
-sel = dat.loc[dat.species == species]
-
-# this will cause a TypeError: Invalid tag item type
-(
-    ggplot(aes(x="bill_length_mm"))
-    + geom_histogram(dat, fill="#C2C2C4", binwidth=1)
-    + geom_histogram(sel, fill="#447099", binwidth=1)
-    + theme_minimal()
-)
-
+{{< include /code/lecture01/app-03-core-altair-error.py >}}
 ```
 
-## Outputs
+## Outputs (python core syntax + R)
 
-- Each output needs to be wrapped in it's own function with the corresponding output decorator.
-
+- Each output component has 2 parts:
+    - `ui.output_*` call in the UI part of the application
+    - each output needs to be wrapped in it's own function with the corresponding output decorator.
 <https://shiny.posit.co/py/components/#outputs>
 
 - We now need to use one of the built-in
 [Shiny output components](https://shiny.posit.co/py/components/#outputs),
 
-
-- Specifically, one that can render a `plotnine` figure (which is based on `matplotlib`),
+- `plotnine` figure (which is based on `matplotlib`),
 [plot output component](https://shiny.posit.co/py/components/outputs/plot-matplotlib/).
+
 - For example, we want to return a plot, so we will need to wrap our plotnine code,
 and decorate it with the `@render.plot` decorator.
+
+- For altair (and jupyter widgets) we need to use the `shinywidgets` package
 
 ## Render plot output
 
 ```{.python}
-@render.plot #<<
-def plot(): #<<
-    return ( #<<
-        ggplot(aes(x="bill_length_mm"))
-        + geom_histogram(dat, fill="#C2C2C4", binwidth=1)
-        + geom_histogram(sel, fill="#447099", binwidth=1)
-        + theme_minimal()
-    )
+...
+from shinywidgets import render_altair, output_widget
+...
+
+app_ui = ui.page_fluid(
+    ...
+
+    output_widget("plot"),
+
+
+def server(input, output, session):
+    @render_altair
+    def plot():
+        dat = load_penguins().dropna()
+        ...
 ```
 
 ::: {.callout-important}
@@ -216,31 +150,8 @@ Don’t forget to return the object you want displayed in the function! Otherwis
 # | standalone: true
 # | components: [editor, viewer]
 # | layout: horizontal
-from shiny.express import ui, render
 
-from palmerpenguins import load_penguins
-from plotnine import aes, geom_histogram, ggplot, theme_minimal
-
-ui.input_radio_buttons(
-    id="species",
-    label="Species",
-    choices=["Adelie", "Gentoo", "Chinstrap"],
-    inline=True,
-)
-
-dat = load_penguins()
-species = "Adelie"
-sel = dat.loc[dat.species == species]
-
-@render.plot #<<
-def plot(): #<<
-    return ( #<<
-        ggplot(aes(x="bill_length_mm"))
-        + geom_histogram(dat, fill="#C2C2C4", binwidth=1)
-        + geom_histogram(sel, fill="#447099", binwidth=1)
-        + theme_minimal()
-    )
-
+{{< include /code/lecture01/app-04-core-altair-output.py >}}
 ```
 
 ## Reactivity
@@ -249,26 +160,26 @@ def plot(): #<<
 - We didn't connect the input component to the output component
 
 - [Reactivity](https://shiny.posit.co/py/docs/reactive-foundations.html) is what makes Shiny unique
+    - More about reactivity next lecture
+    - tl;dr: use `input.ID()` to read the input component value
 
 ## The data reacts to the input
 
 ```{.python}
-dat = load_penguins()
+...
+    ui.input_radio_buttons(
+        id="species",
+        label="Species",
+        choices=["Adelie", "Gentoo", "Chinstrap"],
+        inline=True,
+    ),
+...
 
-@render.plot
-def plot():
-    species = input.species() #<<
-    sel = dat.loc[dat.species == species] #<<
-
-    return (
-        ggplot(aes(x="bill_length_mm"))
-        + geom_histogram(dat, fill="#C2C2C4", binwidth=1)
-        + geom_histogram(sel, fill="#447099", binwidth=1)
-        + theme_minimal()
-    )
+        species = input.species()
+...
 ```
 
-## Your first application
+## Your first application: altair
 
 ```{shinylive-python}
 #| standalone: true
@@ -276,7 +187,5 @@ def plot():
 #| layout: horizontal
 #| viewerHeight: 500
 
-{{< include /code/app-first-shiny.py >}}
+{{< include /code/lecture01/app-05-core-altair-first_app.py >}}
 ```
-
-{{< countdown "5:00">}}

@@ -7,3 +7,4 @@ polars
 narwhals
 palmerpenguins
 shinylive
+shinywidgets
