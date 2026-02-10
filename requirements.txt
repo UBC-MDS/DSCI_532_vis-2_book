@@ -11,3 +11,10 @@ shinywidgets
 seaborn
 plotly
 ridgeplot
+openai
+anthropic
+chatlas
+inspect-ai
+maplibre
+great-tables
+#keplergl
