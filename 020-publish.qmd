@@ -8,8 +8,6 @@ title: Publish your application
 
 ### Step 1: Get your application on GitHub
 
-{{< countdown "5:00">}}
-
 - Take your application and put it up on a github repository.
 
 ### Step 2: Publish on Connect Cloud
