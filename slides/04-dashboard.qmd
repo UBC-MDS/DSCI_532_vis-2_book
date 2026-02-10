@@ -482,7 +482,7 @@ with ui.layout_columns(fill=False):
 #| layout: horizontal
 #| viewerHeight: 500
 
-{{< include /../code/02-dashboard/app.py >}}
+{{< include /code/lecture02/express/app.py >}}
 ```
 
 ## Challenge: Button
