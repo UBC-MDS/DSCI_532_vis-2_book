@@ -34,8 +34,6 @@ title: Build a dashboard
 
 ## Your turn: App UI components
 
-{{< countdown "5:00">}}
-
 Here are the documentation pages for functions that may be useful for this exercise:
 
 - `ui.page_opts()`: <https://shiny.posit.co/py/api/express/express.ui.page_opts.html>
@@ -45,8 +43,6 @@ Here are the documentation pages for functions that may be useful for this exerc
 - `ui.card_header()`: <https://shiny.posit.co/py/api/express/express.ui.card_header.html>
 
 ## App UI
-
-{{< countdown "5:00">}}
 
 ```{shinylive-python}
 #| standalone: true
@@ -84,8 +80,6 @@ with ui.layout_columns():
 ```
 
 ## Your turn: Add input components
-
-{{< countdown "2:00">}}
 
 ```{shinylive-python}
 #| standalone: true
@@ -412,8 +406,6 @@ def x_squared_half_text():
 
 ## Your turn: Filtered tips reactive.calc
 
-{{< countdown "5:00">}}
-
 ```{shinylive-python}
 #| standalone: true
 #| components: [editor, viewer]
@@ -472,9 +464,7 @@ with ui.layout_columns(fill=False):
             tips_filtered.shape[0]
 ```
 
-## The application
-
-{{< countdown "5:00">}}
+## The application (Express)
 
 ```{shinylive-python}
 #| standalone: true
