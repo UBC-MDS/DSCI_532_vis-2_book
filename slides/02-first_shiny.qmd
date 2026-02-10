@@ -27,18 +27,6 @@ title: "Your first Shiny application"
 {{< include /code/lecture01/02-vis-altair-change_species.py >}}
 ```
 
-## Your Turn
-
-- Create the working baseline code:
-
-{{< countdown "2:00">}}
-
-```{python}
-#| output: false
-
-{{< include /code/lecture01/02-vis-altair-change_species.py >}}
-```
-
 ## The user interface
 
 - Best try to mock up or wireframe a UI before starting
@@ -88,8 +76,6 @@ shiny run --reload app.py
 {{< include /code/lecture01/app-02-core-radio-options.py >}}
 
 ```
-
-{{< countdown "2:00">}}
 
 ## Add in the figure
 
