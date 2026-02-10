@@ -228,14 +228,14 @@
     "href": "setup.html",
     "title": "Setup",
     "section": "",
-    "text": "Here is the working requirements.txt to get started for this course. You may need more packages for your actual project repository.\nMake sure you are installing these packages in a separate virtual enviornment (for the course and project).\njupyter\nshiny\naltair\nplotnine\npandas\npolars\nnarwhals\npalmerpenguins\nshinylive\nshinywidgets\nseaborn\nplotly\nridgeplot"
+    "text": "Here is the working requirements.txt to get started for this course. You may need more packages for your actual project repository.\nMake sure you are installing these packages in a separate virtual enviornment (for the course and project).\njupyter\nshiny\naltair\nplotnine\npandas\npolars\nnarwhals\npalmerpenguins\nshinylive\nshinywidgets\nseaborn\nplotly\nridgeplot\nopenai\nanthropic\nchatlas\ninspect-ai\nmaplibre\ngreat-tables\n#keplergl"
   },
   {
     "objectID": "setup.html#python",
     "href": "setup.html#python",
     "title": "Setup",
     "section": "",
-    "text": "Here is the working requirements.txt to get started for this course. You may need more packages for your actual project repository.\nMake sure you are installing these packages in a separate virtual enviornment (for the course and project).\njupyter\nshiny\naltair\nplotnine\npandas\npolars\nnarwhals\npalmerpenguins\nshinylive\nshinywidgets\nseaborn\nplotly\nridgeplot"
+    "text": "Here is the working requirements.txt to get started for this course. You may need more packages for your actual project repository.\nMake sure you are installing these packages in a separate virtual enviornment (for the course and project).\njupyter\nshiny\naltair\nplotnine\npandas\npolars\nnarwhals\npalmerpenguins\nshinylive\nshinywidgets\nseaborn\nplotly\nridgeplot\nopenai\nanthropic\nchatlas\ninspect-ai\nmaplibre\ngreat-tables\n#keplergl"
   },
   {
     "objectID": "setup.html#llms",
