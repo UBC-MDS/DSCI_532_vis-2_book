@@ -9,3 +9,5 @@ palmerpenguins
 shinylive
 shinywidgets
 seaborn
+plotly
+ridgeplot
