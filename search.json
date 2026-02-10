@@ -256,7 +256,7 @@
     "href": "020-publish.html",
     "title": "Publish your application",
     "section": "",
-    "text": "https://connect.posit.cloud/\n\n\n\n \n\nTake your application and put it up on a github repository.\n\n\n\n\nMake an account on Posit Connect Cloud: https://connect.posit.cloud/\n\nLog In to Connect Cloud. First time will prompt you to connect to GitHub.\nClick the Publish button in the upper right of the screen.\nSelect the framework you want to deploy (Shiny).\nSelect your Repository.\nConfirm the Branch (main).\nSelect your Primary file (app.py)\nPython deployments require a requirements.txt.",
+    "text": "https://connect.posit.cloud/\n\n\n\nTake your application and put it up on a github repository.\n\n\n\n\nMake an account on Posit Connect Cloud: https://connect.posit.cloud/\n\nLog In to Connect Cloud. First time will prompt you to connect to GitHub.\nClick the Publish button in the upper right of the screen.\nSelect the framework you want to deploy (Shiny).\nSelect your Repository.\nConfirm the Branch (main).\nSelect your Primary file (app.py)\nPython deployments require a requirements.txt.",
     "crumbs": [
       "Setup",
       "Lecture 2",
@@ -268,7 +268,7 @@
     "href": "020-publish.html#posit-connect-cloud",
     "title": "Publish your application",
     "section": "",
-    "text": "https://connect.posit.cloud/\n\n\n\n \n\nTake your application and put it up on a github repository.\n\n\n\n\nMake an account on Posit Connect Cloud: https://connect.posit.cloud/\n\nLog In to Connect Cloud. First time will prompt you to connect to GitHub.\nClick the Publish button in the upper right of the screen.\nSelect the framework you want to deploy (Shiny).\nSelect your Repository.\nConfirm the Branch (main).\nSelect your Primary file (app.py)\nPython deployments require a requirements.txt.",
+    "text": "https://connect.posit.cloud/\n\n\n\nTake your application and put it up on a github repository.\n\n\n\n\nMake an account on Posit Connect Cloud: https://connect.posit.cloud/\n\nLog In to Connect Cloud. First time will prompt you to connect to GitHub.\nClick the Publish button in the upper right of the screen.\nSelect the framework you want to deploy (Shiny).\nSelect your Repository.\nConfirm the Branch (main).\nSelect your Primary file (app.py)\nPython deployments require a requirements.txt.",
     "crumbs": [
       "Setup",
       "Lecture 2",
