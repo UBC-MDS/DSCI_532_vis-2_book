@@ -162,13 +162,54 @@ ul.task-list li input[type="checkbox"] {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-reactivity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Reactivity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-dashboard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tips Dashboard</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-publish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish your application</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#python" id="toc-python" class="nav-link active" data-scroll-target="#python">Python</a></li>
+  <li><a href="#llms" id="toc-llms" class="nav-link" data-scroll-target="#llms">LLMs</a>
+  <ul class="collapse">
+  <li><a href="#github-models" id="toc-github-models" class="nav-link" data-scroll-target="#github-models">GitHub Models</a></li>
+  <li><a href="#local-llm-ollama" id="toc-local-llm-ollama" class="nav-link" data-scroll-target="#local-llm-ollama">Local LLM: Ollama</a></li>
+  <li><a href="#optional-chat-provider-with-api" id="toc-optional-chat-provider-with-api" class="nav-link" data-scroll-target="#optional-chat-provider-with-api">(Optional): Chat provider with API</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -192,7 +233,10 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><code>requirements.txt</code></p>
+<section id="python" class="level2">
+<h2 class="anchored" data-anchor-id="python">Python</h2>
+<p>Here is the working <code>requirements.txt</code> to get started for this course. You may need more packages for your actual project repository.</p>
+<p>Make sure you are installing these packages in a separate virtual enviornment (for the course and project).</p>
 <pre data-code-line-numbers=""><code>jupyter
 shiny
 altair
@@ -203,9 +247,121 @@ narwhals
 palmerpenguins
 shinylive
 shinywidgets
+seaborn
+plotly
+ridgeplot
 </code></pre>
+</section>
+<section id="llms" class="level2">
+<h2 class="anchored" data-anchor-id="llms">LLMs</h2>
+<p>We will be working with LLMs in this course.</p>
+<section id="github-models" class="level3">
+<h3 class="anchored" data-anchor-id="github-models">GitHub Models</h3>
+<p>You will need to create a GitHub Personal Access Token (PAT). It does not need any context (e.g., repo, workflow, etc).</p>
+<p>General instructions from the GitHub docs on creating a PAT: <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic" class="uri">https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic</a></p>
+<p>Instructions from the GitHub Models docs: <a href="https://github.com/Azure-Samples/python-ai-agent-frameworks-demos/tree/main?tab=readme-ov-file#configuring-github-models" class="uri">https://github.com/Azure-Samples/python-ai-agent-frameworks-demos/tree/main?tab=readme-ov-file#configuring-github-models</a></p>
+</section>
+<section id="local-llm-ollama" class="level3">
+<h3 class="anchored" data-anchor-id="local-llm-ollama">Local LLM: Ollama</h3>
+<ol type="1">
+<li>Download Ollama: <a href="https://ollama.com/" class="uri">https://ollama.com/</a></li>
+<li>Pick one of the many llama models on their model page from: <a href="https://ollama.com/search" class="uri">https://ollama.com/search</a>.
+<ul>
+<li>Pick any random model that will fit on your computer</li>
+<li>You can pick multiple models if you’d like, we will compare results during workshop.</li>
+<li>Here are a few example models with their download sizes you can try:</li>
+</ul></li>
+</ol>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Download Size</th>
+<th>URL</th>
+<th>Install Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>gpt-oss:20b</td>
+<td>14GB</td>
+<td><a href="https://gpt-oss.com/" class="uri">https://gpt-oss.com/</a></td>
+<td><code>ollama run gpt-oss:20b</code></td>
+</tr>
+<tr class="even">
+<td>gpt-oss:120b</td>
+<td>65GB</td>
+<td>-</td>
+<td><code>ollama run gpt-oss:120b</code></td>
+</tr>
+<tr class="odd">
+<td>qwen3:0.6b</td>
+<td>523MB</td>
+<td><a href="https://ollama.com/library/qwen3" class="uri">https://ollama.com/library/qwen3</a></td>
+<td><code>ollama run qwen3:0.6b</code></td>
+</tr>
+<tr class="even">
+<td>qwen</td>
+<td>5.2GB</td>
+<td>-</td>
+<td><code>ollama run qwen3</code></td>
+</tr>
+<tr class="odd">
+<td>Phi 4 mini</td>
+<td>3.2GB</td>
+<td><a href="https://ollama.com/library/phi4-reasoning" class="uri">https://ollama.com/library/phi4-reasoning</a></td>
+<td><code>ollama run phi4-mini-reasoning</code></td>
+</tr>
+<tr class="even">
+<td>devstral</td>
+<td>14GB</td>
+<td><a href="https://ollama.com/library/devstral" class="uri">https://ollama.com/library/devstral</a></td>
+<td><code>ollama run devstral</code></td>
+</tr>
+<tr class="odd">
+<td>llama4</td>
+<td>67GB</td>
+<td><a href="https://ollama.com/library/llama4" class="uri">https://ollama.com/library/llama4</a></td>
+<td><code>ollama run llama4</code></td>
+</tr>
+<tr class="even">
+<td>llama4:128x17b</td>
+<td>245GB</td>
+<td>-</td>
+<td><code>ollama run llama4:128x17b</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="optional-chat-provider-with-api" class="level3">
+<h3 class="anchored" data-anchor-id="optional-chat-provider-with-api">(Optional): Chat provider with API</h3>
+<p>If you pay for Claude, OpenAI, etc access with their web/desktop application, this is a separate purchase for the API key. Depending on your usage, you may even find that paying for the API key could be cheaper!</p>
+<section id="anthropic-claude" class="level4">
+<h4 class="anchored" data-anchor-id="anthropic-claude">Anthropic Claude</h4>
+<ol type="1">
+<li>Sign up at <a href="https://console.anthropic.com" class="uri">https://console.anthropic.com</a>.</li>
+<li>Load up enough credit so you won’t be sad if something goes wrong.</li>
+<li>Create a key at <a href="https://console.anthropic.com/settings/keys" class="uri">https://console.anthropic.com/settings/keys</a></li>
+</ol>
+</section>
+<section id="google-gemini" class="level4">
+<h4 class="anchored" data-anchor-id="google-gemini">Google Gemini</h4>
+<ol type="1">
+<li>Log in to <a href="https://aistudio.google.com" class="uri">https://aistudio.google.com</a> with a google account</li>
+<li>Click create API key &amp; copy it to the clipboard.</li>
+</ol>
+</section>
+<section id="openai-chatgpt" class="level4">
+<h4 class="anchored" data-anchor-id="openai-chatgpt">OpenAI ChatGPT</h4>
+<ol type="1">
+<li>Log into <a href="https://platform.openai.com/" class="uri">https://platform.openai.com/</a>.</li>
+<li>Create a key at <a href="https://platform.openai.com/settings/organization/api-keys" class="uri">https://platform.openai.com/settings/organization/api-keys</a></li>
+</ol>
 
 
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

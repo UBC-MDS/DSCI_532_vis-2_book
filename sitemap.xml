@@ -1,35 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/slides/04-dashboard.html</loc>
+    <lastmod>2026-02-10T21:56:41.357Z</lastmod>
+  </url>
+  <url>
     <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html</loc>
-    <lastmod>2026-02-09T15:27:09.033Z</lastmod>
+    <lastmod>2026-02-10T21:56:41.357Z</lastmod>
   </url>
   <url>
     <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/setup.html</loc>
-    <lastmod>2026-02-09T15:27:09.033Z</lastmod>
+    <lastmod>2026-02-10T21:56:41.357Z</lastmod>
   </url>
   <url>
     <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/about.html</loc>
-    <lastmod>2026-02-09T15:27:07.720Z</lastmod>
+    <lastmod>2026-02-10T21:56:40.027Z</lastmod>
   </url>
   <url>
-    <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/010-intro_dashboards.html</loc>
-    <lastmod>2026-02-09T15:27:07.718Z</lastmod>
-  </url>
-  <url>
-    <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/010-first_app.html</loc>
-    <lastmod>2026-02-09T15:27:07.718Z</lastmod>
+    <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/020-publish.html</loc>
+    <lastmod>2026-02-10T21:56:40.025Z</lastmod>
   </url>
   <url>
     <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/010-intro_shiny.html</loc>
-    <lastmod>2026-02-09T15:27:07.718Z</lastmod>
+    <lastmod>2026-02-10T21:56:40.025Z</lastmod>
+  </url>
+  <url>
+    <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/010-first_app.html</loc>
+    <lastmod>2026-02-10T21:56:40.025Z</lastmod>
+  </url>
+  <url>
+    <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/010-intro_dashboards.html</loc>
+    <lastmod>2026-02-10T21:56:40.025Z</lastmod>
+  </url>
+  <url>
+    <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/020-dashboard.html</loc>
+    <lastmod>2026-02-10T21:56:40.025Z</lastmod>
+  </url>
+  <url>
+    <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/020-reactivity.html</loc>
+    <lastmod>2026-02-10T21:56:40.025Z</lastmod>
   </url>
   <url>
     <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/index.html</loc>
-    <lastmod>2026-02-09T15:27:09.033Z</lastmod>
+    <lastmod>2026-02-10T21:56:41.356Z</lastmod>
   </url>
   <url>
     <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/slides/01-intro_shiny.html</loc>
-    <lastmod>2026-02-09T15:27:09.033Z</lastmod>
+    <lastmod>2026-02-10T21:56:41.357Z</lastmod>
+  </url>
+  <url>
+    <loc>https://UBC-MDS.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html</loc>
+    <lastmod>2026-02-10T21:56:41.357Z</lastmod>
   </url>
 </urlset>
