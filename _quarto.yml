@@ -33,6 +33,11 @@ website:
           - 010-intro_dashboards.qmd
           - 010-intro_shiny.qmd
           - 010-first_app.qmd
+      - section: "Lecture 2"
+        contents:
+          - 020-reactivity.qmd
+          - 020-dashboard.qmd
+          - 020-publish.qmd
 
 format:
   html:
