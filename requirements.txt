@@ -8,3 +8,4 @@ narwhals
 palmerpenguins
 shinylive
 shinywidgets
+seaborn
