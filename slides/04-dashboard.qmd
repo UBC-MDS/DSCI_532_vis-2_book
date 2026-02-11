@@ -36,11 +36,14 @@ title: Build a dashboard
 
 Here are the documentation pages for functions that may be useful for this exercise:
 
-- `ui.page_opts()`: <https://shiny.posit.co/py/api/express/express.ui.page_opts.html>
-- `ui.sidebar()`: <https://shiny.posit.co/py/api/express/express.ui.sidebar.html>
-- `ui.layout_columns()`: <https://shiny.posit.co/py/api/express/express.ui.layout_columns.html>
-- `ui.card()`: <https://shiny.posit.co/py/api/express/express.ui.card.html>
-- `ui.card_header()`: <https://shiny.posit.co/py/api/express/express.ui.card_header.html>
+Core API docs: <https://shiny.posit.co/py/api/core/>
+
+- `ui.page_fillable()`: <https://shiny.posit.co/py/api/core/ui.page_fillable.html>
+    - many more `ui.page_*` layouts
+- `ui.sidebar()`: <https://shiny.posit.co/py/api/core/ui.sidebar.html>
+- `ui.layout_columns()`: <https://shiny.posit.co/py/api/core/ui.layout_columns.html>
+- `ui.card()`: <https://shiny.posit.co/py/api/core/ui.card.html>
+- `ui.card_header()`: <https://shiny.posit.co/py/api/core/ui.card_header.html>
 
 ## App UI
 
@@ -236,4 +239,4 @@ statsmodels
 
 - Reactive events
 
-<https://shiny.posit.co/py/api/express/express.ui.input_action_button.html>
+<https://shiny.posit.co/py/api/core/ui.input_action_button.html>
