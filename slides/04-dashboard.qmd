@@ -36,8 +36,10 @@ title: Build a dashboard
 
 Here are the documentation pages for functions that may be useful for this exercise:
 
+Core API docs: <https://shiny.posit.co/py/api/core/>
+
 - `ui.page_fillable()`: <https://shiny.posit.co/py/api/core/ui.page_fillable.html>
-- `ui.layout_sidebar()`: <https://shiny.posit.co/py/api/core/ui.layout_sidebar.html>
+    - many more `ui.page_*` layouts
 - `ui.sidebar()`: <https://shiny.posit.co/py/api/core/ui.sidebar.html>
 - `ui.layout_columns()`: <https://shiny.posit.co/py/api/core/ui.layout_columns.html>
 - `ui.card()`: <https://shiny.posit.co/py/api/core/ui.card.html>
@@ -935,12 +937,34 @@ def server(input, output, session):
 app = App(app_ui, server)
 ```
 
-## What we covered
+## Filtered tips reactive.calc
 
-- **[Layout](https://shiny.posit.co/py/layouts/)**: [`page_fillable`](https://shiny.posit.co/py/api/core/ui.page_fillable.html), [`layout_sidebar`](https://shiny.posit.co/py/api/core/ui.layout_sidebar.html), [`layout_columns`](https://shiny.posit.co/py/api/core/ui.layout_columns.html), [`card`](https://shiny.posit.co/py/api/core/ui.card.html), [`value_box`](https://shiny.posit.co/py/api/core/ui.value_box.html)
-- **[Inputs](https://shiny.posit.co/py/components/#inputs)**: [`input_slider`](https://shiny.posit.co/py/api/core/ui.input_slider.html), [`input_checkbox_group`](https://shiny.posit.co/py/api/core/ui.input_checkbox_group.html), [`input_action_button`](https://shiny.posit.co/py/api/core/ui.input_action_button.html)
-- **[Outputs](https://shiny.posit.co/py/components/#outputs)**: [`@render.text`](https://shiny.posit.co/py/api/core/render.text.html), [`@render.data_frame`](https://shiny.posit.co/py/api/core/render.data_frame.html), `@render_plotly`, `@render_widget`
-- **[Reactivity](https://shiny.posit.co/py/docs/reactive-foundations.html)**: [`@reactive.calc`](https://shiny.posit.co/py/api/core/reactive.calc.html) — compute once, reuse everywhere
-- **[Mutable objects](https://shiny.posit.co/py/docs/reactive-mutable.html)**: always `.copy()` before mutating a reactive value
+```{shinylive-python}
+# | standalone: true
+# | components: [editor, viewer]
+# | layout: horizontal
+# | viewerHeight: 500
 
-Shiny for Python docs: <https://shiny.posit.co/py/>
+{{< include /code/lecture02/core/app-06-filtered_tips.py >}}
+```
+
+## The application (Core)
+
+```{shinylive-python}
+#| standalone: true
+#| #| components: [editor, viewer]
+#| layout: horizontal
+#| viewerHeight: 500
+
+{{< include /code/lecture02/core/app.py >}}
+
+## file: requirements.txt
+ridgeplot
+statsmodels
+```
+
+## Challenge: Button
+
+- Reactive events
+
+<https://shiny.posit.co/py/api/core/ui.input_action_button.html>
