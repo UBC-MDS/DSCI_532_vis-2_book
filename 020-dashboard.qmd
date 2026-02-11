@@ -7,3 +7,5 @@ title: Tips Dashboard
 {{< revealjs file="slides/04-dashboard.html" height="500px" class="ratio ratio-16x9" >}}
 
 :::
+
+{{< include /slides/04-dashboard.qmd/ >}}
