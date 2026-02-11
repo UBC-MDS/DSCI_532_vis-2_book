@@ -229,6 +229,7 @@ We can use a `@reactive.calc` to define and save a value that reacts to inputs
 
 ## file: requirements.txt
 ridgeplot
+statsmodels
 ```
 
 ## Challenge: Button
