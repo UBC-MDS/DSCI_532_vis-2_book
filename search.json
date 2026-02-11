@@ -98,11 +98,11 @@
     "text": "Filtered tips reactive.calc\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\n\nimport pandas as pd\nimport seaborn as sns\nfrom shiny import App, reactive, render, ui\n\ntips = sns.load_dataset(\"tips\")\n\n# UI\napp_ui = ui.page_fillable(\n    ui.panel_title(\"Restaurant tipping\"),\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_slider(\n                id=\"slider\",\n                label=\"Bill amount\",\n                min=tips.total_bill.min(),\n                max=tips.total_bill.max(),\n                value=[tips.total_bill.min(), tips.total_bill.max()],\n            ),\n            ui.input_checkbox_group(\n                id=\"checkbox_group\",\n                label=\"Food service\",\n                choices={\n                    \"Lunch\": \"Lunch\",\n                    \"Dinner\": \"Dinner\",\n                },\n                selected=[\n                    \"Lunch\",\n                    \"Dinner\",\n                ],\n            ),\n            ui.input_action_button(\"action_button\", \"Reset filter\"),\n        ),\n        ui.layout_columns(\n            ui.value_box(\"Total tippers\", ui.output_text(\"total_tippers\")), fill=False\n        ),\n    ),\n)\n\n\n# Server\ndef server(input, output, session):\n\n    @render.text\n    def total_tippers():\n        idx1 = tips.total_bill.between(\n            left=input.slider()[0],\n            right=input.slider()[1],\n            inclusive=\"both\",\n        )\n        idx2 = tips.time.isin(input.checkbox_group())\n        tips_filtered = tips[idx1 & idx2]\n\n        return tips_filtered.shape[0]\n\n\n# Create app\napp = App(app_ui, server)"
   },
   {
-    "objectID": "slides/04-dashboard.html#the-application-express",
-    "href": "slides/04-dashboard.html#the-application-express",
+    "objectID": "slides/04-dashboard.html#the-application-core",
+    "href": "slides/04-dashboard.html#the-application-core",
     "title": "Build a dashboard",
-    "section": "The application (Express)",
-    "text": "The application (Express)\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| #| components: [editor, viewer]\n#| layout: horizontal\n#| viewerHeight: 500\n\nfrom shiny import App, render, ui, reactive\nimport plotly.express as px\nfrom ridgeplot import ridgeplot\nimport seaborn as sns\nfrom shinywidgets import render_plotly, render_widget, output_widget\n\ntips = sns.load_dataset(\"tips\")\n\n# UI\napp_ui = ui.page_fillable(\n    ui.panel_title(\"Restaurant tipping\"),\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_slider(\n                id=\"slider\",\n                label=\"Bill amount\",\n                min=tips.total_bill.min(),\n                max=tips.total_bill.max(),\n                value=[tips.total_bill.min(), tips.total_bill.max()],\n            ),\n            ui.input_checkbox_group(\n                id=\"checkbox_group\",\n                label=\"Food service\",\n                choices={\n                    \"Lunch\": \"Lunch\",\n                    \"Dinner\": \"Dinner\",\n                },\n                selected=[\n                    \"Lunch\",\n                    \"Dinner\",\n                ],\n            ),\n            ui.input_action_button(\"action_button\", \"Reset filter\"),\n            open=\"desktop\",\n        ),\n        ui.layout_columns(\n            ui.value_box(\"Total tippers\", ui.output_text(\"total_tippers\")),\n            ui.value_box(\"Average tip\", ui.output_text(\"average_tip\")),\n            ui.value_box(\"Average bill\", ui.output_text(\"average_bill\")),\n            fill=False,\n        ),\n        ui.layout_columns(\n            ui.card(\n                ui.card_header(\"Tips data\"),\n                ui.output_data_frame(\"tips_data\"),\n                full_screen=True,\n            ),\n            ui.card(\n                ui.card_header(\"Total bill vs tip\"),\n                output_widget(\"scatterplot\"),\n                full_screen=True,\n            ),\n            col_widths=[6, 6],\n        ),\n        ui.layout_columns(\n            ui.card(\n                ui.card_header(\"Tip percentages\"),\n                output_widget(\"ridge\"),\n                full_screen=True,\n            )\n        ),\n    ),\n)\n\n\n# Server\ndef server(input, output, session):\n\n    @reactive.calc\n    def filtered_data():\n        idx1 = tips.total_bill.between(\n            left=input.slider()[0],\n            right=input.slider()[1],\n            inclusive=\"both\",\n        )\n        idx2 = tips.time.isin(input.checkbox_group())\n        tips_filtered = tips[idx1 & idx2]\n        return tips_filtered\n\n    @render.text\n    def total_tippers():\n        return str(filtered_data().shape[0])\n\n    @render.text\n    def average_tip():\n        perc = filtered_data().tip / filtered_data().total_bill\n        return f\"{perc.mean():.1%}\"\n\n    @render.text\n    def average_bill():\n        bill = filtered_data().total_bill.mean()\n        return f\"${bill:.2f}\"\n\n    @render.data_frame\n    def tips_data():\n        return filtered_data()\n\n    @render_plotly\n    def scatterplot():\n        return px.scatter(filtered_data(), x=\"total_bill\", y=\"tip\", trendline=\"lowess\")\n\n    @render_widget\n    def ridge():\n        filtered_data()[\"percent\"] = filtered_data().tip / filtered_data().total_bill\n\n        uvals = filtered_data().day.unique()\n        samples = [\n            [filtered_data().percent[filtered_data().day == val]] for val in uvals\n        ]\n\n        plt = ridgeplot(\n            samples=samples,\n            labels=uvals,\n            bandwidth=0.01,\n            colorscale=\"viridis\",\n            colormode=\"row-index\",\n        )\n\n        plt.update_layout(\n            legend=dict(\n                orientation=\"h\", yanchor=\"bottom\", y=1.02, xanchor=\"center\", x=0.5\n            )\n        )\n\n        return plt\n\n\n# Create app\napp = App(app_ui, server)"
+    "section": "The application (Core)",
+    "text": "The application (Core)\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| #| components: [editor, viewer]\n#| layout: horizontal\n#| viewerHeight: 500\n\nfrom shiny import App, render, ui, reactive\nimport plotly.express as px\nfrom ridgeplot import ridgeplot\nimport seaborn as sns\nfrom shinywidgets import render_plotly, render_widget, output_widget\n\ntips = sns.load_dataset(\"tips\")\n\n# UI\napp_ui = ui.page_fillable(\n    ui.panel_title(\"Restaurant tipping\"),\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_slider(\n                id=\"slider\",\n                label=\"Bill amount\",\n                min=tips.total_bill.min(),\n                max=tips.total_bill.max(),\n                value=[tips.total_bill.min(), tips.total_bill.max()],\n            ),\n            ui.input_checkbox_group(\n                id=\"checkbox_group\",\n                label=\"Food service\",\n                choices={\n                    \"Lunch\": \"Lunch\",\n                    \"Dinner\": \"Dinner\",\n                },\n                selected=[\n                    \"Lunch\",\n                    \"Dinner\",\n                ],\n            ),\n            ui.input_action_button(\"action_button\", \"Reset filter\"),\n            open=\"desktop\",\n        ),\n        ui.layout_columns(\n            ui.value_box(\"Total tippers\", ui.output_text(\"total_tippers\")),\n            ui.value_box(\"Average tip\", ui.output_text(\"average_tip\")),\n            ui.value_box(\"Average bill\", ui.output_text(\"average_bill\")),\n            fill=False,\n        ),\n        ui.layout_columns(\n            ui.card(\n                ui.card_header(\"Tips data\"),\n                ui.output_data_frame(\"tips_data\"),\n                full_screen=True,\n            ),\n            ui.card(\n                ui.card_header(\"Total bill vs tip\"),\n                output_widget(\"scatterplot\"),\n                full_screen=True,\n            ),\n            col_widths=[6, 6],\n        ),\n        ui.layout_columns(\n            ui.card(\n                ui.card_header(\"Tip percentages\"),\n                output_widget(\"ridge\"),\n                full_screen=True,\n            )\n        ),\n    ),\n)\n\n\n# Server\ndef server(input, output, session):\n\n    @reactive.calc\n    def filtered_data():\n        idx1 = tips.total_bill.between(\n            left=input.slider()[0],\n            right=input.slider()[1],\n            inclusive=\"both\",\n        )\n        idx2 = tips.time.isin(input.checkbox_group())\n        tips_filtered = tips[idx1 & idx2]\n        return tips_filtered\n\n    @render.text\n    def total_tippers():\n        return str(filtered_data().shape[0])\n\n    @render.text\n    def average_tip():\n        perc = filtered_data().tip / filtered_data().total_bill\n        return f\"{perc.mean():.1%}\"\n\n    @render.text\n    def average_bill():\n        bill = filtered_data().total_bill.mean()\n        return f\"${bill:.2f}\"\n\n    @render.data_frame\n    def tips_data():\n        return filtered_data()\n\n    @render_plotly\n    def scatterplot():\n        return px.scatter(filtered_data(), x=\"total_bill\", y=\"tip\", trendline=\"lowess\")\n\n    @render_widget\n    def ridge():\n        filtered_data()[\"percent\"] = filtered_data().tip / filtered_data().total_bill\n\n        uvals = filtered_data().day.unique()\n        samples = [\n            [filtered_data().percent[filtered_data().day == val]] for val in uvals\n        ]\n\n        plt = ridgeplot(\n            samples=samples,\n            labels=uvals,\n            bandwidth=0.01,\n            colorscale=\"viridis\",\n            colormode=\"row-index\",\n        )\n\n        plt.update_layout(\n            legend=dict(\n                orientation=\"h\", yanchor=\"bottom\", y=1.02, xanchor=\"center\", x=0.5\n            )\n        )\n\n        return plt\n\n\n# Create app\napp = App(app_ui, server)"
   },
   {
     "objectID": "slides/04-dashboard.html#challenge-button",
@@ -332,7 +332,211 @@
     "crumbs": [
       "Setup",
       "Lecture 2",
-      "Tips Dashboard"
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#title-build-a-dashboard",
+    "href": "020-dashboard.html#title-build-a-dashboard",
+    "title": "Tips Dashboard",
+    "section": "title: Build a dashboard",
+    "text": "title: Build a dashboard",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#what-do-you-see",
+    "href": "020-dashboard.html#what-do-you-see",
+    "title": "Tips Dashboard",
+    "section": "What do you see?",
+    "text": "What do you see?",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#restaurant-tipping-dashboard",
+    "href": "020-dashboard.html#restaurant-tipping-dashboard",
+    "title": "Tips Dashboard",
+    "section": "Restaurant Tipping dashboard",
+    "text": "Restaurant Tipping dashboard\n\nTitle: “Restaurant tipping”\n\nYou can use the ui.panel_title() and pass in a title='' parameter\n\n\n. . .\n\nSidebar for a few input components (we’ll add those later)\n\nYou can put some text here as a place holder, e.g., \"sidebar inputs\"\n\n\n. . .\n\nA full width column with 3 value boxes\n\nEach value box will take up the same width of space\nThe value boxes will have separate labels and corresponding summary statistic\n\n\n. . .\n\nA full width column with 2 cards, one for a dataframe and another for a scatter plot\n\nEach card will share the same width of space\n\n\n. . .\n\nA full width column with 1 card",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#app-ui-components",
+    "href": "020-dashboard.html#app-ui-components",
+    "title": "Tips Dashboard",
+    "section": "App UI components",
+    "text": "App UI components\nHere are the documentation pages for functions that may be useful for this exercise:\n\nui.page_opts(): https://shiny.posit.co/py/api/express/express.ui.page_opts.html\nui.sidebar(): https://shiny.posit.co/py/api/express/express.ui.sidebar.html\nui.layout_columns(): https://shiny.posit.co/py/api/express/express.ui.layout_columns.html\nui.card(): https://shiny.posit.co/py/api/express/express.ui.card.html\nui.card_header(): https://shiny.posit.co/py/api/express/express.ui.card_header.html",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#app-ui",
+    "href": "020-dashboard.html#app-ui",
+    "title": "Tips Dashboard",
+    "section": "App UI",
+    "text": "App UI\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\n\nfrom shiny import App, ui\n\n# UI\napp_ui = ui.page_fillable(\n    ui.panel_title(\"Restaurant tipping\"),\n    ui.layout_sidebar(\n        ui.sidebar(\"sidebar inputs\", open=\"desktop\"),\n        ui.layout_columns(\n            ui.value_box(\"Total tippers\", \"Value 1\"),\n            ui.value_box(\"Average tip\", \"Value 2\"),\n            ui.value_box(\"Average bill\", \"Value 3\"),\n            fill=False,\n        ),\n        ui.layout_columns(\n            ui.card(ui.card_header(\"Tips data\"), full_screen=True),\n            ui.card(ui.card_header(\"Total bill vs tip\"), full_screen=True),\n            col_widths=[6, 6],\n        ),\n        ui.layout_columns(ui.card(ui.card_header(\"Tip percentages\"), full_screen=True)),\n    ),\n)\n\n\n# Server\ndef server(input, output, session):\n    pass\n\n\n# Create app\napp = App(app_ui, server)",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#your-turn-add-input-components",
+    "href": "020-dashboard.html#your-turn-add-input-components",
+    "title": "Tips Dashboard",
+    "section": "Your turn: Add input components",
+    "text": "Your turn: Add input components\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\n\nfrom shiny import App, ui\n\n# UI\napp_ui = ui.page_fillable(\n    ui.panel_title(\"Restaurant tipping\"),\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_slider(\n                id=\"slider\",\n                label=\"Bill amount\",\n                min=0,\n                max=100,\n                value=[0, 100],\n            ),\n            ui.input_checkbox_group(\n                id=\"checkbox_group\",\n                label=\"Food service\",\n                choices={\n                    \"Lunch\": \"Lunch\",\n                    \"Dinner\": \"Dinner\",\n                },\n                selected=[\n                    \"Lunch\",\n                    \"Dinner\",\n                ],\n            ),\n            ui.input_action_button(\"action_button\", \"Reset filter\"),\n            open=\"desktop\",\n        ),\n        ui.layout_columns(\n            ui.value_box(\"Total tippers\", \"Value 1\"),\n            ui.value_box(\"Average tip\", \"Value 2\"),\n            ui.value_box(\"Average bill\", \"Value 3\"),\n            fill=False,\n        ),\n        ui.layout_columns(\n            ui.card(ui.card_header(\"Tips data\"), \"Tips DataFrame\", full_screen=True),\n            ui.card(\n                ui.card_header(\"Total bill vs tip\"), \"Scatterplot\", full_screen=True\n            ),\n            col_widths=[6, 6],\n        ),\n        ui.layout_columns(\n            ui.card(ui.card_header(\"Tip percentages\"), \"ridgeplot\", full_screen=True)\n        ),\n    ),\n)\n\n\n# Server\ndef server(input, output, session):\n    pass\n\n\n# Create app\napp = App(app_ui, server)",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#lets-add-some-data",
+    "href": "020-dashboard.html#lets-add-some-data",
+    "title": "Tips Dashboard",
+    "section": "Let’s add some data",
+    "text": "Let’s add some data\n\nimport seaborn as sns\n\ntips = sns.load_dataset(\"tips\")\n\ntotal_lower = tips.total_bill.min()\ntotal_upper = tips.total_bill.max()\ntime_selected = tips.time.unique().tolist()\n\n# many ways you can handle the filter combinations\nidx1 = tips.total_bill.between(\n    left=total_lower,\n    right=total_upper,\n    inclusive=\"both\",\n)\n\nidx2 = tips.time.isin(time_selected)\n\ntips_filtered = tips[idx1 & idx2]",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#calculate-values",
+    "href": "020-dashboard.html#calculate-values",
+    "title": "Tips Dashboard",
+    "section": "Calculate values",
+    "text": "Calculate values\n\n# total tippers\ntotal_tippers = tips_filtered.shape[0]\nprint(total_tippers)\n\n# average tip\nperc = tips_filtered.tip / tips_filtered.total_bill\naverage_tip = f\"{perc.mean():.1%}\"\nprint(average_tip)\n\n# average bill\nbill = tips_filtered.total_bill.mean()\naverage_bill = f\"${bill:.2f}\"\nprint(average_bill)\n\n244\n16.1%\n$19.79",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#scatterplot",
+    "href": "020-dashboard.html#scatterplot",
+    "title": "Tips Dashboard",
+    "section": "Scatterplot",
+    "text": "Scatterplot\n\nimport plotly.express as px\n\npx.scatter(\n    tips_filtered,\n    x=\"total_bill\",\n    y=\"tip\",\n    trendline=\"lowess\"\n)",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#ridgeplot",
+    "href": "020-dashboard.html#ridgeplot",
+    "title": "Tips Dashboard",
+    "section": "Ridgeplot",
+    "text": "Ridgeplot\n\nfrom ridgeplot import ridgeplot\n\ntips_filtered[\"percent\"] = tips_filtered.tip / tips_filtered.total_bill\n\nuvals = tips_filtered.day.unique()\nsamples = [[tips_filtered.percent[tips_filtered.day == val]] for val in uvals]\n\nplt = ridgeplot(\n    samples=samples,\n    labels=uvals,\n    bandwidth=0.01,\n    colorscale=\"viridis\",\n    colormode=\"row-index\"\n)\n\nplt.update_layout(\n    legend=dict(\n        orientation=\"h\",\n        yanchor=\"bottom\",\n        y=1.02,\n        xanchor=\"center\",\n        x=0.5\n    )\n)",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#add-reactive-values-to-the-cards",
+    "href": "020-dashboard.html#add-reactive-values-to-the-cards",
+    "title": "Tips Dashboard",
+    "section": "Add reactive values to the cards",
+    "text": "Add reactive values to the cards\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| components: [editor, viewer]\n#| layout: horizontal\n#| viewerHeight: 500\n\nimport pandas as pd\nimport seaborn as sns\nfrom shiny import App, render, ui, reactive\n\ntips = sns.load_dataset(\"tips\")\n\n# UI\napp_ui = ui.page_fillable(\n    ui.panel_title(\"Restaurant tipping\"),\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_slider(\n                id=\"slider\",\n                label=\"Bill amount\",\n                min=tips.total_bill.min(),\n                max=tips.total_bill.max(),\n                value=[tips.total_bill.min(), tips.total_bill.max()],\n            ),\n            ui.input_checkbox_group(\n                id=\"checkbox_group\",\n                label=\"Food service\",\n                choices={\n                    \"Lunch\": \"Lunch\",\n                    \"Dinner\": \"Dinner\",\n                },\n                selected=[\n                    \"Lunch\",\n                    \"Dinner\",\n                ],\n            ),\n            ui.input_action_button(\"action_button\", \"Reset filter\"),\n            open=\"desktop\",\n        ),\n        ui.layout_columns(\n            ui.value_box(\"Total tippers\", ui.output_text(\"total_tippers\")),\n            ui.value_box(\"Average tip\", ui.output_text(\"average_tip\")),\n            ui.value_box(\"Average bill\", ui.output_text(\"average_bill\")),\n            fill=False,\n        ),\n    ),\n)\n\n\n# Server\ndef server(input, output, session):\n\n    @render.text\n    def total_tippers():\n        idx1 = tips.total_bill.between(\n            left=input.slider()[0],\n            right=input.slider()[1],\n            inclusive=\"both\",\n        )\n        idx2 = tips.time.isin(input.checkbox_group())\n        tips_filtered = tips[idx1 & idx2]\n        return str(tips_filtered.shape[0])\n\n    @render.text\n    def average_tip():\n        idx1 = tips.total_bill.between(\n            left=input.slider()[0],\n            right=input.slider()[1],\n            inclusive=\"both\",\n        )\n        idx2 = tips.time.isin(input.checkbox_group())\n        tips_filtered = tips[idx1 & idx2]\n        perc = tips_filtered.tip / tips_filtered.total_bill\n        return f\"{perc.mean():.1%}\"\n\n    @render.text\n    def average_bill():\n        idx1 = tips.total_bill.between(\n            left=input.slider()[0],\n            right=input.slider()[1],\n            inclusive=\"both\",\n        )\n        idx2 = tips.time.isin(input.checkbox_group())\n        tips_filtered = tips[idx1 & idx2]\n        bill = tips_filtered.total_bill.mean()\n        return f\"${bill:.2f}\"\n\n\n# Create app\napp = App(app_ui, server)",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#repeated-reactive-calculations",
+    "href": "020-dashboard.html#repeated-reactive-calculations",
+    "title": "Tips Dashboard",
+    "section": "Repeated reactive calculations",
+    "text": "Repeated reactive calculations\nLots of repeated calculations\nidx1 = tips.total_bill.between(\n    left=input.slider()[0],\n    right=input.slider()[1],\n    inclusive=\"both\",\n)\nidx2 = tips.time.isin(input.checkbox_group())\ntips_filtered = tips[idx1 & idx2]",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#shiny-reactive-calculations",
+    "href": "020-dashboard.html#shiny-reactive-calculations",
+    "title": "Tips Dashboard",
+    "section": "Shiny reactive calculations",
+    "text": "Shiny reactive calculations\nWe can use a @reactive.calc to define and save a value that reacts to inputs\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| components: [editor, viewer]\n#| layout: horizontal\n#| viewerHeight: 500\n\nfrom shiny import App, reactive, render, ui\n\n# UI\napp_ui = ui.page_fluid(\n    ui.input_slider(\"x\", \"Slider value\", min=0, max=100, value=10),\n    ui.output_text(\"x_squared_text\"),\n    ui.output_text(\"x_squared_calc_text\"),\n)\n\n\n# Server\ndef server(input, output, session):\n\n    # we need to make a calculation from an input value\n    @render.text\n    def x_squared_text():\n        return f\"Squared value: {input.x() ** 2}\"\n\n    # we can save this calculation to be used later\n    @reactive.calc\n    def x_squared():\n        return input.x() ** 2\n\n    # we can use that saved calculation\n    @render.text\n    def x_squared_calc_text():\n        return f\"Saved squared: {x_squared()}\"\n\n\n# Create app\napp = App(app_ui, server)",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#reuse-reactive-calculations",
+    "href": "020-dashboard.html#reuse-reactive-calculations",
+    "title": "Tips Dashboard",
+    "section": "Reuse reactive calculations",
+    "text": "Reuse reactive calculations\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| components: [editor, viewer]\n#| layout: horizontal\n#| viewerHeight: 500\n\nfrom shiny import App, reactive, render, ui\n\n# UI\napp_ui = ui.page_fluid(\n    ui.input_slider(\"x\", \"Slider value\", min=0, max=100, value=10),\n    ui.output_text(\"x_squared_text\"),\n    ui.output_text(\"x_squared_calc_text\"),\n    ui.output_text(\"x_squared_half_calc_text\"),\n    ui.output_text(\"x_squared_half_text\"),\n)\n\n\n# Server\ndef server(input, output, session):\n\n    # we need to make a calculation from an input value\n    @render.text\n    def x_squared_text():\n        return f\"Squared value: {input.x() ** 2}\"\n\n    # we can save this calculation to be used later\n    @reactive.calc\n    def x_squared():\n        return input.x() ** 2\n\n    # we can use that saved calculation\n    @render.text\n    def x_squared_calc_text():\n        return f\"Saved squared: {x_squared()}\"\n\n    # we can build on top of that saved calculation\n    @render.text\n    def x_squared_half_calc_text():\n        return f\"Build on squared value: {x_squared() / 2}\"\n\n    # we don't need to re-calculate everything from the input again\n    @render.text\n    def x_squared_half_text():\n        return f\"Recalculate from input: {input.x() ** 2 / 2}\"\n\n\n# Create app\napp = App(app_ui, server)",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#filtered-tips-reactive.calc",
+    "href": "020-dashboard.html#filtered-tips-reactive.calc",
+    "title": "Tips Dashboard",
+    "section": "Filtered tips reactive.calc",
+    "text": "Filtered tips reactive.calc\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\n\nimport pandas as pd\nimport seaborn as sns\nfrom shiny import App, reactive, render, ui\n\ntips = sns.load_dataset(\"tips\")\n\n# UI\napp_ui = ui.page_fillable(\n    ui.panel_title(\"Restaurant tipping\"),\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_slider(\n                id=\"slider\",\n                label=\"Bill amount\",\n                min=tips.total_bill.min(),\n                max=tips.total_bill.max(),\n                value=[tips.total_bill.min(), tips.total_bill.max()],\n            ),\n            ui.input_checkbox_group(\n                id=\"checkbox_group\",\n                label=\"Food service\",\n                choices={\n                    \"Lunch\": \"Lunch\",\n                    \"Dinner\": \"Dinner\",\n                },\n                selected=[\n                    \"Lunch\",\n                    \"Dinner\",\n                ],\n            ),\n            ui.input_action_button(\"action_button\", \"Reset filter\"),\n        ),\n        ui.layout_columns(\n            ui.value_box(\"Total tippers\", ui.output_text(\"total_tippers\")), fill=False\n        ),\n    ),\n)\n\n\n# Server\ndef server(input, output, session):\n\n    @render.text\n    def total_tippers():\n        idx1 = tips.total_bill.between(\n            left=input.slider()[0],\n            right=input.slider()[1],\n            inclusive=\"both\",\n        )\n        idx2 = tips.time.isin(input.checkbox_group())\n        tips_filtered = tips[idx1 & idx2]\n\n        return tips_filtered.shape[0]\n\n\n# Create app\napp = App(app_ui, server)",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#the-application-core",
+    "href": "020-dashboard.html#the-application-core",
+    "title": "Tips Dashboard",
+    "section": "The application (Core)",
+    "text": "The application (Core)\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#| standalone: true\n#| #| components: [editor, viewer]\n#| layout: horizontal\n#| viewerHeight: 500\n\nfrom shiny import App, render, ui, reactive\nimport plotly.express as px\nfrom ridgeplot import ridgeplot\nimport seaborn as sns\nfrom shinywidgets import render_plotly, render_widget, output_widget\n\ntips = sns.load_dataset(\"tips\")\n\n# UI\napp_ui = ui.page_fillable(\n    ui.panel_title(\"Restaurant tipping\"),\n    ui.layout_sidebar(\n        ui.sidebar(\n            ui.input_slider(\n                id=\"slider\",\n                label=\"Bill amount\",\n                min=tips.total_bill.min(),\n                max=tips.total_bill.max(),\n                value=[tips.total_bill.min(), tips.total_bill.max()],\n            ),\n            ui.input_checkbox_group(\n                id=\"checkbox_group\",\n                label=\"Food service\",\n                choices={\n                    \"Lunch\": \"Lunch\",\n                    \"Dinner\": \"Dinner\",\n                },\n                selected=[\n                    \"Lunch\",\n                    \"Dinner\",\n                ],\n            ),\n            ui.input_action_button(\"action_button\", \"Reset filter\"),\n            open=\"desktop\",\n        ),\n        ui.layout_columns(\n            ui.value_box(\"Total tippers\", ui.output_text(\"total_tippers\")),\n            ui.value_box(\"Average tip\", ui.output_text(\"average_tip\")),\n            ui.value_box(\"Average bill\", ui.output_text(\"average_bill\")),\n            fill=False,\n        ),\n        ui.layout_columns(\n            ui.card(\n                ui.card_header(\"Tips data\"),\n                ui.output_data_frame(\"tips_data\"),\n                full_screen=True,\n            ),\n            ui.card(\n                ui.card_header(\"Total bill vs tip\"),\n                output_widget(\"scatterplot\"),\n                full_screen=True,\n            ),\n            col_widths=[6, 6],\n        ),\n        ui.layout_columns(\n            ui.card(\n                ui.card_header(\"Tip percentages\"),\n                output_widget(\"ridge\"),\n                full_screen=True,\n            )\n        ),\n    ),\n)\n\n\n# Server\ndef server(input, output, session):\n\n    @reactive.calc\n    def filtered_data():\n        idx1 = tips.total_bill.between(\n            left=input.slider()[0],\n            right=input.slider()[1],\n            inclusive=\"both\",\n        )\n        idx2 = tips.time.isin(input.checkbox_group())\n        tips_filtered = tips[idx1 & idx2]\n        return tips_filtered\n\n    @render.text\n    def total_tippers():\n        return str(filtered_data().shape[0])\n\n    @render.text\n    def average_tip():\n        perc = filtered_data().tip / filtered_data().total_bill\n        return f\"{perc.mean():.1%}\"\n\n    @render.text\n    def average_bill():\n        bill = filtered_data().total_bill.mean()\n        return f\"${bill:.2f}\"\n\n    @render.data_frame\n    def tips_data():\n        return filtered_data()\n\n    @render_plotly\n    def scatterplot():\n        return px.scatter(filtered_data(), x=\"total_bill\", y=\"tip\", trendline=\"lowess\")\n\n    @render_widget\n    def ridge():\n        filtered_data()[\"percent\"] = filtered_data().tip / filtered_data().total_bill\n\n        uvals = filtered_data().day.unique()\n        samples = [\n            [filtered_data().percent[filtered_data().day == val]] for val in uvals\n        ]\n\n        plt = ridgeplot(\n            samples=samples,\n            labels=uvals,\n            bandwidth=0.01,\n            colorscale=\"viridis\",\n            colormode=\"row-index\",\n        )\n\n        plt.update_layout(\n            legend=dict(\n                orientation=\"h\", yanchor=\"bottom\", y=1.02, xanchor=\"center\", x=0.5\n            )\n        )\n\n        return plt\n\n\n# Create app\napp = App(app_ui, server)",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
+    ]
+  },
+  {
+    "objectID": "020-dashboard.html#challenge-button",
+    "href": "020-dashboard.html#challenge-button",
+    "title": "Tips Dashboard",
+    "section": "Challenge: Button",
+    "text": "Challenge: Button\n\nReactive events\n\nhttps://shiny.posit.co/py/api/express/express.ui.input_action_button.html",
+    "crumbs": [
+      "Setup",
+      "Lecture 2",
+      "Build a dashboard"
     ]
   },
   {

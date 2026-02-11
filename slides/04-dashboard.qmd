@@ -217,7 +217,7 @@ We can use a `@reactive.calc` to define and save a value that reacts to inputs
 {{< include /code/lecture02/core/app-06-filtered_tips.py >}}
 ```
 
-## The application (Express)
+## The application (Core)
 
 ```{shinylive-python}
 #| standalone: true
