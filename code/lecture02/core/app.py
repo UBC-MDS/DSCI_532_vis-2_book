@@ -7,7 +7,8 @@ from shinywidgets import render_plotly, render_widget, output_widget
 tips = sns.load_dataset("tips")
 
 # UI
-app_ui = ui.page_fillable(
+app_ui = ui.page_fluid(
+    ui.tags.style("body { font-size: 0.6em; }"),
     ui.panel_title("Restaurant tipping"),
     ui.layout_sidebar(
         ui.sidebar(
@@ -41,7 +42,7 @@ app_ui = ui.page_fillable(
         ),
         ui.layout_columns(
             ui.card(
-                ui.card_header("Tips data"),
+                ui.card_header("Tips by day"),
                 ui.output_data_frame("tips_data"),
                 full_screen=True,
             ),
@@ -93,7 +94,15 @@ def server(input, output, session):
 
     @render.data_frame
     def tips_data():
-        return filtered_data()
+        df = filtered_data().copy()
+        df["tip_pct"] = df.tip / df.total_bill
+        summary = df.groupby("day").agg(
+            count=("tip", "size"),
+            avg_bill=("total_bill", "mean"),
+            avg_tip=("tip", "mean"),
+            avg_tip_pct=("tip_pct", "mean"),
+        ).round(2).reset_index()
+        return summary
 
     @render_plotly
     def scatterplot():
@@ -101,12 +110,11 @@ def server(input, output, session):
 
     @render_widget
     def ridge():
-        filtered_data()["percent"] = filtered_data().tip / filtered_data().total_bill
+        df = filtered_data().copy()
+        df["percent"] = df.tip / df.total_bill
 
-        uvals = filtered_data().day.unique()
-        samples = [
-            [filtered_data().percent[filtered_data().day == val]] for val in uvals
-        ]
+        uvals = df.day.unique()
+        samples = [[df.percent[df.day == val]] for val in uvals]
 
         plt = ridgeplot(
             samples=samples,
