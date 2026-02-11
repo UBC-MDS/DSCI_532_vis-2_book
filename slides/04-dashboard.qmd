@@ -36,81 +36,95 @@ title: Build a dashboard
 
 Here are the documentation pages for functions that may be useful for this exercise:
 
-- `ui.page_opts()`: <https://shiny.posit.co/py/api/express/express.ui.page_opts.html>
-- `ui.sidebar()`: <https://shiny.posit.co/py/api/express/express.ui.sidebar.html>
-- `ui.layout_columns()`: <https://shiny.posit.co/py/api/express/express.ui.layout_columns.html>
-- `ui.card()`: <https://shiny.posit.co/py/api/express/express.ui.card.html>
-- `ui.card_header()`: <https://shiny.posit.co/py/api/express/express.ui.card_header.html>
+- `ui.page_fillable()`: <https://shiny.posit.co/py/api/core/ui.page_fillable.html>
+- `ui.layout_sidebar()`: <https://shiny.posit.co/py/api/core/ui.layout_sidebar.html>
+- `ui.sidebar()`: <https://shiny.posit.co/py/api/core/ui.sidebar.html>
+- `ui.layout_columns()`: <https://shiny.posit.co/py/api/core/ui.layout_columns.html>
+- `ui.card()`: <https://shiny.posit.co/py/api/core/ui.card.html>
+- `ui.card_header()`: <https://shiny.posit.co/py/api/core/ui.card_header.html>
 
 ## App UI
 
 ```{shinylive-python}
-# | standalone: true
-# | #| components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+#| standalone: true
+#| #| components: [editor, viewer]
+#| layout: horizontal
+#| viewerHeight: 500
 
-{{< /code/lecture02/core/app-01-ui.py >}}
+{{< include /code/lecture02/core/app-01-ui.py >}}
 ```
 
 ## Your turn: Add input components
 
 ```{shinylive-python}
-# | standalone: true
-# | #| components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+#| standalone: true
+#| #| components: [editor, viewer]
+#| layout: horizontal
+#| viewerHeight: 500
 
-from shiny.express import input, ui
+from shiny import App, ui
 
-# title
-ui.page_opts(title="Restaurant tipping", fillable=True)
-# sidebar
-with ui.sidebar(open="desktop"):
-    ui.input_slider(
-        id="slider",
-        label="Bill amount",
-        min=0,
-        max=100,
-        value=[0, 100],
-    )
-    ui.input_checkbox_group(
-        id="checkbox_group",
-        label="Food service",
-        choices={
-            "Lunch": "Lunch",
-            "Dinner": "Dinner",
-        },
-        selected=[
-            "Lunch",
-            "Dinner",
-        ],
-    )
-    ui.input_action_button("action_button", "Reset filter")
-# body of application
-# first row of value boxes
-with ui.layout_columns(fill=False):
-    with ui.value_box():
-        "Total tippers"
-        "Value 1"
-    with ui.value_box():
-        "Average tip"
-        "Value 2"
-    with ui.value_box():
-        "Average bill"
-        "Value 3"
-# second row of cards
-with ui.layout_columns(col_widths=[6, 6]):
-    with ui.card(full_screen=True):
-        ui.card_header("Tips data")
-        "Tips DataFrame"
-    with ui.card(full_screen=True):
-        ui.card_header("Total bill vs tip")
-        "Scatterplot"
-with ui.layout_columns():
-    with ui.card(full_screen=True):
-        ui.card_header("Tip percentages")
-        "ridgeplot"
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=0,
+                max=100,
+                value=[0, 100],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+            open="desktop",
+        ),
+        # first row of value boxes
+        ui.layout_columns(
+            ui.value_box("Total tippers", "Value 1"),
+            ui.value_box("Average tip", "Value 2"),
+            ui.value_box("Average bill", "Value 3"),
+            fill=False,
+        ),
+        # second row of cards
+        ui.layout_columns(
+            ui.card(
+                ui.card_header("Tips data"),
+                "Tips DataFrame",
+                full_screen=True,
+            ),
+            ui.card(
+                ui.card_header("Total bill vs tip"),
+                "Scatterplot",
+                full_screen=True,
+            ),
+            col_widths=[6, 6],
+        ),
+        ui.layout_columns(
+            ui.card(
+                ui.card_header("Tip percentages"),
+                "ridgeplot",
+                full_screen=True,
+            ),
+        ),
+    ),
+)
+
+def server(input, output, session):
+    pass
+
+app = App(app_ui, server)
 ```
 
 ## Let's add some data
@@ -212,87 +226,86 @@ plt.update_layout(
 #| layout: horizontal
 #| viewerHeight: 500
 
-import pandas as pd
 import seaborn as sns
-from shiny.express import input, render, ui
-
+from shiny import App, reactive, render, ui
 
 tips = sns.load_dataset("tips")
 
-# title
-ui.page_opts(title="Restaurant tipping", fillable=True)
-
-# sidebar
-with ui.sidebar(open="desktop"):
-    ui.input_slider(
-        id="slider",
-        label="Bill amount",
-        min=tips.total_bill.min(),
-        max=tips.total_bill.max(),
-        value=[tips.total_bill.min(), tips.total_bill.max()])
-    ui.input_checkbox_group(
-        id="checkbox_group",
-        label="Food service",
-        choices={
-            "Lunch": "Lunch",
-            "Dinner": "Dinner",
-        },
-        selected=[
-            "Lunch",
-            "Dinner",
-        ],
-    )
-    ui.input_action_button("action_button", "Reset filter")
-
-
-# body of application
-
-# first row of value boxes
-with ui.layout_columns(fill=False):
-    with ui.value_box():
-        "Total tippers"
-        @render.text
-        def total_tippers():
-            idx1 = tips.total_bill.between(
-                left=input.slider()[0],
-                right=input.slider()[1],
-                inclusive="both",
-            )
-            idx2 = tips.time.isin(input.checkbox_group())
-            tips_filtered = tips[idx1 & idx2]
-
-            return tips_filtered.shape[0]
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+            open="desktop",
+        ),
+        # first row of value boxes
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            ui.value_box("Average tip", ui.output_text("average_tip")),
+            ui.value_box("Average bill", ui.output_text("average_bill")),
+            fill=False,
+        ),
+    ),
+)
 
 
-    with ui.value_box():
-        "Average tip"
-        @render.text
-        def average_tip():
-            idx1 = tips.total_bill.between(
-                left=input.slider()[0],
-                right=input.slider()[1],
-                inclusive="both",
-            )
-            idx2 = tips.time.isin(input.checkbox_group())
-            tips_filtered = tips[idx1 & idx2]
+def server(input, output, session):
+    @render.text
+    def total_tippers():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        return str(tips_filtered.shape[0])
 
-            perc = tips_filtered.tip / tips_filtered.total_bill
-            return f"{perc.mean():.1%}"
+    @render.text
+    def average_tip():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        perc = tips_filtered.tip / tips_filtered.total_bill
+        return f"{perc.mean():.1%}"
 
-    with ui.value_box():
-        "Average bill"
-        @render.text
-        def average_bill():
-            idx1 = tips.total_bill.between(
-                left=input.slider()[0],
-                right=input.slider()[1],
-                inclusive="both",
-            )
-            idx2 = tips.time.isin(input.checkbox_group())
-            tips_filtered = tips[idx1 & idx2]
+    @render.text
+    def average_bill():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        bill = tips_filtered.total_bill.mean()
+        return f"${bill:.2f}"
 
-            bill = tips_filtered.total_bill.mean()
-            return f"${bill:.2f}"
+
+app = App(app_ui, server)
 ```
 
 ## Repeated reactive calculations
@@ -318,26 +331,33 @@ We can use a `@reactive.calc` to define and save a value that reacts to inputs
 #| components: [editor, viewer]
 #| layout: horizontal
 #| viewerHeight: 500
-from shiny import reactive
-from shiny.express import input, render, ui
+from shiny import App, reactive, render, ui
 
-ui.input_slider("x", "Slider value", min=0, max=100, value=10)
+app_ui = ui.page_fillable(
+    ui.input_slider("bill", "Bill amount ($)", min=1, max=100, value=25),
+    ui.output_text("tip_inline"),
+    ui.output_text("tip_from_calc"),
+)
 
-# we need to make a calculation from an input value
-@render.text
-def x_squared_text():
-    return f"Squared value: {input.x() ** 2}"
 
-# we can save this calculation to be used later
-@reactive.calc
-def x_squared():
-    return input.x() ** 2
+def server(input, output, session):
+    # compute tip directly from the input
+    @render.text
+    def tip_inline():
+        return f"Tip (15%): ${input.bill() * 0.15:.2f}"
 
-# we can use that saved calculation
-@render.text
-def x_squared_calc_text():
-    return f"Saved squared: {x_squared()}"
+    # save the calculation for reuse
+    @reactive.calc
+    def tip_amount():
+        return input.bill() * 0.15
 
+    # use the saved calculation
+    @render.text
+    def tip_from_calc():
+        return f"Tip (saved): ${tip_amount():.2f}"
+
+
+app = App(app_ui, server)
 ```
 
 
@@ -348,35 +368,45 @@ def x_squared_calc_text():
 #| components: [editor, viewer]
 #| layout: horizontal
 #| viewerHeight: 500
-from shiny import reactive
-from shiny.express import input, render, ui
+from shiny import App, reactive, render, ui
 
-ui.input_slider("x", "Slider value", min=0, max=100, value=10)
+app_ui = ui.page_fillable(
+    ui.input_slider("bill", "Bill amount ($)", min=1, max=100, value=25),
+    ui.output_text("tip_inline"),
+    ui.output_text("tip_from_calc"),
+    ui.output_text("total_from_calc"),
+    ui.output_text("total_from_input"),
+)
 
-# we need to make a calculation from an input value
-@render.text
-def x_squared_text():
-    return f"Squared value: {input.x() ** 2}"
 
-# we can save this calculation to be used later
-@reactive.calc
-def x_squared():
-    return input.x() ** 2
+def server(input, output, session):
+    # compute tip directly from the input
+    @render.text
+    def tip_inline():
+        return f"Tip (15%): ${input.bill() * 0.15:.2f}"
 
-# we can use that saved calculation
-@render.text
-def x_squared_calc_text():
-    return f"Saved squared: {x_squared()}"
+    # save the calculation for reuse
+    @reactive.calc
+    def tip_amount():
+        return input.bill() * 0.15
 
-# we can build on top of that saved calculation
-@render.text
-def x_squared_half_calc_text():
-    return f"Build on squared value: {x_squared() / 2}"
+    # use the saved calculation
+    @render.text
+    def tip_from_calc():
+        return f"Tip (saved): ${tip_amount():.2f}"
 
-# we don't need to re-calculate everything from the input again
-@render.text
-def x_squared_half_text():
-    return f"Recalculate from input: {input.x() ** 2 / 2}"
+    # build on the saved calculation
+    @render.text
+    def total_from_calc():
+        return f"Total with tip: ${input.bill() + tip_amount():.2f}"
+
+    # vs recalculating from scratch every time
+    @render.text
+    def total_from_input():
+        return f"Total (recalc): ${input.bill() + input.bill() * 0.15:.2f}"
+
+
+app = App(app_ui, server)
 ```
 
 ## Your turn: Filtered tips reactive.calc
@@ -387,59 +417,63 @@ def x_squared_half_text():
 #| layout: horizontal
 #| viewerHeight: 500
 
-import pandas as pd
 import seaborn as sns
-from shiny.express import input, render, ui
-
+from shiny import App, reactive, render, ui
 
 tips = sns.load_dataset("tips")
 
-# title
-ui.page_opts(title="Restaurant tipping", fillable=True)
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+            open="desktop",
+        ),
+        # first row of value boxes
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            fill=False,
+        ),
+    ),
+)
 
-# sidebar
-with ui.sidebar(open="desktop"):
-    ui.input_slider(
-        id="slider",
-        label="Bill amount",
-        min=tips.total_bill.min(),
-        max=tips.total_bill.max(),
-        value=[tips.total_bill.min(), tips.total_bill.max()])
-    ui.input_checkbox_group(
-        id="checkbox_group",
-        label="Food service",
-        choices={
-            "Lunch": "Lunch",
-            "Dinner": "Dinner",
-        },
-        selected=[
-            "Lunch",
-            "Dinner",
-        ],
-    )
-    ui.input_action_button("action_button", "Reset filter")
+
+def server(input, output, session):
+    @render.text
+    def total_tippers():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        tips_filtered.shape[0]
 
 
-# body of application
-
-# first row of value boxes
-with ui.layout_columns(fill=False):
-    with ui.value_box():
-        "Total tippers"
-        @render.text
-        def total_tippers():
-            idx1 = tips.total_bill.between(
-                left=input.slider()[0],
-                right=input.slider()[1],
-                inclusive="both",
-            )
-            idx2 = tips.time.isin(input.checkbox_group())
-            tips_filtered = tips[idx1 & idx2]
-
-            tips_filtered.shape[0]
+app = App(app_ui, server)
 ```
 
-## The application (Express)
+## The application (Core)
 
 ```{shinylive-python}
 #| standalone: true
@@ -447,11 +481,11 @@ with ui.layout_columns(fill=False):
 #| layout: horizontal
 #| viewerHeight: 500
 
-{{< include /code/lecture02/express/app.py >}}
+{{< include /code/lecture02/core/app.py >}}
 ```
 
 ## Challenge: Button
 
 - Reactive events
 
-<https://shiny.posit.co/py/api/express/express.ui.input_action_button.html>
+<https://shiny.posit.co/py/api/core/reactive.event.html>
