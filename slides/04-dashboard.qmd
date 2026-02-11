@@ -9,7 +9,7 @@ title: Build a dashboard
 ## Restaurant Tipping dashboard
 
 1. Title: "Restaurant tipping"
-    - You can use the [`ui.page_opts()`](https://shiny.posit.co/py/api/express/express.ui.page_opts.html)
+    - You can use the [`ui.panel_title()`](https://shiny.posit.co/py/api/core/ui.panel_title.html)
         and pass in a `title=''` parameter
 
 . . .
@@ -32,7 +32,7 @@ title: Build a dashboard
 
 5. A full width column with 1 card
 
-## Your turn: App UI components
+## App UI components
 
 Here are the documentation pages for functions that may be useful for this exercise:
 
@@ -45,49 +45,24 @@ Here are the documentation pages for functions that may be useful for this exerc
 ## App UI
 
 ```{shinylive-python}
-#| standalone: true
-#| #| components: [editor, viewer]
-#| layout: horizontal
-#| viewerHeight: 500
+# | standalone: true
+# | #| components: [editor, viewer]
+# | layout: horizontal
+# | viewerHeight: 500
 
-from shiny.express import input, ui
-# title
-ui.page_opts(title="Restaurant tipping", fillable=True)
-# sidebar (empty for now)
-with ui.sidebar(open="desktop"):
-    "sidebar inputs"
-# body of application
-# first row of value boxes
-with ui.layout_columns(fill=False):
-    with ui.value_box():
-        "Total tippers"
-        "Value 1"
-    with ui.value_box():
-        "Average tip"
-        "Value 2"
-    with ui.value_box():
-        "Average bill"
-        "Value 3"
-# second row of cards
-with ui.layout_columns(col_widths=[6, 6]):
-    with ui.card(full_screen=True):
-        ui.card_header("Tips data")
-    with ui.card(full_screen=True):
-        ui.card_header("Total bill vs tip")
-with ui.layout_columns():
-    with ui.card(full_screen=True):
-        ui.card_header("Tip percentages")
+{{< /code/lecture02/core/app-01-ui.py >}}
 ```
 
 ## Your turn: Add input components
 
 ```{shinylive-python}
-#| standalone: true
-#| #| components: [editor, viewer]
-#| layout: horizontal
-#| viewerHeight: 500
+# | standalone: true
+# | #| components: [editor, viewer]
+# | layout: horizontal
+# | viewerHeight: 500
 
 from shiny.express import input, ui
+
 # title
 ui.page_opts(title="Restaurant tipping", fillable=True)
 # sidebar
