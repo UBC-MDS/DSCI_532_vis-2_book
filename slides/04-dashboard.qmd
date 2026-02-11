@@ -48,48 +48,142 @@ Core API docs: <https://shiny.posit.co/py/api/core/>
 ## App UI
 
 ```{shinylive-python}
-# | standalone: true
-# | #| components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+#| standalone: true
+#| #| components: [editor, viewer]
+#| layout: horizontal
+#| viewerHeight: 500
 
 {{< include /code/lecture02/core/app-01-ui.py >}}
 ```
 
-## Your turn: Add input components
+## Add input components
 
-```{shinylive-python}
-# | standalone: true
-# | #| components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+:::: {.columns}
+::: {.column width="50%"}
+```{.python code-line-numbers="8-27"}
+from shiny import App, ui
 
-{{< include /code/lecture02/core/app-02-input.py >}}
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=0,
+                max=100,
+                value=[0, 100],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+            open="desktop",
+        ),
+        ...
+    ),
+)
+
+def server(input, output, session):
+    pass
+
+app = App(app_ui, server)
 ```
+:::
+::: {.column width="50%"}
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+
+from shiny import App, ui
+
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=0,
+                max=100,
+                value=[0, 100],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+            open="desktop",
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", "Value 1"),
+            ui.value_box("Average tip", "Value 2"),
+            ui.value_box("Average bill", "Value 3"),
+            fill=False,
+        ),
+        ui.layout_columns(
+            ui.card(ui.card_header("Tips by day"), full_screen=True),
+            ui.card(ui.card_header("Total bill vs tip"), full_screen=True),
+            col_widths=[6, 6],
+        ),
+        ui.layout_columns(
+            ui.card(ui.card_header("Tip percentages"), full_screen=True),
+        ),
+    ),
+)
+
+def server(input, output, session):
+    pass
+
+app = App(app_ui, server)
+```
+:::
+::::
 
 ## Let's add some data
 
 ```{python}
-# | echo: true
-
+#| echo: true
 
 import seaborn as sns
 
-tips = sns.load_dataset("tips")
+# load the tips dataset
+tips = sns.load_dataset('tips')
 
+# default values from data (will come from widgets later)
 total_lower = tips.total_bill.min()
 total_upper = tips.total_bill.max()
 time_selected = tips.time.unique().tolist()
 
-# many ways you can handle the filter combinations
+# filter by bill amount range
 idx1 = tips.total_bill.between(
     left=total_lower,
     right=total_upper,
     inclusive="both",
 )
 
+# filter by meal time
 idx2 = tips.time.isin(time_selected)
 
+# combine filters
 tips_filtered = tips[idx1 & idx2]
 ```
 
@@ -98,25 +192,482 @@ tips_filtered = tips[idx1 & idx2]
 ```{python}
 #| echo: true
 
+# tips_filtered is the dataset after applying
+# slider (bill range) and checkbox (meal time) filters.
+# These will be the values for our 3 value boxes.
+
 # total tippers
 total_tippers = tips_filtered.shape[0]
 print(total_tippers)
 
-# average tip
+# average tip as a percentage of the bill
 perc = tips_filtered.tip / tips_filtered.total_bill
 average_tip = f"{perc.mean():.1%}"
 print(average_tip)
 
-# average bill
+# average bill formatted as currency
 bill = tips_filtered.total_bill.mean()
 average_bill = f"${bill:.2f}"
 print(average_bill)
 ```
 
+## Add output placeholders to the UI
+
+:::: {.columns}
+::: {.column width="50%"}
+Before: static strings
+```{.python}
+ui.value_box("Total tippers", "Value 1"),
+ui.value_box("Average tip", "Value 2"),
+ui.value_box("Average bill", "Value 3"),
+```
+
+After: output placeholders — Shiny will fill these from the server (loading until we wire them up)
+```{.python code-line-numbers="1-3"}
+ui.value_box("Total tippers", ui.output_text("total_tippers")),
+ui.value_box("Average tip", ui.output_text("average_tip")),
+ui.value_box("Average bill", ui.output_text("average_bill")),
+```
+:::
+::: {.column width="50%"}
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+
+import seaborn as sns
+from shiny import App, render, ui
+
+tips = sns.load_dataset("tips")
+
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+            open="desktop",
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            ui.value_box("Average tip", ui.output_text("average_tip")),
+            ui.value_box("Average bill", ui.output_text("average_bill")),
+            fill=False,
+        ),
+    ),
+)
+
+def server(input, output, session):
+    pass
+
+app = App(app_ui, server)
+```
+:::
+::::
+
+## Wire up the server {style="font-size: 0.6em;"}
+
+:::: {.columns}
+::: {.column width="50%"}
+Before: empty server
+```{.python}
+def server(input, output, session):
+    pass
+```
+
+After: `@render.text` function name matches `ui.output_text("id")`
+```{.python code-line-numbers="2-9|11-18|20-27"}
+def server(input, output, session):
+    @render.text
+    def total_tippers():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0], right=input.slider()[1], inclusive="both")
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        return str(tips_filtered.shape[0])
+
+    @render.text
+    def average_tip():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0], right=input.slider()[1], inclusive="both")
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        return f"{(tips_filtered.tip / tips_filtered.total_bill).mean():.1%}"
+
+    @render.text
+    def average_bill():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0], right=input.slider()[1], inclusive="both")
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        return f"${tips_filtered.total_bill.mean():.2f}"
+```
+:::
+::: {.column width="50%"}
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 600
+
+import seaborn as sns
+from shiny import App, reactive, render, ui
+
+tips = sns.load_dataset("tips")
+
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+            open="desktop",
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            ui.value_box("Average tip", ui.output_text("average_tip")),
+            ui.value_box("Average bill", ui.output_text("average_bill")),
+            fill=False,
+        ),
+    ),
+)
+
+
+def server(input, output, session):
+    @render.text
+    def total_tippers():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0], right=input.slider()[1], inclusive="both")
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        return str(tips_filtered.shape[0])
+
+    @render.text
+    def average_tip():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0], right=input.slider()[1], inclusive="both")
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        perc = tips_filtered.tip / tips_filtered.total_bill
+        return f"{perc.mean():.1%}"
+
+    @render.text
+    def average_bill():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0], right=input.slider()[1], inclusive="both")
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        bill = tips_filtered.total_bill.mean()
+        return f"${bill:.2f}"
+
+
+app = App(app_ui, server)
+```
+:::
+::::
+
+## Repeated reactive calculations
+
+Lots of repeated calculations
+
+```{.python}
+idx1 = tips.total_bill.between(
+    left=input.slider()[0],
+    right=input.slider()[1],
+    inclusive="both",
+)
+idx2 = tips.time.isin(input.checkbox_group())
+tips_filtered = tips[idx1 & idx2]
+```
+
+## Shiny reactive calculations
+
+We can use a `@reactive.calc` to define and save a value that reacts to inputs
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| layout: horizontal
+#| viewerHeight: 500
+from shiny import App, reactive, render, ui
+
+app_ui = ui.page_fillable(
+    ui.input_slider("bill", "Bill amount ($)", min=1, max=100, value=25),
+    ui.output_text("tip_inline"),
+    ui.output_text("tip_from_calc"),
+)
+
+
+def server(input, output, session):
+    @render.text
+    def tip_inline():
+        """Computed directly from input."""
+        return f"Tip (15%) [tip_inline]: ${input.bill() * 0.15:.2f}"
+
+    @reactive.calc
+    def tip_amount():
+        """Saved for reuse."""
+        return input.bill() * 0.15
+
+    @render.text
+    def tip_from_calc():
+        """Uses saved @reactive.calc."""
+        return f"Tip (saved) [tip_from_calc]: ${tip_amount():.2f}"
+
+
+app = App(app_ui, server)
+```
+
+
+## Reuse reactive calculations
+
+[`tip_amount()` is computed once and cached - multiple outputs (`tip_from_calc`, `total_from_calc`) reuse the same result instead of recalculating]{style="font-size: 0.6em;"}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| layout: horizontal
+#| viewerHeight: 500
+from shiny import App, reactive, render, ui
+
+app_ui = ui.page_fillable(
+    ui.input_slider("bill", "Bill amount ($)", min=1, max=100, value=25),
+    ui.output_text("tip_inline"),
+    ui.output_text("tip_from_calc"),
+    ui.output_text("total_from_calc"),
+    ui.output_text("total_from_input"),
+)
+
+
+def server(input, output, session):
+    @render.text
+    def tip_inline():
+        """Computed directly from input."""
+        return f"Tip (15%) [tip_inline]: ${input.bill() * 0.15:.2f}"
+
+    @reactive.calc
+    def tip_amount():
+        """Saved for reuse."""
+        return input.bill() * 0.15
+
+    @render.text
+    def tip_from_calc():
+        """Uses saved @reactive.calc."""
+        return f"Tip (saved) [tip_from_calc]: ${tip_amount():.2f}"
+
+    @render.text
+    def total_from_calc():
+        """Builds on saved calc."""
+        return f"Total with tip [total_from_calc]: ${input.bill() + tip_amount():.2f}"
+
+    @render.text
+    def total_from_input():
+        """Recalculates from scratch."""
+        return f"Total (recalc) [total_from_input]: ${input.bill() + input.bill() * 0.15:.2f}"
+
+
+app = App(app_ui, server)
+```
+
+## Apply `@reactive.calc` to the dashboard {style="font-size: 0.6em;"}
+
+Same pattern as `tip_amount()` — filter once, reuse in all value boxes
+
+:::: {.columns}
+::: {.column width="50%"}
+Before: filtering repeated in every render function
+```{.python}
+def server(input, output, session):
+    @render.text
+    def total_tippers():
+        idx1 = tips.total_bill.between(...)
+        idx2 = tips.time.isin(...)
+        tips_filtered = tips[idx1 & idx2]
+        return str(tips_filtered.shape[0])
+
+    @render.text
+    def average_tip():
+        idx1 = tips.total_bill.between(...)  # same
+        idx2 = tips.time.isin(...)           # same
+        tips_filtered = tips[idx1 & idx2]    # same
+        ...
+```
+:::
+::: {.column width="50%"}
+After: extract `@reactive.calc`, each render just uses `filtered_data()`
+```{.python code-line-numbers="2-7|9-11|13-16|18-20"}
+def server(input, output, session):
+    @reactive.calc
+    def filtered_data():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0], right=input.slider()[1], inclusive="both")
+        idx2 = tips.time.isin(input.checkbox_group())
+        return tips[idx1 & idx2]
+
+    @render.text
+    def total_tippers():
+        return str(filtered_data().shape[0])
+
+    @render.text
+    def average_tip():
+        perc = filtered_data().tip / filtered_data().total_bill
+        return f"{perc.mean():.1%}"
+
+    @render.text
+    def average_bill():
+        return f"${filtered_data().total_bill.mean():.2f}"
+```
+:::
+::::
+
+## Dashboard with `@reactive.calc`
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| layout: horizontal
+#| viewerHeight: 500
+
+import seaborn as sns
+from shiny import App, reactive, render, ui
+
+tips = sns.load_dataset("tips")
+
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={"Lunch": "Lunch", "Dinner": "Dinner"},
+                selected=["Lunch", "Dinner"],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+            open="desktop",
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            ui.value_box("Average tip", ui.output_text("average_tip")),
+            ui.value_box("Average bill", ui.output_text("average_bill")),
+            fill=False,
+        ),
+    ),
+)
+
+def server(input, output, session):
+    @reactive.calc
+    def filtered_data():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0], right=input.slider()[1], inclusive="both")
+        idx2 = tips.time.isin(input.checkbox_group())
+        return tips[idx1 & idx2]
+
+    @render.text
+    def total_tippers():
+        return str(filtered_data().shape[0])
+
+    @render.text
+    def average_tip():
+        perc = filtered_data().tip / filtered_data().total_bill
+        return f"{perc.mean():.1%}"
+
+    @render.text
+    def average_bill():
+        return f"${filtered_data().total_bill.mean():.2f}"
+
+app = App(app_ui, server)
+```
+
+## Add data frame {.scrollable style="font-size: 0.65em;"}
+
+```{python}
+#| echo: false
+df = tips_filtered.copy()
+df["tip_pct"] = df.tip / df.total_bill
+df.groupby("day").agg(
+    count=("tip", "size"),
+    avg_bill=("total_bill", "mean"),
+    avg_tip=("tip", "mean"),
+    avg_tip_pct=("tip_pct", "mean"),
+).round(2).reset_index()
+```
+
+UI: `ui.output_data_frame("id")` — Server: `@render.data_frame` — [Mutable objects](https://shiny.posit.co/py/docs/reactive-mutable.html)
+
+```{.python}
+# UI placeholder inside the card
+ui.card(
+    ui.card_header("Tips by day"),
+    ui.output_data_frame("tips_data"),
+    full_screen=True,
+),
+```
+
+```{.python}
+# Server function — aggregate by day
+@render.data_frame
+def tips_data():
+    df = filtered_data().copy()
+    df["tip_pct"] = df.tip / df.total_bill
+    summary = df.groupby("day").agg(
+        count=("tip", "size"),
+        avg_bill=("total_bill", "mean"),
+        avg_tip=("tip", "mean"),
+        avg_tip_pct=("tip_pct", "mean"),
+    ).round(2).reset_index()
+    return summary
+```
+
 ## Scatterplot
+
+Relationship between bill amount and tip with a smoothed trend
 
 ```{python}
 #| echo: true
+#| output-location: column
 
 import plotly.express as px
 
@@ -128,10 +679,37 @@ px.scatter(
 )
 ```
 
+## Add the scatterplot
+
+UI: `output_widget("id")` — Server: `@render_plotly` (from `shinywidgets`)
+
+```{.python}
+from shinywidgets import render_plotly, output_widget
+```
+
+```{.python}
+# UI placeholder inside the card
+ui.card(
+    ui.card_header("Total bill vs tip"),
+    output_widget("scatterplot"),
+    full_screen=True,
+),
+```
+
+```{.python}
+# Server function — same px.scatter(), now using filtered_data()
+@render_plotly
+def scatterplot():
+    return px.scatter(filtered_data(), x="total_bill", y="tip", trendline="lowess")
+```
+
 ## Ridgeplot
+
+Distribution of tip percentages broken out by day of the week
 
 ```{python}
 #| echo: true
+#| output-location: column
 
 from ridgeplot import ridgeplot
 
@@ -159,54 +737,204 @@ plt.update_layout(
 )
 ```
 
-## Add reactive values to the cards
+## Add the ridgeplot {.scrollable}
 
-```{shinylive-python}
-#| standalone: true
-#| components: [editor, viewer]
-#| layout: horizontal
-#| viewerHeight: 500
-
-{{< include /code/lecture02/core/app-03-values.py >}}
-```
-
-## Repeated reactive calculations
-
-Lots of repeated calculations
+UI: `output_widget("id")` — Server: `@render_widget` (from `shinywidgets`)
 
 ```{.python}
-idx1 = tips.total_bill.between(
-    left=input.slider()[0],
-    right=input.slider()[1],
-    inclusive="both",
+from shinywidgets import render_widget, output_widget
+```
+
+```{.python}
+# UI placeholder inside the card
+ui.card(
+    ui.card_header("Tip percentages"),
+    output_widget("ridge"),
+    full_screen=True,
+),
+```
+
+```{.python}
+# Server function — same ridgeplot code, now using filtered_data()
+@render_widget
+def ridge():
+    df = filtered_data().copy()
+    df["percent"] = df.tip / df.total_bill
+
+    uvals = df.day.unique()
+    samples = [[df.percent[df.day == val]] for val in uvals]
+
+    plt = ridgeplot(
+        samples=samples,
+        labels=uvals,
+        bandwidth=0.01,
+        colorscale="viridis",
+        colormode="row-index",
+    )
+
+    plt.update_layout(
+        legend=dict(
+            orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5
+        )
+    )
+
+    return plt
+```
+
+## The application (Core) {.scrollable style="font-size: 0.55em;"}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 600
+
+## file: requirements.txt
+ridgeplot
+shinywidgets
+statsmodels
+
+## file: app.py
+{{< include /code/lecture02/core/app.py >}}
+```
+
+```{.python}
+from shiny import App, render, ui, reactive
+import plotly.express as px
+from ridgeplot import ridgeplot
+import seaborn as sns
+from shinywidgets import render_plotly, render_widget, output_widget
+
+tips = sns.load_dataset("tips")
+
+# UI
+app_ui = ui.page_fluid(
+    ui.tags.style("body { font-size: 0.6em; }"),
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+            open="desktop",
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            ui.value_box("Average tip", ui.output_text("average_tip")),
+            ui.value_box("Average bill", ui.output_text("average_bill")),
+            fill=False,
+        ),
+        ui.layout_columns(
+            ui.card(
+                ui.card_header("Tips by day"),
+                ui.output_data_frame("tips_data"),
+                full_screen=True,
+            ),
+            ui.card(
+                ui.card_header("Total bill vs tip"),
+                output_widget("scatterplot"),
+                full_screen=True,
+            ),
+            col_widths=[6, 6],
+        ),
+        ui.layout_columns(
+            ui.card(
+                ui.card_header("Tip percentages"),
+                output_widget("ridge"),
+                full_screen=True,
+            )
+        ),
+    ),
 )
-idx2 = tips.time.isin(input.checkbox_group())
-tips_filtered = tips[idx1 & idx2]
-```
-
-## Shiny reactive calculations
-
-We can use a `@reactive.calc` to define and save a value that reacts to inputs
-
-```{shinylive-python}
-#| standalone: true
-#| components: [editor, viewer]
-#| layout: horizontal
-#| viewerHeight: 500
-
-{{< include /code/lecture02/core/app-04-reactive_calc.py >}}
-```
 
 
-## Reuse reactive calculations
+# Server
+def server(input, output, session):
 
-```{shinylive-python}
-#| standalone: true
-#| components: [editor, viewer]
-#| layout: horizontal
-#| viewerHeight: 500
+    @reactive.calc
+    def filtered_data():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        return tips_filtered
 
-{{< include /code/lecture02/core/app-05-reactive_calc_reuse.py >}}
+    @render.text
+    def total_tippers():
+        return str(filtered_data().shape[0])
+
+    @render.text
+    def average_tip():
+        perc = filtered_data().tip / filtered_data().total_bill
+        return f"{perc.mean():.1%}"
+
+    @render.text
+    def average_bill():
+        bill = filtered_data().total_bill.mean()
+        return f"${bill:.2f}"
+
+    @render.data_frame
+    def tips_data():
+        df = filtered_data().copy()
+        df["tip_pct"] = df.tip / df.total_bill
+        summary = df.groupby("day").agg(
+            count=("tip", "size"),
+            avg_bill=("total_bill", "mean"),
+            avg_tip=("tip", "mean"),
+            avg_tip_pct=("tip_pct", "mean"),
+        ).round(2).reset_index()
+        return summary
+
+    @render_plotly
+    def scatterplot():
+        return px.scatter(filtered_data(), x="total_bill", y="tip", trendline="lowess")
+
+    @render_widget
+    def ridge():
+        df = filtered_data().copy()
+        df["percent"] = df.tip / df.total_bill
+
+        uvals = df.day.unique()
+        samples = [[df.percent[df.day == val]] for val in uvals]
+
+        plt = ridgeplot(
+            samples=samples,
+            labels=uvals,
+            bandwidth=0.01,
+            colorscale="viridis",
+            colormode="row-index",
+        )
+
+        plt.update_layout(
+            legend=dict(
+                orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5
+            )
+        )
+
+        return plt
+
+
+# Create app
+app = App(app_ui, server)
 ```
 
 ## Filtered tips reactive.calc
