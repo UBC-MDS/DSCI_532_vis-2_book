@@ -226,6 +226,9 @@ We can use a `@reactive.calc` to define and save a value that reacts to inputs
 #| viewerHeight: 500
 
 {{< include /code/lecture02/core/app.py >}}
+
+## file: requirements.txt
+ridgeplot
 ```
 
 ## Challenge: Button
