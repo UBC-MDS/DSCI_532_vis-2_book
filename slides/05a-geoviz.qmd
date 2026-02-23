@@ -2,8 +2,8 @@
 title: Geospatial visualization
 jupyter:
     kernelspec:
-        name: dsci532
-        display_name: DSCI 532
+        name: python3
+        display_name: Python 3
         language: python
 format: revealjs
 execute:
