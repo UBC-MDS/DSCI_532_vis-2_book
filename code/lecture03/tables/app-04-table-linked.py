@@ -45,7 +45,7 @@ def server(input, output, session):
             x="Miles_per_Gallon:Q", y="Horsepower:Q",
             tooltip=display_cols,
         )
-        if selected.empty:
+        if selected is None or selected.empty:
             return base.properties(width="container", height=320)
         hi = alt.Chart(selected).mark_circle(color="#3B82F6", size=90).encode(
             x="Miles_per_Gallon:Q", y="Horsepower:Q",

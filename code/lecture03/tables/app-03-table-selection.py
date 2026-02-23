@@ -28,7 +28,7 @@ def server(input, output, session):
             y=alt.Y("Horsepower:Q"),
             tooltip=["Name:N", "Miles_per_Gallon:Q", "Horsepower:Q"],
         )
-        if selected.empty:
+        if selected is None or selected.empty:
             return base.properties(width="container", height=260)
         highlight = alt.Chart(selected).mark_circle(color="#3B82F6", size=80).encode(
             x="Miles_per_Gallon:Q",
