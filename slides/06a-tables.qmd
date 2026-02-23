@@ -1,0 +1,320 @@
+---
+title: "Tables in Shiny"
+format:
+  revealjs:
+    font-size: 0.5em
+---
+
+
+
+## Lecture overview
+
+::: {.columns}
+::: {.column width="50%"}
+::: {.callout-note appearance="minimal"}
+### Learning goals
+
+1. Render a `DataGrid` and `DataTable` in Shiny
+2. Enable sorting, filtering, and row selection
+3. Use `data_view()` and `cell_selection()` to drive reactive outputs
+4. Replace a filtered table with a chart driven by row selection
+5. Update a table from an external input widget
+:::
+:::
+::: {.column width="50%"}
+::: {.callout-note appearance="minimal"}
+### Covered apps
+
+- `app-01a-table-basic.py` — basic DataGrid
+- `app-01b-table-basic.py` — basic DataTable
+- `app-02-table-from-input.py` — dropdown -> update table
+- `app-03-table-selection.py` — row selection -> chart
+- `app-04-table-linked.py` — row selection -> linked Altair chart
+:::
+:::
+:::
+
+## Two table types in Shiny
+
+Shiny provides two built-in table renderers:
+
+::: {.columns}
+::: {.column width="50%"}
+**[`render.DataGrid`](https://shiny.posit.co/py/api/core/render.DataGrid.html)**
+
+- Spreadsheet-like appearance
+- Best for data exploration
+- Compact rows
+
+```python
+@render.data_frame
+def my_table():
+    return render.DataGrid(df)
+```
+:::
+::: {.column width="50%"}
+**[`render.DataTable`](https://shiny.posit.co/py/api/core/render.DataTable.html)**
+
+- HTML table appearance
+- Best for display / reporting
+- Wider rows with more whitespace
+
+```python
+@render.data_frame
+def my_table():
+    return render.DataTable(df)
+```
+:::
+:::
+
+Both use the same `ui.output_data_frame("my_table")` placeholder.
+
+Both support: sorting · filtering · row selection · editable cells
+
+::: {.callout-tip appearance="minimal"}
+**Docs**: [`render.DataGrid`](https://shiny.posit.co/py/api/core/render.DataGrid.html) · [`render.DataTable`](https://shiny.posit.co/py/api/core/render.DataTable.html)
+:::
+
+## Basic table: DataGrid {.scrollable}
+
+pagination, filtering, sorting enabled
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture03/tables/app-01a-table-basic.py >}}
+```
+
+## Basic table: DataTable style {.scrollable}
+
+Same features — different visual style (wider rows, HTML table look):
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture03/tables/app-01b-table-basic.py >}}
+```
+
+## `DataGrid` vs `DataTable`
+
+Same data, different presentation:
+
+:::{.column-screen-inset-right}
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 600
+#| packages: [vega_datasets]
+
+from shiny import App, ui, render
+from vega_datasets import data as vega_data
+import pandas as pd
+
+cars = pd.DataFrame(vega_data.cars()).iloc[:, :5]
+
+app_ui = ui.page_fluid(
+    ui.layout_columns(
+        ui.card(
+            ui.card_header(ui.code("render.DataGrid")),
+            ui.output_data_frame("grid"),
+        ),
+        ui.card(
+            ui.card_header(ui.code("render.DataTable")),
+            ui.output_data_frame("table"),
+        ),
+    ),
+)
+
+def server(input, output, session):
+    @render.data_frame
+    def grid():
+        return render.DataGrid(cars, height="300px")
+
+    @render.data_frame
+    def table():
+        return render.DataTable(cars, height="300px")
+
+app = App(app_ui, server)
+```
+:::
+
+## Example 1: Updating a table from an input {.scrollable}
+
+::: {.columns}
+::: {.column width="40%"}
+```{mermaid}
+flowchart LR
+  A[/input_origin/] --> P([my_table])
+```
+
+**The table is just a reactive output**
+
+- `my_table` is a `@render.data_frame` — it re-runs whenever any `input.*` it reads changes
+- `input.origin()` filters the dataframe in Python before returning it to `render.DataGrid`
+- No special table API needed: this is the same `input -> output` pattern as any other Shiny output
+- Sorting and filtering in the rendered table are applied on top of whatever Python returns
+
+:::
+::: {.column width="60%"}
+
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture03/tables/app-02-table-from-input.py >}}
+```
+:::
+:::
+
+## Example 1: Updating a table from an input {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture03/tables/app-02-table-from-input.py >}}
+```
+
+## Reading table state with `data_view()`
+
+Once rendered, the decorator result exposes methods to read the table's current state:
+
+::: {.columns}
+::: {.column width="60%"}
+::: {.smaller}
+| Method | Returns |
+|---|---|
+| `tbl.data_view()` | All rows after sort + filter |
+| `tbl.data_view(selected=True)` | Only selected rows |
+| `tbl.data()` | Original underlying data |
+| `tbl.cell_selection()` | Row indices of selection |
+:::
+:::
+::: {.column width="40%"}
+
+```python
+@reactive.calc
+def selected_rows():
+    # require at least one row selected
+    df = tbl.data_view(selected=True)
+    req(not df.empty)
+    return df
+```
+
+[`req()`](https://shiny.posit.co/py/api/core/req.html) stops execution silently if the condition is ["falsy"](https://shiny.posit.co/py/api/core/req.html) - clean way to handle "nothing selected yet".
+
+:::
+:::
+
+::: {.callout-tip appearance="minimal"}
+**Docs**: [`render.data_frame`](https://shiny.posit.co/py/api/core/render.data_frame.html) · [`cell_selection()`](https://shiny.posit.co/py/api/core/render.DataGrid.html#shiny.render.DataGrid.cell_selection)
+:::
+
+## Row selection -> reactive output  {.smaller}
+
+Set `selection_mode="rows"` to let users select rows.
+
+Access selected rows with **`.data_view(selected=True)`**:
+
+```python
+@render.data_frame
+def my_table():
+    return render.DataGrid(df, selection_mode="rows")
+
+@reactive.calc
+def selected():
+    return my_table.data_view(selected=True)
+```
+
+`data_view(selected=True)` returns selected rows **with** any sorting/filtering the user has applied — it is the data as the user sees it.
+
+## Example 2: Row selection drives a chart {.scrollable}
+
+::: {.columns}
+::: {.column width="50%"}
+```{mermaid}
+flowchart LR
+  A([my_table]) -- ".data_view<br>selected=True" --> P([scatter])
+```
+::: {.smaller}
+**A rendered table can also be a reactive source**
+
+- `my_table` is a `@render.data_frame` output — but it also exposes `.data_view(selected=True)`
+- When the user selects rows, any output that calls `.data_view(selected=True)` is invalidated and re-runs
+- `scatter` re-renders with the selected rows highlighted — no separate `input.*` needed
+- The selection lives inside the rendered table; Shiny tracks it automatically
+:::
+
+::: {.column width="50%"}
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 560
+#| packages: [vega_datasets, altair, shinywidgets]
+
+{{< include /code/lecture03/tables/app-03-table-selection.py >}}
+```
+:::
+:::
+
+## Example 2: Row selection drives a chart  {.r-fit-text}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 560
+#| packages: [vega_datasets, altair, shinywidgets]
+
+{{< include /code/lecture03/tables/app-03-table-selection.py >}}
+```
+
+## Example 3: Linked table + chart {.r-fit-text}
+
+::: {.columns}
+::: {.column width="50%"}
+```{mermaid}
+flowchart LR
+  A[/input_origin/] --> F{{filtered}}
+  F --> P1([my_table])
+  F --> P2([scatter])
+  P1 -- ".data_view<br>selected=True" --> P2
+```
+
+`@reactive.calc` shares the selected rows between table and chart — the same pattern as with maps.
+
+- `filtered()` runs once when `input.origin()` changes — both `my_table` and `scatter` share the cached result
+- `scatter` has **two** reactive dependencies: `filtered()` (the full filtered set, grey points) and `my_table.data_view(selected=True)` (highlighted points)
+- Changing the dropdown re-runs `filtered()`, which invalidates both outputs at once
+- Selecting rows only invalidates `scatter` — `my_table` itself does not re-render
+:::
+
+::: {.column width="50%"}
+
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 620
+#| packages: [vega_datasets, altair, shinywidgets]
+
+{{< include /code/lecture03/tables/app-04-table-linked.py >}}
+```
+
+:::
+:::
+
+## Example 3: Linked table + chart: full example {.r-fit-text}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 620
+#| packages: [vega_datasets, altair, shinywidgets]
+
+{{< include /code/lecture03/tables/app-04-table-linked.py >}}
+```

@@ -401,23 +401,43 @@ app = App(app_ui, server)
 :::
 ::::
 
-## Repeated reactive calculations
-
-Lots of repeated calculations
-
 ```{.python}
-idx1 = tips.total_bill.between(
-    left=input.slider()[0],
-    right=input.slider()[1],
-    inclusive="both",
-)
-idx2 = tips.time.isin(input.checkbox_group())
-tips_filtered = tips[idx1 & idx2]
+# UI placeholder inside the card
+ui.card(
+    ui.card_header("Tip percentages"),
+    output_widget("ridge"),
+    full_screen=True,
+),
 ```
 
-## Shiny reactive calculations
+```{.python}
+# Server function — same ridgeplot code, now using filtered_data()
+@render_widget
+def ridge():
+    df = filtered_data().copy()
+    df["percent"] = df.tip / df.total_bill
 
-We can use a `@reactive.calc` to define and save a value that reacts to inputs
+    uvals = df.day.unique()
+    samples = [[df.percent[df.day == val]] for val in uvals]
+
+    plt = ridgeplot(
+        samples=samples,
+        labels=uvals,
+        bandwidth=0.01,
+        colorscale="viridis",
+        colormode="row-index",
+    )
+
+    plt.update_layout(
+        legend=dict(
+            orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5
+        )
+    )
+
+    return plt
+```
+
+## The application (Core) {.scrollable style="font-size: 0.55em;"}
 
 ```{shinylive-python}
 #| standalone: true
@@ -453,8 +473,71 @@ def server(input, output, session):
 app = App(app_ui, server)
 ```
 
+```{.python}
+from shiny import App, render, ui, reactive
+import plotly.express as px
+from ridgeplot import ridgeplot
+import seaborn as sns
+from shinywidgets import render_plotly, render_widget, output_widget
 
-## Reuse reactive calculations
+tips = sns.load_dataset("tips")
+
+# UI
+app_ui = ui.page_fluid(
+    ui.tags.style("body { font-size: 0.6em; }"),
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+            open="desktop",
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            ui.value_box("Average tip", ui.output_text("average_tip")),
+            ui.value_box("Average bill", ui.output_text("average_bill")),
+            fill=False,
+        ),
+        ui.layout_columns(
+            ui.card(
+                ui.card_header("Tips by day"),
+                ui.output_data_frame("tips_data"),
+                full_screen=True,
+            ),
+            ui.card(
+                ui.card_header("Total bill vs tip"),
+                output_widget("scatterplot"),
+                full_screen=True,
+            ),
+            col_widths=[6, 6],
+        ),
+        ui.layout_columns(
+            ui.card(
+                ui.card_header("Tip percentages"),
+                output_widget("ridge"),
+                full_screen=True,
+            )
+        ),
+    ),
+)
 
 [`tip_amount()` is computed once and cached - multiple outputs (`tip_from_calc`, `total_from_calc`) reuse the same result instead of recalculating]{style="font-size: 0.6em;"}
 
@@ -937,34 +1020,12 @@ def server(input, output, session):
 app = App(app_ui, server)
 ```
 
-## Filtered tips reactive.calc
+## What we covered
 
-```{shinylive-python}
-# | standalone: true
-# | components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+- **[Layout](https://shiny.posit.co/py/layouts/)**: [`page_fillable`](https://shiny.posit.co/py/api/core/ui.page_fillable.html), [`layout_sidebar`](https://shiny.posit.co/py/api/core/ui.layout_sidebar.html), [`layout_columns`](https://shiny.posit.co/py/api/core/ui.layout_columns.html), [`card`](https://shiny.posit.co/py/api/core/ui.card.html), [`value_box`](https://shiny.posit.co/py/api/core/ui.value_box.html)
+- **[Inputs](https://shiny.posit.co/py/components/#inputs)**: [`input_slider`](https://shiny.posit.co/py/api/core/ui.input_slider.html), [`input_checkbox_group`](https://shiny.posit.co/py/api/core/ui.input_checkbox_group.html), [`input_action_button`](https://shiny.posit.co/py/api/core/ui.input_action_button.html)
+- **[Outputs](https://shiny.posit.co/py/components/#outputs)**: [`@render.text`](https://shiny.posit.co/py/api/core/render.text.html), [`@render.data_frame`](https://shiny.posit.co/py/api/core/render.data_frame.html), `@render_plotly`, `@render_widget`
+- **[Reactivity](https://shiny.posit.co/py/docs/reactive-foundations.html)**: [`@reactive.calc`](https://shiny.posit.co/py/api/core/reactive.calc.html) — compute once, reuse everywhere
+- **[Mutable objects](https://shiny.posit.co/py/docs/reactive-mutable.html)**: always `.copy()` before mutating a reactive value
 
-{{< include /code/lecture02/core/app-06-filtered_tips.py >}}
-```
-
-## The application (Core)
-
-```{shinylive-python}
-#| standalone: true
-#| #| components: [editor, viewer]
-#| layout: horizontal
-#| viewerHeight: 500
-
-{{< include /code/lecture02/core/app.py >}}
-
-## file: requirements.txt
-ridgeplot
-statsmodels
-```
-
-## Challenge: Button
-
-- Reactive events
-
-<https://shiny.posit.co/py/api/core/ui.input_action_button.html>
+Shiny for Python docs: <https://shiny.posit.co/py/>
