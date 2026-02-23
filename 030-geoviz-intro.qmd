@@ -1,0 +1,9 @@
+---
+title: Geoviz Intro
+---
+
+:::{.column-page-inset-right}
+
+{{< revealjs file="slides/05a-geoviz.html" height="500px" class="ratio ratio-16x9" >}}
+
+:::

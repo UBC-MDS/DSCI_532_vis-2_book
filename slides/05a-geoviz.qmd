@@ -1,0 +1,725 @@
+---
+title: Geospatial visualization
+jupyter:
+    kernelspec:
+        name: dsci532
+        display_name: DSCI 532
+        language: python
+format: revealjs
+execute:
+    enabled: true
+    echo: true
+---
+
+
+
+## Lecture overview
+
+::: {.columns}
+::: {.column width="50%"}
+::: {.callout-note appearance="minimal"}
+### Learning goals
+
+1. Explain what GeoJSON files are and where to find them
+2. Load and explore GeoJSON data with `geopandas`
+3. Plot geographic regions with `alt.mark_geoshape()` in Altair
+4. Create choropleth maps by encoding values to color on geoshapes
+5. Join external tabular data to a GeoJSON geodataframe
+6. Apply map projections and handle missing data gracefully
+7. ~~Plot point data on a map~~ *(-> 05b)*
+8. Embed interactive Altair maps in Shiny with `output_widget`
+9. Distinguish client-side (Altair/JS) from server-side (Shiny/Python) interaction
+10. Share computation across outputs with `@reactive.calc`
+:::
+:::
+::: {.column width="50%"}
+::: {.callout-note appearance="minimal"}
+
+### Covered dashboard variations
+
+- `app-01-map-static.py` — static world map in Shiny
+- `app-02-map-dropdown.py` — Shiny input -> map style
+- `app-03-map-choropleth.py` — Shiny input -> data -> choropleth
+- `app-04-map-and-chart.py` — `@reactive.calc` -> map + bar chart
+- `app-04a-map-top-bottom.py` — `@reactive.calc` -> map + top-5 / bottom-5 bars
+
+**Readings**
+
+- [Chapter 15 — Fundamentals of Data Visualization](https://clauswilke.com/dataviz/geospatial-data.html)
+- [Altair geoshape docs](https://altair-viz.github.io/user_guide/marks/geoshape.html)
+:::
+:::
+:::
+
+## GeoJSON
+
+Up to this point,
+we have worked with JSON and CSV formatted datasets that correspond to data tables made up of rows (records) and columns (fields).
+In order to represent geographic regions (countries, states, _etc._) and trajectories (flight paths, subway lines, _etc._),
+we need to expand our repertoire with additional formats designed to support these richer geometries.
+
+[GeoJSON](https://en.wikipedia.org/wiki/GeoJSON) models geographic features within a specialized JSON format.
+A GeoJSON `feature` can include geometric data, such as `longitude`, `latitude` coordinates that make up a country boundary, as well as additional data attributes.
+
+## GeoJSON feature example
+
+Here is a GeoJSON `feature` object for the boundary of the U.S. state of Colorado:
+
+~~~ json
+{
+  "type": "Feature",
+  "id": 8,
+  "properties": {"name": "Colorado"},
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [[-106.32056285448942,40.998675790862656],[-106.19134826714341,40.99813863734313],[-105.27607827344248,40.99813863734313],[-104.9422739227986,40.99813863734313],[-104.05212898774828,41.00136155846029],[-103.57475287338661,41.00189871197981],[-103.38093099236758,41.00189871197981],[-102.65589358559272,41.00189871197981],[-102.62000064466328,41.00189871197981],[-102.052892177978,41.00189871197981],[-102.052892177978,40.74889940428302],[-102.052892177978,40.69733266640851],[-102.052892177978,40.44003613055551],[-102.052892177978,40.3492571857556],[-102.052892177978,40.00333031918079],[-102.04930288388505,39.57414465707943],[-102.04930288388505,39.56823596836465],[-102.0457135897921,39.1331416175485],[-102.0457135897921,39.0466599009048],[-102.0457135897921,38.69751011321283],[-102.0457135897921,38.61478847120581],[-102.0457135897921,38.268861604631],[-102.0457135897921,38.262415762396685],[-102.04212429569915,37.738153927339205],[-102.04212429569915,37.64415206142214],[-102.04212429569915,37.38900413964724],[-102.04212429569915,36.99365914927603],[-103.00046581851544,37.00010499151034],[-103.08660887674611,37.00010499151034],[-104.00905745863294,36.99580776335414],[-105.15404227428235,36.995270609834606],[-105.2222388620483,36.995270609834606],[-105.7175614468747,36.99580776335414],[-106.00829426840322,36.995270609834606],[-106.47490250048605,36.99365914927603],[-107.4224761410235,37.00010499151034],[-107.48349414060355,37.00010499151034],[-108.38081766383978,36.99903068447129],[-109.04483707103458,36.99903068447129],[-109.04483707103458,37.484617466122884],[-109.04124777694163,37.88049961001363],[-109.04124777694163,38.15283644441336],[-109.05919424740635,38.49983761802722],[-109.05201565922046,39.36680339854235],[-109.05201565922046,39.49786885730673],[-109.05201565922046,39.66062637372313],[-109.05201565922046,40.22248895514744],[-109.05201565922046,40.653823231326896],[-109.05201565922046,41.000287251421234],[-107.91779872584989,41.00189871197981],[-107.3183866123281,41.00297301901887],[-106.85895696843116,41.00189871197981],[-106.32056285448942,40.998675790862656]]
+    ]
+  }
+}
+~~~
+
+You don't need to understand this in detail,
+but having seen it once can be helpful when you encounter GeoJSON files in the wild.
+The `feature` includes a `properties` object,
+which can include any number of data fields,
+plus a `geometry` object,
+which in this case contains a single polygon that consists of `[longitude, latitude]` coordinates for the state boundary.
+To learn more about the nitty-gritty details of GeoJSON, see the [official GeoJSON specification](http://geojson.org/)
+or read [Tom MacWright's helpful primer](https://macwright.org/2015/03/23/geojson-second-bite).
+
+## Where can I find GeoJSON files?
+         
+Many libraries, including Altair and Plotly,
+provide a few built-in GeoJSON datasets for common geographic regions.
+However,
+if you need a GeoJSON file for a specific region or purpose,
+these sample files are not of much help.
+Therefore,
+we will only work with GeoJSON files directly from [Natural Earth Data](https://www.naturalearthdata.com/downloads)
+which contains a variety of GeoJSON at different levels of detail
+to meet all your geospatial visualization needs.
+
+These geojson files are available in different scale resolutions.
+If you are plotting the countries of the world,
+it is sufficient to use the 1:110m scale resolution,
+and if you are plotting regions withing a country
+(e.g. states or provinces),
+you can use the 1:50m scale resolution.
+There are also files available for other features such as rivers, lakes, and coastlines.
+
+As you can see the download page containes a few different options.
+They are all detailed on this page,
+but in brief:
+    
+- `Cultural` contains the boundaries of countries, states, and populated places (boundaries made by humans)
+- `Physical` contains the boundaries of rivers, lakes, and coastlines (boundaries made by nature)
+
+To get the URL for the countries in the world,
+you select 1:110 scale resolution, "cultural", and "Admin 0 – Countries".
+Note that if you simply copy the URL from the link "Download countries",
+it will look like this:
+
+```
+https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/cultural/ne_110m_admin_0_countries.zip
+```
+
+But you need to change it to look like this
+when using it programmatically:
+
+```
+https://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_countries.zip
+```
+
+You can either do this manually or check the network tab in your browser's developer console (press F12)
+to see the actual URL that is being requested.
+
+
+## Working with GeoJSON via geopandas
+         
+The `geopandas` library provides a convenient way to work with GeoJSON data in Python.
+It extends the capabilities of `pandas` to support spatial data types and operations.
+Let's load in the dataset for the countries of the world and take a look at the first few rows.
+
+```{python}
+#| html-table-processing: none
+import geopandas as gpd
+import pandas as pd
+
+_COMPACT = [
+    {'selector': 'td, th', 'props': 'font-size: 0.52em; padding: 2px 5px; white-space: nowrap;'},
+    {'selector': 'table',  'props': 'border-collapse: collapse;'},
+]
+
+url = "https://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_countries.zip"
+world_countries = gpd.read_file(url)
+(
+    world_countries.head(4)
+    .style.set_table_styles(_COMPACT)
+    .format(lambda v: str(v)[:28] + '…' if isinstance(v, str) and len(str(v)) > 28 else v)
+)
+```
+##
+
+That's alot of columns!
+The column containing the actual outlines of the countries is the `geometry` column.
+Let's keep that one plus a few other interesting ones for now.
+
+```{python}
+#| html-table-processing: none
+world_countries = world_countries[
+    ["NAME", "CONTINENT",  'SUBREGION', "POP_EST", 'ECONOMY', 'INCOME_GRP', 'GDP_MD', 'geometry']
+].rename(
+    columns=lambda x: x.lower()  # Lowercase column names
+).assign(
+    gdp_per_capita=lambda x: x["gdp_md"] / x["pop_est"] * 1e6
+).query(
+    'continent != "Antarctica"'
+)
+(
+    world_countries.head(4)
+    .style.set_table_styles(_COMPACT)
+    .format(lambda v: str(v)[:28] + '…' if isinstance(v, str) and len(str(v)) > 28 else v)
+)
+```
+## Quick maps with geopandas
+You have seen previously that you can plot the data in a geopandas pandas dataframe using the `plot` method.
+
+```{python}
+world_countries.plot()
+```
+##
+And that you can use `explore` to create an interactive chart.
+
+```{python}
+world_countries.explore()
+```
+
+Interestingly,
+if you zoom in on this map,
+you can see that the boundaries of the countries in our geojson
+are not as detailed as those in the background tile/raster image provided
+by the `explore` function.
+The reason for this is that we chose the largest scale resolution (1:110m);
+which is the most practical for plotting the entire world,
+but not for zooming into small regions.
+
+## Plotting geodata with Altair
+
+The `plot` and `explore` methods are useful options for quickly visualizing the data,
+but they are not as flexible as using Altair or Plotly,
+and they are less suitable when you want polished, composable dashboard views.
+For teaching and app development,
+it is often better to build a map specification in Altair/Plotly,
+then place it inside a Shiny app with reactive inputs and outputs.
+
+##
+To chart the data using Altair,
+we use `mark_geoshape`.
+
+```{python}
+import altair as alt
+
+# More efficient for large data sets
+alt.data_transformers.enable('vegafusion')
+
+alt.Chart(world_countries, width=600).mark_geoshape()
+```
+##  {.scrollable}
+
+One striking difference is how big Africa looks in the Altair plot compared to the geopandas plot!
+What's going on there?
+The answer is that a different default projection is used.
+We will talk more about projections later,
+but for now you can just remember that the default in
+Altair is to adjust the country areas to be more proportional to their actual size.
+For example,
+Africa is ~14 times larger than Greenland in reality,
+and on the Altair chart we can see this,
+whereas in `explore` it looks like Greenland is larger than Africa,
+which is a misrepresentation of the actual sizes.
+
+## Choropleth maps {.scrollable}
+
+A **choropleth** maps a numeric or categorical value to fill color on geographic regions.
+`world_countries` already has several interesting columns bundled in the GeoJSON — no extra data needed:
+
+```{python}
+alt.Chart(world_countries, width=600).mark_geoshape().encode(
+    color='continent',
+    tooltip='name'
+)
+```
+
+```{python}
+chart = alt.Chart(world_countries, width=600).mark_geoshape().encode(
+    color='pop_est'
+)
+
+chart
+```
+
+```{python}
+chart.encode(color='gdp_per_capita')
+```
+
+```{python}
+chart.encode(color='economy:O')
+```
+
+```{python}
+chart.encode(color='income_grp:O')
+```
+##  {.scrollable}
+
+What if we want to include only a specific region?
+While we can adjust the coordinates of the map using the `projection` parameter,
+it more convenient to filter the geo dataframe for the for the region of interest:
+
+```{python}
+alt.Chart(world_countries.query('continent == "Africa"'), width=600).mark_geoshape().encode(
+    color='pop_est',
+    tooltip=['name', 'pop_est']
+)
+```
+
+To demarcate the countries more clearly,
+we can add a stroke color for the country borders.
+
+```{python}
+alt.Chart(world_countries.query('continent == "Africa"'), width=600).mark_geoshape(stroke='grey').encode(
+    color='pop_est',
+    tooltip=['name', 'pop_est']
+)
+```
+##  {.scrollable}
+
+How can we see regions within countries,
+e.g. the American states or Canadian provinces?
+
+```{python}
+alt.Chart(world_countries.query('name.isin(["Canada", "United States of America"])'), width=600).mark_geoshape()
+```
+
+As you can see,
+there are no state or province boundaries in the countries GeoJSON file.
+This is because we downloaded the file called "Admin 0 - Countries",
+which is the highest level of boundaries,
+i.e. countries.
+To get more detailed boundaries,
+we need to download a different file:
+"Admin 1 – States, Provinces".
+This file only exists at the 1:50m scale resolution at the moment.
+
+```{python}
+#| html-table-processing: none
+url = 'https://naciscdn.org/naturalearth/50m/cultural/ne_50m_admin_1_states_provinces.zip'
+world_regions = gpd.read_file(url)
+(
+    world_regions.head(4)
+    .style.set_table_styles(_COMPACT)
+    .format(lambda v: str(v)[:28] + '…' if isinstance(v, str) and len(str(v)) > 28 else v)
+)
+```
+
+```{python}
+alt.Chart(world_regions, width=600).mark_geoshape().encode(
+    color='admin'
+)
+```
+##  {.scrollable}
+
+```{python}
+#| html-table-processing: none
+canadian_provinces = world_regions.query("iso_a2 == 'CA'")[['wikipedia', 'name', 'region', 'postal', 'latitude', 'longitude', 'geometry']]
+(
+    canadian_provinces
+    .style.set_table_styles(_COMPACT)
+    .format(lambda v: str(v)[:28] + '…' if isinstance(v, str) and len(str(v)) > 28 else v)
+)
+```
+
+For maps of Canada,
+[the Canadian govenrment officially uses the Universal Transverse Mercator (UTM) Projection](https://natural-resources.canada.ca/earth-sciences/geography/topographic-information/maps/utm-grid-map-projections/9775)
+(rotated) and sometimes also the Lambert Conformal Conic projection.
+
+```{python}
+alt.Chart(canadian_provinces, width=600, height=500).mark_geoshape(stroke='white').project(
+    'transverseMercator',
+    rotate=[90, 0, 0]
+).encode(
+    tooltip='name',
+    color=alt.Color('name').scale(scheme='tableau20'),  # To avoid repeating colors
+    href='wikipedia',
+)
+```
+
+## Joining external data for choropleths
+
+So far the values we encoded as color were already baked into the GeoJSON file.
+In practice, the data you want to visualize often lives in a **separate table**,
+so you need to join it onto the geodataframe first.
+
+Let's color Canadian provinces by population —
+that column isn't in the GeoJSON.
+We'll scrape it from Wikipedia and `merge()` it in
+(the same workflow you'd follow with any external CSV or database query).
+The data exists in an html table on
+[the Wikipedia page for Canadian provinces and territories](https://en.wikipedia.org/wiki/Provinces_and_territories_of_Canada).
+
+##  {.scrollable}
+
+The function `pd.read_html` can be used to read in html tables from a webpage
+quite effectively.
+It will return a list of all tables that we need to index for the table we want,
+in this case the first one.
+
+```{python}
+import urllib.request
+import io
+
+def read_wiki_html(url):
+    """Read HTML tables from Wikipedia with a proper User-Agent."""
+    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    html = urllib.request.urlopen(req).read().decode('utf-8')
+    return pd.read_html(io.StringIO(html))
+
+url = 'https://en.wikipedia.org/wiki/Population_of_Canada_by_province_and_territory'
+province_populations = read_wiki_html(
+    url
+)[0].droplevel(
+    0,
+    axis=1
+)[['Name', 'Pop.']].rename(
+    columns={'Name': 'name', 'Pop.': 'population'}
+).assign(
+    name=lambda x: x['name'].str.replace('Quebec', 'Québec')
+).query(
+    'name != "Canada"'
+)
+```
+
+##  {.scrollable}
+```{python}
+#| html-table-processing: none
+(
+    province_populations
+    .style.set_table_styles(_COMPACT)
+    .format(lambda v: str(v)[:28] + '…' if isinstance(v, str) and len(str(v)) > 28 else v)
+)
+```
+
+```{python}
+#| html-table-processing: none
+canadian_provinces = canadian_provinces.merge(province_populations)
+(
+    canadian_provinces
+    .style.set_table_styles(_COMPACT)
+    .format(lambda v: str(v)[:28] + '…' if isinstance(v, str) and len(str(v)) > 28 else v)
+)
+```
+
+##  {.scrollable}
+
+Now we can color Canadian provinces by population:
+
+```{python}
+alt.Chart(canadian_provinces, width=600, height=500).mark_geoshape(stroke='grey').project(
+    'transverseMercator',
+    rotate=[90, 0, 0]
+).encode(
+    color='population',
+    tooltip=['name', alt.Tooltip('population', format=',')],
+)
+```
+
+##  {.scrollable}
+
+We could also bin the color scale.
+This is more helpful when there are many small regions and don't add as much here.
+It has the same issues as binning a histogram
+as we can see on Alberta
+being binned into the lowest bin although it is closer
+to BC than Manitoba in terms of population
+(we could ameliorate this to some extent by increasing the number of bins)
+
+```{python}
+alt.Chart(canadian_provinces, width=600, height=500).mark_geoshape(stroke='grey').project(
+    'transverseMercator',
+    rotate=[90, 0, 0]
+).encode(
+    color=alt.Color('population').bin(),
+    tooltip=['name', alt.Tooltip('population', format=',')],
+)
+```
+##  {.scrollable}
+
+It's always a good idea to check if the output seems to make sense.
+Let's compare with [the chart on Wikipedia](https://en.wikipedia.org/wiki/File:Canada_provinces_and_territories_by_population.svg)
+to see if that's what we have gotten:
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Canada_provinces_and_territories_by_population.svg/496px-Canada_provinces_and_territories_by_population.svg.png)
+
+That looks about right!
+
+##  {.scrollable}
+
+For fun,
+we can make our chart look more similar to the one on Wikipedia.
+
+```{python}
+hover = alt.selection_point(fields=['name'], on='pointerover', empty=False)
+alt.Chart(canadian_provinces, width=600, height=500).mark_geoshape(strokeWidth=2).project(
+    'transverseMercator',
+    rotate=[90, 0, 0]
+).encode(
+    color=alt.Color('population').scale(scheme='tealblues').legend(None),
+    tooltip=['name', alt.Tooltip('population', format=',')],
+    stroke=alt.condition(hover, alt.value('white'), alt.value('#222222')),  # If hovering, stroke white, otherwise black
+    order=alt.condition(hover, alt.value(1), alt.value(0))  # Show the hovered stroke on top
+).configure(
+    background='transparent'
+).add_params(
+    hover
+)
+```
+## Maps in Shiny for Python  {.scrollable}
+
+Now that we have seen how to construct maps in Altair,
+the next step is to embed them in interactive apps.
+
+There are **two distinct interaction paradigms** to keep in mind:
+
+::: {.columns}
+::: {.column width="50%"}
+**Client-side (Altair / Vega-Lite)**
+
+- Interactions live in the browser as JavaScript
+- No round-trip to Python
+- Examples: hover, zoom, `selection_point`
+- Fast, but **invisible to Shiny's server**
+:::
+::: {.column width="50%"}
+**Server-side (Shiny)**
+
+- `input.*()` values travel to Python, trigger reactive re-renders
+- Can filter data, call models, update multiple outputs
+- Requires `output_widget` + `@render_altair`
+:::
+:::
+
+We start with the simplest static map and build up to reactive patterns.
+
+## Example 1: Static map in Shiny  {.scrollable}
+
+::: {.columns}
+::: {.column width="40%"}
+```{mermaid}
+flowchart LR
+  P([map])
+```
+The simplest case — just render an Altair geoshape inside a Shiny app.
+No inputs, no reactivity, but it establishes the pattern:
+`output_widget` in UI, `@render_altair` in server.
+
+**No reactive inputs — the map renders once**
+
+- `map` is a `@render_altair` output wired to `output_widget("map")` in the UI
+- Because it reads no `input.*()` values, Shiny never needs to invalidate or re-run it
+- The chart builds **once** on session start and stays fixed
+- This is the minimal embedding pattern: just enough to put an Altair chart inside Shiny
+:::
+::: {.column width="60%"}
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 520
+#| packages: [altair, shinywidgets]
+
+{{< include /code/lecture03/maps/app-01-map-static.py >}}
+```
+:::
+:::
+
+## Example 1: Static map in Shiny  {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 520
+#| packages: [altair, shinywidgets]
+
+{{< include /code/lecture03/maps/app-01-map-static.py >}}
+```
+
+## Example 2: Shiny input -> map style  {.scrollable}
+
+::: {.columns}
+::: {.column width="40%"}
+```{mermaid}
+flowchart LR
+  A[/input_projection/] --> P([map])
+```
+A **Shiny dropdown** changes the map projection — every time the user
+selects a new value, `input.projection()` travels to Python and triggers re-rendering.
+
+**One input drives one output**
+
+- When the user picks a projection, `input.projection()` changes
+- Shiny marks `map` as **invalid** and schedules a re-render
+- Python re-runs `@render_altair`, reads the new value, returns a fresh chart
+- The output widget updates in the browser — no page reload
+:::
+::: {.column width="60%"}
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 560
+#| packages: [altair, shinywidgets]
+
+{{< include /code/lecture03/maps/app-02-map-dropdown.py >}}
+```
+:::
+:::
+
+## Example 2: Shiny input -> map style  {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 560
+#| packages: [altair, shinywidgets]
+
+{{< include /code/lecture03/maps/app-02-map-dropdown.py >}}
+```
+
+## Example 3: Shiny input -> data -> map  {.scrollable}
+
+::: {.columns}
+::: {.column width="40%"}
+```{mermaid}
+flowchart TD
+  A[/input_year/] --> P([map])
+  B[/input_projection/] --> P
+```
+A more powerful pattern: the input controls **which data** the map shows.
+Here a year slider filters the gapminder dataset in Python, and `transform_lookup`
+joins the filtered rows to the world TopoJSON to produce a choropleth.
+
+**Two inputs, one output**
+
+- Either change invalidates `map` and triggers a full re-render
+- `input.year()` controls **data**: Python filters `gapminder` rows in the server before building the chart
+- `input.projection()` controls **style**: passed directly to `.project()`
+- Both still require a Python round-trip — client-side interaction alone couldn't filter the data
+:::
+::: {.column width="60%"}
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 560
+#| packages: [altair, shinywidgets, vega_datasets, pandas]
+
+{{< include /code/lecture03/maps/app-03-map-choropleth.py >}}
+```
+:::
+:::
+
+## Example 3: Shiny input -> data -> map  {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 560
+#| packages: [altair, shinywidgets, vega_datasets, pandas]
+
+{{< include /code/lecture03/maps/app-03-map-choropleth.py >}}
+```
+
+## Example 4: `@reactive.calc` -> map + bar chart  {.scrollable}
+
+::: {.columns}
+::: {.column width="45%"}
+```{mermaid}
+flowchart TD
+  A[/input_year/] --> F{{filtered}}
+  B[/input_region/] --> F
+  F --> P1([map])
+  F --> P2([bars])
+  C[/input_projection/] --> P1
+```
+When multiple outputs depend on the same filtered data,
+use a **`@reactive.calc`** so the filtering runs once
+and both outputs share the result.
+
+**`@reactive.calc` fans out to multiple outputs**
+
+- `filtered()` runs **once** when `input.year()` or `input.region()` changes
+- Both `map` and `bars` call `filtered()` — they receive the **cached** result; Python does not re-filter twice
+- `input.projection()` bypasses `filtered()` and feeds `map` directly — changing the projection re-renders only `map`, not `bars`
+- Rule of thumb: if two or more outputs share expensive computation, extract it into a `@reactive.calc`
+:::
+::: {.column width="55%"}
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 700
+#| packages: [altair, shinywidgets, vega_datasets, pandas]
+
+{{< include /code/lecture03/maps/app-04-map-and-chart.py >}}
+```
+:::
+:::
+
+## Example 4: `@reactive.calc` -> map + bar chart  {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 700
+#| packages: [altair, shinywidgets, vega_datasets, pandas]
+
+{{< include /code/lecture03/maps/app-04-map-and-chart.py >}}
+```
+
+## Example 4a: `@reactive.calc` -> map + top/bottom bars  {.scrollable}
+
+::: {.columns}
+::: {.column width="45%"}
+```{mermaid}
+flowchart TD
+  A[/input_year/] --> F{{filtered}}
+  B[/input_region/] --> F
+  F --> P1([map])
+  F --> P2([top5])
+  F --> P3([bottom5])
+  C[/input_projection/] --> P1
+```
+One way to fix ugliness is to split outputs into two. Luckily we can use the same reactivity pattern, but now with **three outputs**:
+the choropleth map plus separate bar charts for the top-5 and bottom-5
+countries by life expectancy.
+
+**One `@reactive.calc` feeds three outputs**
+
+- `filtered()` is called by `map`, `top5`, and `bottom5` — but runs only **once** per input change
+- `top5` renders the 5 highest life-expectancy countries; `bottom5` the 5 lowest — both derived from the same cached result
+- `input.projection()` still only invalidates `map` — the bar charts are unaffected
+- Adding a third output costs nothing extra: no additional Python filtering
+:::
+::: {.column width="55%"}
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 680
+#| packages: [altair, shinywidgets, vega_datasets, pandas]
+
+{{< include /code/lecture03/maps/app-04a-map-top-bottom.py >}}
+```
+:::
+:::
+
+## Example 4a: `@reactive.calc` -> map + top/bottom bars  {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 680
+#| packages: [altair, shinywidgets, vega_datasets, pandas]
+
+{{< include /code/lecture03/maps/app-04a-map-top-bottom.py >}}
+```

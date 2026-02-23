@@ -1,0 +1,12 @@
+jupyter
+shiny
+altair
+plotnine
+pandas
+polars
+narwhals
+palmerpenguins
+shinylive
+shinywidgets
+keplergl
+setuptools<81
