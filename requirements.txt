@@ -3,6 +3,7 @@ shiny
 altair
 plotnine
 pandas
+geopandas
 polars
 narwhals
 palmerpenguins
