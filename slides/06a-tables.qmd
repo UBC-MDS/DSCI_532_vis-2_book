@@ -244,15 +244,15 @@ def selected():
 flowchart LR
   A([my_table]) -- ".data_view<br>selected=True" --> P([scatter])
 ```
-::: {.smaller}
+
 **A rendered table can also be a reactive source**
 
 - `my_table` is a `@render.data_frame` output — but it also exposes `.data_view(selected=True)`
 - When the user selects rows, any output that calls `.data_view(selected=True)` is invalidated and re-runs
 - `scatter` re-renders with the selected rows highlighted — no separate `input.*` needed
 - The selection lives inside the rendered table; Shiny tracks it automatically
-:::
 
+:::
 ::: {.column width="50%"}
 ```{shinylive-python}
 #| standalone: true

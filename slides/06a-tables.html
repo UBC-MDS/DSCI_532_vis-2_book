@@ -575,7 +575,6 @@
 </div>
 </div>
 </div>
-<div class="smaller">
 <p><strong>A rendered table can also be a reactive source</strong></p>
 <ul>
 <li><code>my_table</code> is a <code>@render.data_frame</code> output — but it also exposes <code>.data_view(selected=True)</code></li>
@@ -583,8 +582,7 @@
 <li><code>scatter</code> re-renders with the selected rows highlighted — no separate <code>input.*</code> needed</li>
 <li>The selection lives inside the rendered table; Shiny tracks it automatically</li>
 </ul>
-</div>
-<div class="column" style="width:50%;">
+</div><div class="column" style="width:50%;">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-engine="python"><pre class="sourceCode numberSource shinylive-python number-lines code-with-copy"><code class="sourceCode"><span id="cb10-1"><a></a>#| '!! shinylive warning !!': |</span>
 <span id="cb10-2"><a></a>#|   shinylive does not work in self-contained HTML documents.</span>
 <span id="cb10-3"><a></a>#|   Please set `embed-resources: false` in your metadata.</span>
@@ -622,7 +620,7 @@
 <span id="cb10-35"><a></a>            y=alt.Y("Horsepower:Q"),</span>
 <span id="cb10-36"><a></a>            tooltip=["Name:N", "Miles_per_Gallon:Q", "Horsepower:Q"],</span>
 <span id="cb10-37"><a></a>        )</span>
-<span id="cb10-38"><a></a>        if selected.empty:</span>
+<span id="cb10-38"><a></a>        if selected is None or selected.empty:</span>
 <span id="cb10-39"><a></a>            return base.properties(width="container", height=260)</span>
 <span id="cb10-40"><a></a>        highlight = alt.Chart(selected).mark_circle(color="#3B82F6", size=80).encode(</span>
 <span id="cb10-41"><a></a>            x="Miles_per_Gallon:Q",</span>
@@ -631,7 +629,9 @@
 <span id="cb10-44"><a></a>        return (base + highlight).properties(width="container", height=260)</span>
 <span id="cb10-45"><a></a></span>
 <span id="cb10-46"><a></a>app = App(app_ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div></div><section id="example-2-row-selection-drives-a-chart-1" class="slide level2">
+</div></div>
+</section>
+<section id="example-2-row-selection-drives-a-chart-1" class="slide level2">
 <h2>Example 2: Row selection drives a chart</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-engine="python"><pre class="sourceCode numberSource shinylive-python number-lines code-with-copy"><code class="sourceCode"><span id="cb11-1"><a></a>#| '!! shinylive warning !!': |</span>
 <span id="cb11-2"><a></a>#|   shinylive does not work in self-contained HTML documents.</span>
@@ -671,7 +671,7 @@
 <span id="cb11-36"><a></a>            y=alt.Y("Horsepower:Q"),</span>
 <span id="cb11-37"><a></a>            tooltip=["Name:N", "Miles_per_Gallon:Q", "Horsepower:Q"],</span>
 <span id="cb11-38"><a></a>        )</span>
-<span id="cb11-39"><a></a>        if selected.empty:</span>
+<span id="cb11-39"><a></a>        if selected is None or selected.empty:</span>
 <span id="cb11-40"><a></a>            return base.properties(width="container", height=260)</span>
 <span id="cb11-41"><a></a>        highlight = alt.Chart(selected).mark_circle(color="#3B82F6", size=80).encode(</span>
 <span id="cb11-42"><a></a>            x="Miles_per_Gallon:Q",</span>
@@ -680,7 +680,8 @@
 <span id="cb11-45"><a></a>        return (base + highlight).properties(width="container", height=260)</span>
 <span id="cb11-46"><a></a></span>
 <span id="cb11-47"><a></a>app = App(app_ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section><section id="example-3-linked-table-chart" class="slide level2">
+</section>
+<section id="example-3-linked-table-chart" class="slide level2">
 <h2>Example 3: Linked table + chart</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
@@ -762,7 +763,7 @@
 <span id="cb12-52"><a></a>            x="Miles_per_Gallon:Q", y="Horsepower:Q",</span>
 <span id="cb12-53"><a></a>            tooltip=display_cols,</span>
 <span id="cb12-54"><a></a>        )</span>
-<span id="cb12-55"><a></a>        if selected.empty:</span>
+<span id="cb12-55"><a></a>        if selected is None or selected.empty:</span>
 <span id="cb12-56"><a></a>            return base.properties(width="container", height=320)</span>
 <span id="cb12-57"><a></a>        hi = alt.Chart(selected).mark_circle(color="#3B82F6", size=90).encode(</span>
 <span id="cb12-58"><a></a>            x="Miles_per_Gallon:Q", y="Horsepower:Q",</span>
@@ -771,7 +772,8 @@
 <span id="cb12-61"><a></a></span>
 <span id="cb12-62"><a></a>app = App(app_ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div></div>
-</section><section id="example-3-linked-table-chart-full-example" class="slide level2">
+</section>
+<section id="example-3-linked-table-chart-full-example" class="slide level2">
 <h2>Example 3: Linked table + chart: full example</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-engine="python"><pre class="sourceCode numberSource shinylive-python number-lines code-with-copy"><code class="sourceCode"><span id="cb13-1"><a></a>#| '!! shinylive warning !!': |</span>
 <span id="cb13-2"><a></a>#|   shinylive does not work in self-contained HTML documents.</span>
@@ -828,7 +830,7 @@
 <span id="cb13-53"><a></a>            x="Miles_per_Gallon:Q", y="Horsepower:Q",</span>
 <span id="cb13-54"><a></a>            tooltip=display_cols,</span>
 <span id="cb13-55"><a></a>        )</span>
-<span id="cb13-56"><a></a>        if selected.empty:</span>
+<span id="cb13-56"><a></a>        if selected is None or selected.empty:</span>
 <span id="cb13-57"><a></a>            return base.properties(width="container", height=320)</span>
 <span id="cb13-58"><a></a>        hi = alt.Chart(selected).mark_circle(color="#3B82F6", size=90).encode(</span>
 <span id="cb13-59"><a></a>            x="Miles_per_Gallon:Q", y="Horsepower:Q",</span>
@@ -838,8 +840,6 @@
 <span id="cb13-63"><a></a>app = App(app_ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
-</section>
-</div>
 </section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
