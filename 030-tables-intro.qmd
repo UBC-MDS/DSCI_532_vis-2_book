@@ -7,3 +7,5 @@ title: Shiny Tables Introduction
 {{< revealjs file="slides/06a-tables.html" height="500px" class="ratio ratio-16x9" >}}
 
 :::
+
+{{< include /slides/06a-tables.qmd >}}

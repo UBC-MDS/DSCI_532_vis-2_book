@@ -24,3 +24,4 @@ Make an account on Posit Connect Cloud: <https://connect.posit.cloud/>
 
 ## render.com
 
+You can also use <https://render.com/> to make deployments.

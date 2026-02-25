@@ -935,7 +935,7 @@ To also let users manually clear with a button, take an explicit dependency on a
 ```python
 @reactive.calc
 def filtered():
-    _ = input.reset_btn()  # click invalidates filtered()
+    _ = input.reset_btn()  # explicit dependency — click invalidates filtered()
     df = cars.copy()
     if input.origin() != "All":
         df = df[df["Origin"] == input.origin()]

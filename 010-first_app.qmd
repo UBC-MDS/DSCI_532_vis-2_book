@@ -6,14 +6,6 @@ title: Your first app
 
 {{< revealjs file="slides/02-first_shiny.html" height="500px" class="ratio ratio-16x9" >}}
 
-
-```{shinylive-python}
-#| standalone: true
-#| components: [editor, viewer]
-#| layout: horizontal
-#| viewerHeight: 500
-
-{{< include /code/lecture01/app-05-core-altair-first_app.py >}}
-```
-
 :::
+
+{{< include slides/02-first_shiny.qmd >}}
