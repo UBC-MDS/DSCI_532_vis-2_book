@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>More UI pattern examples – DSCI 532: Data Visualization 2</title>
+<title>More Styling 💅 – DSCI 532: Data Visualization 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -42,6 +77,11 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-c2184ee79b4189700a07fecab5507ffb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.10.7/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.10.7/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.10.7/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,6 +109,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
  
   <style>
   .slide-deck {
@@ -124,7 +167,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More UI pattern examples</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More Styling 💅</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -237,7 +280,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./040-styling.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">More UI pattern examples</span></a>
+ <span class="menu-text">More Styling 💅</span></a>
   </div>
 </li>
       </ul>
@@ -247,15 +290,54 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#lecture-overview" id="toc-lecture-overview" class="nav-link active" data-scroll-target="#lecture-overview">Lecture overview</a></li>
+  <li><a href="#block-1-styles-themes" id="toc-block-1-styles-themes" class="nav-link" data-scroll-target="#block-1-styles-themes">Block 1 — Styles &amp; themes</a></li>
+  <li><a href="#shiny-and-bootstrap" id="toc-shiny-and-bootstrap" class="nav-link" data-scroll-target="#shiny-and-bootstrap">Shiny and Bootstrap</a></li>
+  <li><a href="#theme-presets-with-ui.theme" id="toc-theme-presets-with-ui.theme" class="nav-link" data-scroll-target="#theme-presets-with-ui.theme">Theme presets with <code>ui.Theme</code></a></li>
+  <li><a href="#page_fillable-vs-page_fluid" id="toc-page_fillable-vs-page_fluid" class="nav-link" data-scroll-target="#page_fillable-vs-page_fluid"><code>page_fillable</code> vs <code>page_fluid</code></a></li>
+  <li><a href="#inline-css-on-ui-components" id="toc-inline-css-on-ui-components" class="nav-link" data-scroll-target="#inline-css-on-ui-components">Inline CSS on UI components</a></li>
+  <li><a href="#creating-a-styled-dashboard-header" id="toc-creating-a-styled-dashboard-header" class="nav-link" data-scroll-target="#creating-a-styled-dashboard-header">Creating a styled dashboard header</a></li>
+  <li><a href="#block-1-synthesis-styles-themes" id="toc-block-1-synthesis-styles-themes" class="nav-link" data-scroll-target="#block-1-synthesis-styles-themes">Block 1 synthesis: styles &amp; themes</a></li>
+  <li><a href="#block-1-synthesis-styles-themes-1" id="toc-block-1-synthesis-styles-themes-1" class="nav-link" data-scroll-target="#block-1-synthesis-styles-themes-1">Block 1 synthesis: styles &amp; themes</a></li>
+  <li><a href="#block-2-layout-ux" id="toc-block-2-layout-ux" class="nav-link" data-scroll-target="#block-2-layout-ux">Block 2 — Layout &amp; UX</a></li>
+  <li><a href="#cards-as-layout-containers" id="toc-cards-as-layout-containers" class="nav-link" data-scroll-target="#cards-as-layout-containers">Cards as layout containers</a></li>
+  <li><a href="#accordion-collapsible-sections" id="toc-accordion-collapsible-sections" class="nav-link" data-scroll-target="#accordion-collapsible-sections">Accordion: collapsible sections</a></li>
+  <li><a href="#value-boxes" id="toc-value-boxes" class="nav-link" data-scroll-target="#value-boxes">Value boxes</a></li>
+  <li><a href="#value-boxes-comparison-example" id="toc-value-boxes-comparison-example" class="nav-link" data-scroll-target="#value-boxes-comparison-example">Value boxes: comparison example</a></li>
+  <li><a href="#block-3-table-polish-synthesis" id="toc-block-3-table-polish-synthesis" class="nav-link" data-scroll-target="#block-3-table-polish-synthesis">Block 3 — Table polish &amp; synthesis</a></li>
+  <li><a href="#conditional-row-styling" id="toc-conditional-row-styling" class="nav-link" data-scroll-target="#conditional-row-styling">Conditional row styling</a></li>
+  <li><a href="#conditional-row-styling-live-example" id="toc-conditional-row-styling-live-example" class="nav-link" data-scroll-target="#conditional-row-styling-live-example">Conditional row styling: live example</a></li>
+  <li><a href="#putting-it-together" id="toc-putting-it-together" class="nav-link" data-scroll-target="#putting-it-together">Putting it together</a></li>
+  <li><a href="#putting-it-together-full-styled-dashboard-editor" id="toc-putting-it-together-full-styled-dashboard-editor" class="nav-link" data-scroll-target="#putting-it-together-full-styled-dashboard-editor">Putting it together: full styled dashboard (editor)</a></li>
+  <li><a href="#tips-for-clean-layouts" id="toc-tips-for-clean-layouts" class="nav-link" data-scroll-target="#tips-for-clean-layouts">Tips for clean layouts</a></li>
+  <li><a href="#block-4-advanced-reactivity" id="toc-block-4-advanced-reactivity" class="nav-link" data-scroll-target="#block-4-advanced-reactivity">Block 4 — Advanced reactivity</a></li>
+  <li><a href="#reactive-input-components-linked-filters" id="toc-reactive-input-components-linked-filters" class="nav-link" data-scroll-target="#reactive-input-components-linked-filters">Reactive input components: linked filters</a></li>
+  <li><a href="#reactive-input-components-linked-filters-1" id="toc-reactive-input-components-linked-filters-1" class="nav-link" data-scroll-target="#reactive-input-components-linked-filters-1">Reactive input components: linked filters</a></li>
+  <li><a href="#alternative-reactive.effect-ui.update_slider" id="toc-alternative-reactive.effect-ui.update_slider" class="nav-link" data-scroll-target="#alternative-reactive.effect-ui.update_slider">Alternative: <code>@reactive.effect</code> + <code>ui.update_slider()</code></a></li>
+  <li><a href="#alternative-reactive.effect-ui.update_slider-1" id="toc-alternative-reactive.effect-ui.update_slider-1" class="nav-link" data-scroll-target="#alternative-reactive.effect-ui.update_slider-1">Alternative: <code>@reactive.effect</code> + <code>ui.update_slider()</code></a></li>
+  <li><a href="#when-do-you-need-req" id="toc-when-do-you-need-req" class="nav-link" data-scroll-target="#when-do-you-need-req">When do you need <code>req()</code>?</a></li>
+  <li><a href="#selecting-columns-to-show" id="toc-selecting-columns-to-show" class="nav-link" data-scroll-target="#selecting-columns-to-show">Selecting columns to show</a></li>
+  <li><a href="#reminder-data_view" id="toc-reminder-data_view" class="nav-link" data-scroll-target="#reminder-data_view">Reminder: <code>data_view()</code></a></li>
+  <li><a href="#export-filtered-data-to-csv" id="toc-export-filtered-data-to-csv" class="nav-link" data-scroll-target="#export-filtered-data-to-csv">Export filtered data to CSV</a></li>
+  <li><a href="#export-filtered-data-to-csv-1" id="toc-export-filtered-data-to-csv-1" class="nav-link" data-scroll-target="#export-filtered-data-to-csv-1">Export filtered data to CSV</a></li>
+  <li><a href="#reset-table-selections" id="toc-reset-table-selections" class="nav-link" data-scroll-target="#reset-table-selections">Reset table selections</a></li>
+  <li><a href="#reset-all-filters-to-defaults" id="toc-reset-all-filters-to-defaults" class="nav-link" data-scroll-target="#reset-all-filters-to-defaults">Reset all filters to defaults</a></li>
+  <li><a href="#editable-tables-bonus" id="toc-editable-tables-bonus" class="nav-link" data-scroll-target="#editable-tables-bonus">Editable tables (bonus)</a></li>
+  <li><a href="#block-4-advanced-reactivity-lessons" id="toc-block-4-advanced-reactivity-lessons" class="nav-link" data-scroll-target="#block-4-advanced-reactivity-lessons">Block 4 — Advanced reactivity: lessons</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More UI pattern examples</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More Styling 💅</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">More UI pattern examples</h1>
+<h1 class="title">More Styling 💅</h1>
 </div>
 
 
@@ -279,8 +361,2370 @@ ul.task-list li input[type="checkbox"] {
     </div>
   
 </div>
+<section id="lecture-overview" class="level2">
+<h2 class="anchored" data-anchor-id="lecture-overview">Lecture overview</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Learning goals
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Block 1 — Styles &amp; themes</strong></p>
+<ol type="1">
+<li>Understand how Shiny builds on Bootstrap 5</li>
+<li>Swap entire app themes with <code>ui.Theme</code> / Bootswatch presets</li>
+<li>Prefer Bootstrap utilities; use inline CSS for targeted tweaks</li>
+<li>Build a styled dashboard header</li>
+</ol>
+<p><strong>Block 2 — Layout &amp; UX</strong></p>
+<ol start="5" type="1">
+<li>Arrange outputs with <code>ui.card()</code> and <code>layout_columns(col_widths=)</code></li>
+<li>Use <code>ui.accordion()</code> to collapse groups of controls</li>
+<li>Display reactive KPIs with <code>ui.value_box()</code></li>
+</ol>
+<p><strong>Block 3 — Table polish</strong></p>
+<ol start="8" type="1">
+<li>Apply conditional row styling to highlight data signals</li>
+</ol>
+<p><strong>Block 4 — Advanced reactivity</strong></p>
+<ol start="9" type="1">
+<li>Make input components reactive (linked filters)</li>
+<li>Export filtered data to CSV with <code>data()</code> / <code>data_view()</code></li>
+<li>Reset table selections programmatically</li>
+</ol>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Topics
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Block 1 — Styles &amp; themes</strong></p>
+<ul>
+<li>Bootstrap 5 foundation · Bootswatch theme presets</li>
+<li><code>page_fillable</code> vs <code>page_fluid</code></li>
+<li>Bootstrap utilities vs inline CSS · styled header</li>
+</ul>
+<p><strong>Block 2 — Layout &amp; UX</strong></p>
+<ul>
+<li>Cards + <code>layout_columns(col_widths=)</code> · Accordion</li>
+<li>Value boxes with reactive comparison</li>
+</ul>
+<p><strong>Block 3 — Table polish &amp; synthesis</strong></p>
+<ul>
+<li>Conditional row / cell styling</li>
+<li>Full styled dashboard · Layout tips</li>
+</ul>
+<p><strong>Block 4 — Advanced reactivity</strong></p>
+<ul>
+<li>Column picker · Linked filters</li>
+<li>CSV export (<code>data()</code> vs <code>data_view()</code>) · Selection reset · Editable tables</li>
+</ul>
+<p><strong>Review</strong>: <a href="01b-dashboard-design.qmd">01b-dashboard-design</a> design principles</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="block-1-styles-themes" class="level2">
+<h2 class="anchored" data-anchor-id="block-1-styles-themes">Block 1 — Styles &amp; themes</h2>
+<p>Bootstrap 5 foundation · <code>ui.Theme</code> presets · Bootstrap utilities · <code>page_fillable</code> · styled header</p>
+</section>
+<section id="shiny-and-bootstrap" class="level2">
+<h2 class="anchored" data-anchor-id="shiny-and-bootstrap">Shiny and Bootstrap</h2>
+<p>Shiny’s UI layer is built on top of <a href="https://getbootstrap.com/docs/5.3/">Bootstrap 5</a> — it provides a <strong>12-column responsive grid</strong> and a library of ready-made utility classes.</p>
+<p>You can (but if you don’t <strong>have to</strong> - don’t!) use <strong>any Bootstrap 5 class</strong> via the <code>class_=</code> argument on any <code>ui.tags.*</code> element.</p>
+<p><strong>Using standard themes &gt;&gt; using Bootstrap-based app CSS &gt;&gt; manually assigning classes &gt;&gt; inline CSS</strong></p>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>Utility class groups</strong> — attach via <code>class_=</code> on any <code>ui.div()</code>, <code>ui.p()</code>, <code>ui.tags.*</code></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Group</th>
+<th>Key classes</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/spacing/">Spacing</a></td>
+<td><code>mt-3</code> <code>px-2</code> <code>mb-0</code></td>
+<td><code>class_="mt-3 px-2"</code></td>
+</tr>
+<tr class="even">
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/text/">Typography</a></td>
+<td><code>text-muted</code> <code>fw-bold</code> <code>small</code> <code>fs-3</code></td>
+<td><code>class_="text-muted small"</code></td>
+</tr>
+<tr class="odd">
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/colors/">Color</a></td>
+<td><code>bg-primary</code> <code>text-white</code> <code>bg-light</code></td>
+<td><code>class_="bg-primary text-white"</code></td>
+</tr>
+<tr class="even">
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/flex/">Flex</a></td>
+<td><code>d-flex</code> <code>justify-content-between</code> <code>align-items-center</code></td>
+<td><code>class_="d-flex justify-content-between"</code></td>
+</tr>
+<tr class="odd">
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/borders/">Borders</a></td>
+<td><code>border</code> <code>rounded</code> <code>rounded-3</code></td>
+<td><code>class_="border rounded p-2"</code></td>
+</tr>
+<tr class="even">
+<td><a href="https://getbootstrap.com/docs/5.3/components/badge/">Badges</a></td>
+<td><code>badge</code> <code>bg-success</code> <code>bg-danger</code></td>
+<td><code>ui.tags.span("New", class_="badge bg-success")</code></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:45%;">
+<p><strong>Responsive 12-column grid</strong></p>
+<p><code>layout_columns(col_widths=)</code> maps directly to Bootstrap columns — widths must sum to 12:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ui.layout_columns(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    ui.card(...),   <span class="co"># 5 cols</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    ui.card(...),   <span class="co"># 7 cols</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    col_widths<span class="op">=</span>[<span class="dv">5</span>, <span class="dv">7</span>],</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Pass a dict for breakpoints — stacks on mobile, side-by-side on desktop:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>col_widths<span class="op">=</span>{<span class="st">"sm"</span>: [<span class="dv">12</span>, <span class="dv">12</span>], <span class="st">"lg"</span>: [<span class="dv">5</span>, <span class="dv">7</span>]}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="theme-presets-with-ui.theme" class="level2">
+<h2 class="anchored" data-anchor-id="theme-presets-with-ui.theme">Theme presets with <code>ui.Theme</code></h2>
+<p>We can swap the entire look in one line of code: Shiny ships with <a href="https://bootswatch.com/">Bootswatch</a> presets:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In a standalone app (not shinylive):</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shiny <span class="im">import</span> App, ui</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>app_ui <span class="op">=</span> ui.page_sidebar(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    ui.sidebar(<span class="st">"Controls here"</span>),</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    ui.card(ui.p(<span class="st">"Content"</span>)),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    theme<span class="op">=</span>ui.Theme(<span class="st">"cosmo"</span>),       <span class="co"># try: "flatly", "darkly", "minty", "lux"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Available presets include: <code>shiny</code> (default) · <code>bootstrap</code> · <code>cerulean</code> · <code>cosmo</code> · <code>darkly</code> · <code>flatly</code> · <code>journal</code> · <code>litera</code> · <code>lumen</code> · <code>lux</code> · <code>minty</code> · <code>pulse</code> · <code>sandstone</code> · <code>simplex</code> · <code>sketchy</code> · <code>slate</code> · <code>solar</code> · <code>spacelab</code> · <code>superhero</code> · <code>united</code> · <code>yeti</code></p>
+<p>You can also customise variables:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>my_theme <span class="op">=</span> (</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    ui.Theme(<span class="st">"flatly"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .add_defaults(primary<span class="op">=</span><span class="st">"#6f42c1"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    .add_rules(<span class="st">"h1 { letter-spacing: 0.05em; }"</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-simple callout-warning no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><code>ui.Theme</code> requires <code>pip install libsass</code> (or <code>pip install "shiny[theme]"</code>) and is compiled at first load. It does <strong>not</strong> work inside shinylive.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/ui.Theme.html"><code>ui.Theme</code></a> · <a href="https://shiny.posit.co/py/docs/theming.html">Shiny theming guide</a> · <a href="https://bootswatch.com/">Bootswatch presets</a></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Design principle</strong> (from <a href="01b-dashboard-design.qmd#general-tips">01b</a>): Start from <strong>established style and UX conventions</strong> — themes let you adopt a consistent look quickly, then customize.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="page_fillable-vs-page_fluid" class="level2">
+<h2 class="anchored" data-anchor-id="page_fillable-vs-page_fluid"><code>page_fillable</code> vs <code>page_fluid</code></h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong><code>ui.page_fluid()</code></strong></p>
+<ul>
+<li>Content has a <strong>fixed max-width</strong> and scrolls vertically</li>
+<li>Good for text-heavy apps or when output heights are predictable</li>
+<li>Default behaviour</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong><code>ui.page_fillable()</code></strong></p>
+<ul>
+<li>Content <strong>fills the browser window</strong> vertically</li>
+<li>Cards and outputs stretch to use available space</li>
+<li>Best for dashboards with charts / tables</li>
+<li>Set <code>fill=False</code> on individual items to opt out</li>
+</ul>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filling layout — cards expand to fill the screen</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>app_ui <span class="op">=</span> ui.page_fillable(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    ui.layout_columns(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        ui.card(ui.output_data_frame(<span class="st">"tbl"</span>)),   <span class="co"># fills</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        ui.card(output_widget(<span class="st">"chart"</span>)),          <span class="co"># fills</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        col_widths<span class="op">=</span>[<span class="dv">5</span>, <span class="dv">7</span>],</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Rule of thumb: use <code>page_fillable</code> for dashboards, <code>page_fluid</code> for reports and forms.</p>
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/ui.page_fillable.html"><code>ui.page_fillable</code></a> · <a href="https://shiny.posit.co/py/api/core/ui.page_fluid.html"><code>ui.page_fluid</code></a></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Design principle</strong> (from <a href="01b-dashboard-design.qmd#layout-the-app-logically">01b</a>): A consistent <strong>grid layout</strong> improves scanning — fillable pages keep cards aligned across the viewport.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="inline-css-on-ui-components" class="level2">
+<h2 class="anchored" data-anchor-id="inline-css-on-ui-components">Inline CSS on UI components</h2>
+<p><strong>Prefer Bootstrap classes</strong> — they respect the active <code>ui.Theme()</code> and need no extra CSS. Use <code>style=</code> only for what Bootstrap can’t express.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Bootstrap first (preferred)</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Themed header — bg-primary updates automatically</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># when you swap ui.Theme("flatly") → ui.Theme("darkly")</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ui.div(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    ui.h4(<span class="st">"Cars Explorer"</span>, class_<span class="op">=</span><span class="st">"mb-0"</span>),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    class_<span class="op">=</span><span class="st">"bg-primary text-white p-3 d-flex align-items-center"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Status badge in a card header</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>ui.card_header(</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MPG trend"</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    ui.tags.span(<span class="st">"live"</span>, class_<span class="op">=</span><span class="st">"badge bg-success ms-2"</span>),</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:50%;">
+<p><strong>Inline CSS — targeted tweaks only</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Custom brand hex — no Bootstrap equivalent</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ui.div(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    ui.h4(<span class="st">"Cars Explorer"</span>, class_<span class="op">=</span><span class="st">"mb-0 text-white"</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    class_<span class="op">=</span><span class="st">"p-3 d-flex align-items-center"</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    style<span class="op">=</span><span class="st">"background-color: #1e40af;"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Exact sizing Bootstrap's scale can't express</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>ui.div(output_widget(<span class="st">"chart"</span>), style<span class="op">=</span><span class="st">"min-height: 320px;"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Use <code>style=</code> when: custom brand colour, exact pixel value, or a CSS property with no Bootstrap utility.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="creating-a-styled-dashboard-header" class="level2">
+<h2 class="anchored" data-anchor-id="creating-a-styled-dashboard-header">Creating a styled dashboard header</h2>
+<p><code>bg-primary</code> picks up the active theme colour — swap <code>ui.Theme("flatly")</code> → <code>ui.Theme("darkly")</code> and the header updates automatically. Add a subtitle and badge to build a polished header entirely from Bootstrap.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shiny <span class="im">import</span> App, ui</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Theme-aware header — bg-primary adapts to any ui.Theme preset</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>header <span class="op">=</span> ui.div(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    ui.div(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        ui.h1(<span class="st">"Cars Explorer"</span>, class_<span class="op">=</span><span class="st">"mb-0 fs-3"</span>),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        ui.p(<span class="st">"Fuel economy dataset · 1970–1982"</span>, class_<span class="op">=</span><span class="st">"mb-0 opacity-75 small"</span>),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    ui.tags.span(<span class="st">"v1.0"</span>, class_<span class="op">=</span><span class="st">"badge bg-light text-dark"</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    class_<span class="op">=</span><span class="st">"bg-primary text-white p-4 d-flex justify-content-between align-items-center"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This is the pattern used in both the Block 1 synthesis and the full dashboard later.</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Classes used — all from Bootstrap</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Class</th>
+<th>Effect</th>
+<th>Docs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>bg-primary</code></td>
+<td>theme background colour (updates with <code>ui.Theme</code>)</td>
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/background/">Background</a></td>
+</tr>
+<tr class="even">
+<td><code>text-white</code></td>
+<td>white text</td>
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/colors/">Colors</a></td>
+</tr>
+<tr class="odd">
+<td><code>p-4</code></td>
+<td>1.5 rem padding on all sides</td>
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/spacing/">Spacing</a></td>
+</tr>
+<tr class="even">
+<td><code>mb-0</code> / <code>mb-3</code></td>
+<td>margin-bottom 0 / 1 rem</td>
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/spacing/">Spacing</a></td>
+</tr>
+<tr class="odd">
+<td><code>fs-3</code></td>
+<td>font-size 1.75 rem</td>
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/text/#font-size">Font size</a></td>
+</tr>
+<tr class="even">
+<td><code>small</code></td>
+<td>80% font size</td>
+<td><a href="https://getbootstrap.com/docs/5.3/content/typography/#inline-text-elements">Typography</a></td>
+</tr>
+<tr class="odd">
+<td><code>opacity-75</code></td>
+<td>75% opacity</td>
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/opacity/">Opacity</a></td>
+</tr>
+<tr class="even">
+<td><code>d-flex</code></td>
+<td><code>display: flex</code></td>
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/flex/">Flex</a></td>
+</tr>
+<tr class="odd">
+<td><code>justify-content-between</code></td>
+<td>push children to opposite ends</td>
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/flex/#justify-content">Flex</a></td>
+</tr>
+<tr class="even">
+<td><code>align-items-center</code></td>
+<td>centre children vertically</td>
+<td><a href="https://getbootstrap.com/docs/5.3/utilities/flex/#align-items">Flex</a></td>
+</tr>
+<tr class="odd">
+<td><code>badge</code></td>
+<td>inline pill/chip component</td>
+<td><a href="https://getbootstrap.com/docs/5.3/components/badge/">Badges</a></td>
+</tr>
+</tbody>
+</table>
+<p><code>d-flex justify-content-between</code> lets you add a badge or button to the right side without extra CSS — e.g.&nbsp;<code>ui.tags.span("v1.2", class_="badge bg-light text-dark")</code>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="block-1-synthesis-styles-themes" class="level2">
+<h2 class="anchored" data-anchor-id="block-1-synthesis-styles-themes">Block 1 synthesis: styles &amp; themes</h2>
+<div class="columns">
+<div class="column" style="width:35%;">
+<p><strong>What this app demonstrates</strong></p>
+<ul>
+<li><code>page_fillable</code> — cards stretch to fill the viewport</li>
+<li>Header: <code>bg-primary</code>, <code>text-white</code>, <code>d-flex</code>, <code>justify-content-between</code> + badge — <strong>no <code>style=</code></strong></li>
+<li>Bootstrap utility classes for spacing, colour, and typography — no external CSS</li>
+<li><code>style=</code> used only for values Bootstrap can’t express: a brand hex and exact font metrics</li>
+</ul>
+<p><strong>Rule</strong>: if Bootstrap has a class for it, use the class. <code>style=</code> is for the ~10%: brand colours and exact pixel metrics.</p>
+</div><div class="column" style="width:65%;">
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+
+from shiny import App, ui
+
+# Block 1 synthesis — Bootstrap 5 + page_fillable + inline CSS + styled header
+# Demonstrates all Block 1 UI patterns in one coherent app (no data dependencies).
+
+# Header: Bootstrap classes only — bg-primary is theme-aware.
+# d-flex + justify-content-between pushes badge to the right without custom CSS.
+header = ui.div(
+    ui.div(
+        ui.h1("Dashboard Explorer", class_="mb-0 fs-3"),
+        ui.p("Bootstrap 5 · Shiny UI patterns", class_="mb-0 opacity-75 small"),
+    ),
+    ui.tags.span("v1.0", class_="badge bg-light text-dark"),
+    class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
+)
+
+app_ui = ui.page_fillable(
+    header,
+    ui.layout_columns(
+        # --- Card 1: Bootstrap utility classes ---
+        ui.card(
+            ui.card_header("Bootstrap utility classes"),
+            ui.div(
+                ui.p("Spacing, colour, and flex — no custom CSS needed:", class_="text-muted small mb-3"),
+                # Status badge in a flex row
+                ui.div(
+                    ui.span("Status", class_="fw-semibold"),
+                    ui.tags.span("Active", class_="badge bg-success ms-2"),
+                    class_="d-flex align-items-center mb-2",
+                ),
+                # Muted helper text
+                ui.p("Secondary info", class_="text-muted small mb-2"),
+                # Light bordered panel — border + rounded + bg-light, all Bootstrap
+                ui.div("Bordered panel", class_="border rounded p-2 bg-light text-center text-muted small"),
+            ),
+        ),
+        # --- Card 2: Inline CSS — brand colour only ---
+        ui.card(
+            ui.card_header("Inline CSS — targeted tweaks"),
+            ui.div(
+                ui.p("Use style= only for values Bootstrap can't express:", class_="text-muted small mb-3"),
+                # Custom brand colour has no Bootstrap equivalent → style=
+                ui.div(
+                    "Brand accent panel",
+                    class_="text-white p-3 rounded mb-2 fw-semibold",
+                    style="background-color: #6f42c1;",
+                ),
+                # Fine-grained font metrics outside Bootstrap's scale
+                ui.p(
+                    "Fine print — 0.72 rem, tracked",
+                    style="font-size: 0.72rem; letter-spacing: 0.05em; color: #6B7280;",
+                ),
+            ),
+        ),
+        # --- Card 3: page_fillable note ---
+        ui.card(
+            ui.card_header("page_fillable"),
+            ui.div(
+                ui.p("Cards fill the viewport vertically.", class_="text-muted small mb-3"),
+                ui.div(
+                    ui.p("Each card stretches to use available space.", class_="mb-1"),
+                    ui.p("Set fill=False on an item to opt out.", class_="mb-0 text-muted small"),
+                    class_="border-start border-primary border-3 ps-3",
+                ),
+            ),
+        ),
+        col_widths=[4, 4, 4],
+    ),
+)
 
 
+def server(input, output, session):
+    pass
+
+
+app = App(app_ui, server)
+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="block-1-synthesis-styles-themes-1" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="block-1-synthesis-styles-themes-1">Block 1 synthesis: styles &amp; themes</h2>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+
+from shiny import App, ui
+
+# Block 1 synthesis — Bootstrap 5 + page_fillable + inline CSS + styled header
+# Demonstrates all Block 1 UI patterns in one coherent app (no data dependencies).
+
+# Header: Bootstrap classes only — bg-primary is theme-aware.
+# d-flex + justify-content-between pushes badge to the right without custom CSS.
+header = ui.div(
+    ui.div(
+        ui.h1("Dashboard Explorer", class_="mb-0 fs-3"),
+        ui.p("Bootstrap 5 · Shiny UI patterns", class_="mb-0 opacity-75 small"),
+    ),
+    ui.tags.span("v1.0", class_="badge bg-light text-dark"),
+    class_="bg-primary text-white p-4 mb-0 d-flex justify-content-between align-items-center",
+)
+
+app_ui = ui.page_fillable(
+    header,
+    ui.layout_columns(
+        # --- Card 1: Bootstrap utility classes ---
+        ui.card(
+            ui.card_header("Bootstrap utility classes"),
+            ui.div(
+                ui.p("Spacing, colour, and flex — no custom CSS needed:", class_="text-muted small mb-3"),
+                # Status badge in a flex row
+                ui.div(
+                    ui.span("Status", class_="fw-semibold"),
+                    ui.tags.span("Active", class_="badge bg-success ms-2"),
+                    class_="d-flex align-items-center mb-2",
+                ),
+                # Muted helper text
+                ui.p("Secondary info", class_="text-muted small mb-2"),
+                # Light bordered panel — border + rounded + bg-light, all Bootstrap
+                ui.div("Bordered panel", class_="border rounded p-2 bg-light text-center text-muted small"),
+            ),
+        ),
+        # --- Card 2: Inline CSS — brand colour only ---
+        ui.card(
+            ui.card_header("Inline CSS — targeted tweaks"),
+            ui.div(
+                ui.p("Use style= only for values Bootstrap can't express:", class_="text-muted small mb-3"),
+                # Custom brand colour has no Bootstrap equivalent → style=
+                ui.div(
+                    "Brand accent panel",
+                    class_="text-white p-3 rounded mb-2 fw-semibold",
+                    style="background-color: #6f42c1;",
+                ),
+                # Fine-grained font metrics outside Bootstrap's scale
+                ui.p(
+                    "Fine print — 0.72 rem, tracked",
+                    style="font-size: 0.72rem; letter-spacing: 0.05em; color: #6B7280;",
+                ),
+            ),
+        ),
+        # --- Card 3: page_fillable note ---
+        ui.card(
+            ui.card_header("page_fillable"),
+            ui.div(
+                ui.p("Cards fill the viewport vertically.", class_="text-muted small mb-3"),
+                ui.div(
+                    ui.p("Each card stretches to use available space.", class_="mb-1"),
+                    ui.p("Set fill=False on an item to opt out.", class_="mb-0 text-muted small"),
+                    class_="border-start border-primary border-3 ps-3",
+                ),
+            ),
+        ),
+        col_widths=[4, 4, 4],
+    ),
+)
+
+
+def server(input, output, session):
+    pass
+
+
+app = App(app_ui, server)
+
+</code></pre>
+</section>
+<section id="block-2-layout-ux" class="level2">
+<h2 class="anchored" data-anchor-id="block-2-layout-ux">Block 2 — Layout &amp; UX</h2>
+<p><code>ui.card()</code> · <code>ui.accordion()</code> · Value boxes with reactive comparison</p>
+</section>
+<section id="cards-as-layout-containers" class="level2">
+<h2 class="anchored" data-anchor-id="cards-as-layout-containers">Cards as layout containers</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><code>ui.card()</code> visually groups content. <code>full_screen=True</code> adds an expand button.</p>
+<p><code>ui.layout_columns(col_widths=[...])</code> uses a <strong>12-column grid</strong> — widths must sum to 12.</p>
+</div><div class="column" style="width:45%;">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><code>col_widths</code></th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>[4, 4, 4]</code></td>
+<td>three equal columns</td>
+</tr>
+<tr class="even">
+<td><code>[3, 9]</code></td>
+<td>narrow sidebar + wide main</td>
+</tr>
+<tr class="odd">
+<td><code>[6, 6, 12]</code></td>
+<td>two cols row 1, full row 2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+
+from shiny import App, ui
+
+app_ui = ui.page_fillable(
+    ui.layout_columns(
+        ui.card(
+            ui.card_header("Summary statistics"),
+            ui.p("Table goes here."),
+            full_screen=True,
+        ),
+        ui.card(
+            ui.card_header("Trend chart"),
+            ui.p("Chart goes here."),
+            full_screen=True,
+        ),
+        ui.card(
+            ui.card_header("Distribution"),
+            ui.p("Another chart."),
+            full_screen=True,
+        ),
+        col_widths=[4, 4, 4],
+    ),
+)
+
+def server(input, output, session):
+    pass
+
+app = App(app_ui, server)</code></pre>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Design principle</strong> (from <a href="01b-dashboard-design.qmd#layout-the-app-logically">01b</a>): Design your app in a <strong>grid layout</strong> — <a href="https://en.wikipedia.org/wiki/Miller%27s_law">Miller’s law</a> suggests 5–9 panels per view.</p>
+<p><strong>Responsive</strong>: pass a dict for breakpoints — <code>col_widths={"sm": [12, 12, 12], "lg": [4, 4, 4]}</code> stacks on mobile, 3-col on desktop.</p>
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/ui.card.html"><code>ui.card</code></a> · <a href="https://shiny.posit.co/py/api/core/ui.layout_columns.html"><code>ui.layout_columns</code></a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="accordion-collapsible-sections" class="level2">
+<h2 class="anchored" data-anchor-id="accordion-collapsible-sections">Accordion: collapsible sections</h2>
+<p><code>ui.accordion()</code> groups controls into collapsible panels.</p>
+<p>Useful when you have many controls and want to avoid an overwhelming sidebar:</p>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+
+from shiny import App, ui
+
+sidebar = ui.sidebar(
+    ui.accordion(
+        ui.accordion_panel(
+            "Data filters",
+            ui.input_select("origin", "Origin", ["All", "USA", "Europe", "Japan"]),
+            ui.input_slider("mpg", "Min MPG", 0, 50, 10),
+        ),
+        ui.accordion_panel(
+            "Chart options",
+            ui.input_select("color", "Color by", ["Origin", "Cylinders"]),
+            ui.input_switch("log", "Log scale", False),
+        ),
+        ui.accordion_panel(
+            "About",
+            ui.p("Cars dataset explorer. Select rows to highlight."),
+        ),
+        open="Data filters",   # only this panel open initially
+    ),
+    width=260,
+)
+
+app_ui = ui.page_fillable(
+    ui.layout_sidebar(
+        sidebar,
+        ui.card(
+            ui.card_header("Main content"),
+            ui.p("Outputs go here."),
+        ),
+    ),
+)
+
+def server(input, output, session):
+    pass
+
+app = App(app_ui, server)</code></pre>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Design principle</strong> (from <a href="01b-dashboard-design.qmd#be-concise">01b</a>): Use accordions to respect <strong>Miller’s law</strong> (7±2 chunks) — collapse advanced filters so users aren’t overwhelmed on first load.</p>
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/ui.accordion.html"><code>ui.accordion</code></a> · <a href="https://shiny.posit.co/py/api/core/ui.accordion_panel.html"><code>ui.accordion_panel</code></a></p>
+</div>
+</div>
+</div>
+<p>Set <code>open=True</code> to open all, <code>open=False</code> to collapse all, or pass a panel title string.</p>
+</section>
+<section id="value-boxes" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="value-boxes">Value boxes</h2>
+<div class="columns">
+<div class="column" style="width:35%;">
+<p><a href="https://shiny.posit.co/py/api/core/ui.value_box.html"><code>ui.value_box()</code></a> highlights a single KPI.</p>
+<p><strong><code>theme</code> is static</strong>, to make it react to data, return the <strong>whole <code>value_box()</code></strong> from <code>@render.ui</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ui.output_ui(<span class="st">"mpg_box"</span>)   <span class="co"># UI: placeholder only</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="at">@render.ui</span>                 <span class="co"># Server: returns full box</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mpg_box():</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">cmp</span> <span class="op">=</span> compare(val, baseline, higher_is_better<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ui.value_box(<span class="st">"Mean MPG"</span>, <span class="ss">f"</span><span class="sc">{</span>val<span class="sc">:.1f}</span><span class="ss">"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                        theme<span class="op">=</span><span class="bu">cmp</span>[<span class="st">"theme"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Argument</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>title</code></td>
+<td>Label</td>
+</tr>
+<tr class="even">
+<td><code>value</code></td>
+<td>Big number</td>
+</tr>
+<tr class="odd">
+<td><code>*args</code></td>
+<td>Badge, etc.</td>
+</tr>
+<tr class="even">
+<td><code>showcase</code></td>
+<td>Icon</td>
+</tr>
+<tr class="odd">
+<td><code>theme</code></td>
+<td>Colour</td>
+</tr>
+</tbody>
+</table>
+<p>We factored out <code>compare()</code> helper that returns one of <strong>five states</strong>: significantly/slightly above, stable (&lt; 1% Δ), slightly/significantly below, and maps each to a colour.</p>
+<p><code>higher_is_better=False</code> flips semantics: lower HP is greener than higher HP in a fuel-economy context.</p>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Design rule</strong>: show deltas for trends, not absolutes: “+5.6 MPG (+24%)” beats “29.1” in most cases.</p>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:65%;">
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets, faicons]
+
+import pandas as pd
+from vega_datasets import data as vega_data
+from shiny import App, ui, render, reactive
+from faicons import icon_svg
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+BASELINE = {
+    "mpg": cars["Miles_per_Gallon"].mean(),
+    "hp": cars["Horsepower"].mean(),
+    "accel": cars["Acceleration"].mean(),
+}
+
+
+def compare(current, baseline, higher_is_better=True):
+    """
+    Classify current vs baseline — five states:
+      significantly above / slightly above / stable / slightly below / significantly below
+    Thresholds:  change &lt; 1%: stable, 1–5%: slight, &gt; 5%: significant
+    """
+    # guard: can't compute a meaningful delta
+    if baseline == 0 or pd.isna(current):
+        return dict(icon="circle-minus", theme="secondary", badge="no data", label="no data")
+
+    # percentage change relative to baseline; sign tells direction
+    pct = (current - baseline) / abs(baseline) * 100
+
+    # "good" depends on context: higher MPG is good, lower HP is good for efficiency
+    is_good = (pct &gt; 0) if higher_is_better else (pct &lt; 0)
+    abs_pct = abs(pct)
+
+    # badge string shown below the value: e.g. "+5.6 (+24.3%) vs overall avg"
+    sign = "+" if pct &gt;= 0 else ""
+    badge = f"{sign}{current - baseline:.1f} ({sign}{pct:.1f}%) vs overall avg"
+
+    # under 1% change — treat as noise, no colour signal
+    if abs_pct &lt; 1:
+        return dict(icon="arrow-right", theme="secondary", badge="≈ stable vs overall avg", label="stable")
+
+    # direction: matching FA icon
+    icon = "arrow-trend-up" if pct &gt; 0 else "arrow-trend-down"
+
+    # colour: good changes are green (success ≥5%, teal &lt;5%),
+    #         bad changes are red (danger ≥5%, warning &lt;5%)
+    theme = (
+        "success" if (is_good and abs_pct &gt;= 5) else
+        "teal"    if is_good                    else
+        "danger"  if abs_pct &gt;= 5               else
+        "warning"
+    )
+
+    quantifier = "significantly" if abs_pct &gt;= 5 else "slightly"
+    return dict(icon=icon, theme=theme, badge=badge,
+                label=f"{quantifier} {'above' if pct &gt; 0 else 'below'} avg")
+
+
+def kpi_showcase(cmp):
+    """FA icon sized for the value-box showcase panel — inherits theme colour."""
+    # fill defaults to currentColor, so the icon matches the box's text colour
+    # fill_opacity softens it slightly so it doesn't overpower the value
+    return icon_svg(cmp["icon"], height="2.5em", fill_opacity="0.85")
+
+
+def kpi_caption(cmp):
+    """Delta badge + five-state label rendered below the value."""
+    return ui.tags.div(
+        # bold first line: absolute + relative delta, e.g. "+5.6 (+24.3%) vs overall avg"
+        ui.HTML(f'&lt;strong style="opacity:0.9"&gt;{cmp["badge"]}&lt;/strong&gt;'),
+        # dimmer second line: human-readable state, e.g. "significantly above avg"
+        ui.div(cmp.get("label", ""), style="opacity:0.7;font-size:0.8rem;margin-top:2px"),
+    )
+
+
+app_ui = ui.page_fluid(
+    ui.h5("Cars segment vs overall average"),
+    ui.input_select("origin", "Origin", choices=["All"] + origins, selected="Japan"),
+    ui.layout_column_wrap(
+        ui.output_ui("mpg_box"),
+        ui.output_ui("hp_box"),
+        ui.output_ui("accel_box"),
+        fill=False,
+        width=1 / 3,
+    ),
+)
+
+
+def server(input, output, session):
+    @reactive.calc
+    def seg():
+        df = cars if input.origin() == "All" else cars[cars["Origin"] == input.origin()]
+        return df.dropna(subset=["Miles_per_Gallon", "Horsepower", "Acceleration"])
+
+    @render.ui  # higher MPG = better fuel economy ↑ green
+    def mpg_box():
+        val = seg()["Miles_per_Gallon"].mean()
+        cmp = compare(val, BASELINE["mpg"], higher_is_better=True)
+        return ui.value_box(
+            "Mean MPG", f"{val:.1f}", kpi_caption(cmp),
+            showcase=kpi_showcase(cmp),
+            theme=cmp["theme"],
+        )
+
+    @render.ui  # lower HP = better efficiency ↓ green
+    def hp_box():
+        val = seg()["Horsepower"].mean()
+        cmp = compare(val, BASELINE["hp"], higher_is_better=False)
+        return ui.value_box(
+            "Mean Horsepower", f"{val:.0f}", kpi_caption(cmp),
+            showcase=kpi_showcase(cmp),
+            theme=cmp["theme"],
+        )
+
+    @render.ui  # lower seconds = faster ↓ green; tends to be near-neutral across origins
+    def accel_box():
+        val = seg()["Acceleration"].mean()
+        cmp = compare(val, BASELINE["accel"], higher_is_better=False)
+        return ui.value_box(
+            "Mean Acceleration (s)", f"{val:.1f}", kpi_caption(cmp),
+            showcase=kpi_showcase(cmp),
+            theme=cmp["theme"],
+        )
+
+
+app = App(app_ui, server)
+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="value-boxes-comparison-example" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="value-boxes-comparison-example">Value boxes: comparison example</h2>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets, faicons]
+
+import pandas as pd
+from vega_datasets import data as vega_data
+from shiny import App, ui, render, reactive
+from faicons import icon_svg
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+BASELINE = {
+    "mpg": cars["Miles_per_Gallon"].mean(),
+    "hp": cars["Horsepower"].mean(),
+    "accel": cars["Acceleration"].mean(),
+}
+
+
+def compare(current, baseline, higher_is_better=True):
+    """
+    Classify current vs baseline — five states:
+      significantly above / slightly above / stable / slightly below / significantly below
+    Thresholds:  change &lt; 1%: stable, 1–5%: slight, &gt; 5%: significant
+    """
+    # guard: can't compute a meaningful delta
+    if baseline == 0 or pd.isna(current):
+        return dict(icon="circle-minus", theme="secondary", badge="no data", label="no data")
+
+    # percentage change relative to baseline; sign tells direction
+    pct = (current - baseline) / abs(baseline) * 100
+
+    # "good" depends on context: higher MPG is good, lower HP is good for efficiency
+    is_good = (pct &gt; 0) if higher_is_better else (pct &lt; 0)
+    abs_pct = abs(pct)
+
+    # badge string shown below the value: e.g. "+5.6 (+24.3%) vs overall avg"
+    sign = "+" if pct &gt;= 0 else ""
+    badge = f"{sign}{current - baseline:.1f} ({sign}{pct:.1f}%) vs overall avg"
+
+    # under 1% change — treat as noise, no colour signal
+    if abs_pct &lt; 1:
+        return dict(icon="arrow-right", theme="secondary", badge="≈ stable vs overall avg", label="stable")
+
+    # direction: matching FA icon
+    icon = "arrow-trend-up" if pct &gt; 0 else "arrow-trend-down"
+
+    # colour: good changes are green (success ≥5%, teal &lt;5%),
+    #         bad changes are red (danger ≥5%, warning &lt;5%)
+    theme = (
+        "success" if (is_good and abs_pct &gt;= 5) else
+        "teal"    if is_good                    else
+        "danger"  if abs_pct &gt;= 5               else
+        "warning"
+    )
+
+    quantifier = "significantly" if abs_pct &gt;= 5 else "slightly"
+    return dict(icon=icon, theme=theme, badge=badge,
+                label=f"{quantifier} {'above' if pct &gt; 0 else 'below'} avg")
+
+
+def kpi_showcase(cmp):
+    """FA icon sized for the value-box showcase panel — inherits theme colour."""
+    # fill defaults to currentColor, so the icon matches the box's text colour
+    # fill_opacity softens it slightly so it doesn't overpower the value
+    return icon_svg(cmp["icon"], height="2.5em", fill_opacity="0.85")
+
+
+def kpi_caption(cmp):
+    """Delta badge + five-state label rendered below the value."""
+    return ui.tags.div(
+        # bold first line: absolute + relative delta, e.g. "+5.6 (+24.3%) vs overall avg"
+        ui.HTML(f'&lt;strong style="opacity:0.9"&gt;{cmp["badge"]}&lt;/strong&gt;'),
+        # dimmer second line: human-readable state, e.g. "significantly above avg"
+        ui.div(cmp.get("label", ""), style="opacity:0.7;font-size:0.8rem;margin-top:2px"),
+    )
+
+
+app_ui = ui.page_fluid(
+    ui.h5("Cars segment vs overall average"),
+    ui.input_select("origin", "Origin", choices=["All"] + origins, selected="Japan"),
+    ui.layout_column_wrap(
+        ui.output_ui("mpg_box"),
+        ui.output_ui("hp_box"),
+        ui.output_ui("accel_box"),
+        fill=False,
+        width=1 / 3,
+    ),
+)
+
+
+def server(input, output, session):
+    @reactive.calc
+    def seg():
+        df = cars if input.origin() == "All" else cars[cars["Origin"] == input.origin()]
+        return df.dropna(subset=["Miles_per_Gallon", "Horsepower", "Acceleration"])
+
+    @render.ui  # higher MPG = better fuel economy ↑ green
+    def mpg_box():
+        val = seg()["Miles_per_Gallon"].mean()
+        cmp = compare(val, BASELINE["mpg"], higher_is_better=True)
+        return ui.value_box(
+            "Mean MPG", f"{val:.1f}", kpi_caption(cmp),
+            showcase=kpi_showcase(cmp),
+            theme=cmp["theme"],
+        )
+
+    @render.ui  # lower HP = better efficiency ↓ green
+    def hp_box():
+        val = seg()["Horsepower"].mean()
+        cmp = compare(val, BASELINE["hp"], higher_is_better=False)
+        return ui.value_box(
+            "Mean Horsepower", f"{val:.0f}", kpi_caption(cmp),
+            showcase=kpi_showcase(cmp),
+            theme=cmp["theme"],
+        )
+
+    @render.ui  # lower seconds = faster ↓ green; tends to be near-neutral across origins
+    def accel_box():
+        val = seg()["Acceleration"].mean()
+        cmp = compare(val, BASELINE["accel"], higher_is_better=False)
+        return ui.value_box(
+            "Mean Acceleration (s)", f"{val:.1f}", kpi_caption(cmp),
+            showcase=kpi_showcase(cmp),
+            theme=cmp["theme"],
+        )
+
+
+app = App(app_ui, server)
+
+</code></pre>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/ui.value_box.html"><code>ui.value_box</code></a> · <a href="https://github.com/posit-dev/py-faicons"><code>faicons</code></a>: use <code>icon_svg("name")</code> for the <code>showcase=</code> argument; <code>fill="currentColor"</code> (default) inherits the box theme colour automatically.</p>
+<p><strong>Responsive layouts</strong> — pass a dict to <a href="https://shiny.posit.co/py/api/core/ui.layout_columns.html"><code>col_widths</code></a> to change layout per <a href="https://getbootstrap.com/docs/5.3/layout/breakpoints/">breakpoint</a>: <code>col_widths={"sm": [12, 12, 12], "lg": [4, 4, 4]}</code> stacks on mobile, 3-col on desktop.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="block-3-table-polish-synthesis" class="level2">
+<h2 class="anchored" data-anchor-id="block-3-table-polish-synthesis">Block 3 — Table polish &amp; synthesis</h2>
+<p>Conditional row styling · Full styled dashboard</p>
+</section>
+<section id="conditional-row-styling" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-row-styling">Conditional row styling</h2>
+<p><code>render.DataGrid(styles=[...])</code> applies CSS to specific rows or cells. <strong>Prefer row-level highlights</strong> — they read as a coherent signal. DataGrid doesn’t use Bootstrap’s <code>.table</code> element, so this is one case where <code>style=</code> with a direct colour value is the right tool.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>styles <span class="op">=</span> [</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Row-level (preferred): inline colour — DataGrid doesn't inherit Bootstrap table classes</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"rows"</span>: [<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">5</span>], <span class="st">"style"</span>: {<span class="st">"background-color"</span>: <span class="st">"#D4E6F1"</span>}},  <span class="co"># blue  — high MPG</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"rows"</span>: [<span class="dv">3</span>],        <span class="st">"style"</span>: {<span class="st">"background-color"</span>: <span class="st">"#F5CBA7"</span>}},  <span class="co"># orange — low MPG</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"rows"</span>: [<span class="dv">7</span>],        <span class="st">"style"</span>: {<span class="st">"background-color"</span>: <span class="st">"#FCF3CF"</span>}},  <span class="co"># yellow — borderline</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cell-level (use sparingly — for precise, targeted signals)</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># {"rows": [1], "cols": [1], "style": {"font-weight": "bold"}},</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># {"cols": [2], "style": {"font-style": "italic"}},  # whole column</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Row and column indices are <strong>0-based integers</strong>.</p>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Design principle</strong>: Use colour purposefully — one signal (green = good, red = bad) per table. Avoid styling multiple unrelated columns; it creates visual noise.</p>
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/render.DataGrid.html"><code>render.DataGrid</code> — <code>styles=</code> parameter</a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="conditional-row-styling-live-example" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="conditional-row-styling-live-example">Conditional row styling: live example</h2>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+import pandas as pd
+from vega_datasets import data as vega_data
+from shiny import App, ui, render
+
+# Sample rows spanning the full MPG range so all highlight bands appear
+_all = pd.DataFrame(vega_data.cars())[["Name", "Miles_per_Gallon", "Horsepower", "Origin"]]
+cars = pd.concat([
+    _all[_all["Miles_per_Gallon"] &gt;= 30].head(3),   # high MPG
+    _all[_all["Miles_per_Gallon"].between(16, 25)].head(4),  # mid MPG (no highlight)
+    _all[_all["Miles_per_Gallon"].between(25, 30)].head(2),  # borderline
+    _all[_all["Miles_per_Gallon"] &lt;= 15].head(3),   # low MPG
+]).reset_index(drop=True)
+
+# Colorblind-friendly palette (pastel Okabe-Ito)
+COLOR_HIGH = "#D4E6F1"    # blue  — good (high MPG)
+COLOR_LOW = "#F5CBA7"     # orange — bad (low MPG)
+COLOR_BORDER = "#FCF3CF"  # yellow — borderline
+
+
+def make_styles(df):
+    styles = []
+    for i, row in df.iterrows():
+        mpg = row["Miles_per_Gallon"]
+        if pd.isna(mpg):
+            continue
+        if mpg &gt;= 30:
+            styles.append({"rows": [i], "style": {"background-color": COLOR_HIGH}})
+        elif mpg &lt;= 15:
+            styles.append({"rows": [i], "style": {"background-color": COLOR_LOW}})
+        elif mpg &gt;= 25:
+            styles.append({"rows": [i], "style": {"background-color": COLOR_BORDER}})
+    return styles
+
+
+app_ui = ui.page_fluid(
+    ui.h4("Row highlight: blue ≥ 30 MPG, yellow 25–30, orange ≤ 15 MPG"),
+    ui.output_data_frame("tbl"),
+)
+
+
+def server(input, output, session):
+    @render.data_frame
+    def tbl():
+        return render.DataGrid(cars, styles=make_styles(cars), width="100%")
+
+
+app = App(app_ui, server)
+
+</code></pre>
+</section>
+<section id="putting-it-together" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="putting-it-together">Putting it together</h2>
+<p>Styled header + dynamic value boxes + sidebar + cards + linked table/chart:</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  U((👤)) -.select origin.-&gt; A
+  A[/input_origin/] --&gt; F{{filtered}}
+  F --&gt; NB([n_rows_box])
+  F --&gt; MB([mpg_box])
+  F --&gt; HB([hp_box])
+  F --&gt; T([tbl])
+  U2((👤)) -.select rows.-&gt; T
+  T -.row select.-&gt; S([scatter])
+  F --&gt; S
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style U2 fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style F fill:#F3E5F5,stroke:#9C27B0
+  style NB fill:#E3F2FD,stroke:#2196F3
+  style MB fill:#E3F2FD,stroke:#2196F3
+  style HB fill:#E3F2FD,stroke:#2196F3
+  style T fill:#E3F2FD,stroke:#2196F3
+  style S fill:#E3F2FD,stroke:#2196F3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><code>@reactive.calc filtered()</code> is the shared hub — all five outputs depend on it.</p>
+<p>Value boxes use <code>@render.ui</code> so the <strong>entire box</strong> (colour, icon, badge) reacts to data via the <code>compare()</code> helper — the same pattern from the Value boxes slide.</p>
+<p>Row selection <code>tbl.data_view(selected=True)</code> feeds a second Altair layer on <code>scatter</code>.</p>
+</div><div class="column" style="width:60%;">
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets, altair, shinywidgets, faicons]
+
+import pandas as pd
+import altair as alt
+from vega_datasets import data as vega_data
+from shiny import App, ui, render, reactive
+from shinywidgets import output_widget, render_altair
+from faicons import icon_svg
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+display_cols = ["Name", "Miles_per_Gallon", "Cylinders", "Horsepower", "Origin"]
+BASELINE = {
+    "mpg": cars["Miles_per_Gallon"].mean(),
+    "hp": cars["Horsepower"].mean(),
+}
+
+
+def compare(current, baseline, higher_is_better=True):
+    if baseline == 0 or pd.isna(current):
+        return dict(icon="circle-minus", theme="secondary", badge="no data")
+    pct = (current - baseline) / abs(baseline) * 100
+    is_good = (pct &gt; 0) if higher_is_better else (pct &lt; 0)
+    abs_pct = abs(pct)
+    sign = "+" if pct &gt;= 0 else ""
+    badge = f"{sign}{pct:.1f}% vs avg"
+    if abs_pct &lt; 1:
+        return dict(icon="arrow-right", theme="secondary", badge="≈ avg")
+    icon = "arrow-trend-up" if pct &gt; 0 else "arrow-trend-down"
+    theme = (
+        "success" if (is_good and abs_pct &gt;= 5) else
+        "teal"    if is_good                    else
+        "danger"  if abs_pct &gt;= 5               else
+        "warning"
+    )
+    return dict(icon=icon, theme=theme, badge=badge)
+
+
+# Header: bg-primary is theme-aware; d-flex pushes badge to the right
+header = ui.div(
+    ui.div(
+        ui.h2("Cars Explorer", class_="mb-0 fs-4"),
+        ui.p("Fuel economy dataset · 1970–1982", class_="mb-0 opacity-75 small"),
+    ),
+    ui.tags.span("v1.0", class_="badge bg-light text-dark"),
+    class_="bg-primary text-white p-3 d-flex justify-content-between align-items-center",
+)
+
+sidebar = ui.sidebar(
+    ui.h6("Filters"),
+    ui.input_select("origin", "Origin", choices=["All"] + origins),
+    ui.hr(),
+    ui.p("Select rows in the table to highlight in the chart.",
+         style="font-size:0.8rem; color:#6B7280;"),
+    width=200,
+)
+
+app_ui = ui.page_fluid(
+    header,
+    ui.layout_sidebar(
+        sidebar,
+        ui.layout_column_wrap(
+            ui.output_ui("n_rows_box"),
+            ui.output_ui("mpg_box"),
+            ui.output_ui("hp_box"),
+            fill=False,
+            width=1 / 3,
+        ),
+        ui.layout_columns(
+            ui.card(
+                ui.card_header("Data"),
+                ui.output_data_frame("tbl"),
+                full_screen=True,
+            ),
+            ui.card(
+                ui.card_header("MPG vs Horsepower"),
+                output_widget("scatter"),
+                full_screen=True,
+            ),
+            col_widths=[5, 7],
+        ),
+    ),
+)
+
+
+def server(input, output, session):
+    @reactive.calc
+    def filtered():
+        df = cars.copy()
+        if input.origin() != "All":
+            df = df[df["Origin"] == input.origin()]
+        return df[display_cols].reset_index(drop=True)
+
+    @render.ui
+    def n_rows_box():
+        n = len(filtered())
+        total = len(cars)
+        return ui.value_box(
+            "Total rows", str(n), f"of {total}",
+            showcase=icon_svg("table", height="2em"),
+            theme="primary",
+        )
+
+    @render.ui
+    def mpg_box():
+        val = filtered()["Miles_per_Gallon"].mean()
+        cmp = compare(val, BASELINE["mpg"], higher_is_better=True)
+        return ui.value_box(
+            "Mean MPG", f"{val:.1f}", cmp["badge"],
+            showcase=icon_svg(cmp["icon"], height="2em"),
+            theme=cmp["theme"],
+        )
+
+    @render.ui
+    def hp_box():
+        val = filtered()["Horsepower"].mean()
+        cmp = compare(val, BASELINE["hp"], higher_is_better=False)
+        return ui.value_box(
+            "Mean HP", f"{val:.0f}", cmp["badge"],
+            showcase=icon_svg(cmp["icon"], height="2em"),
+            theme=cmp["theme"],
+        )
+
+    @render.data_frame
+    def tbl():
+        return render.DataGrid(filtered(), selection_mode="rows", height="350px")
+
+    @render_altair
+    def scatter():
+        df = filtered()
+        selected = tbl.data_view(selected=True)
+        base = alt.Chart(df).mark_circle(color="#D1D5DB", size=60).encode(
+            x="Miles_per_Gallon:Q", y="Horsepower:Q",
+            tooltip=display_cols,
+        )
+        if selected is None or selected.empty:
+            return base.properties(width="container", height=320)
+        hi = alt.Chart(selected).mark_circle(color="#3B82F6", size=90).encode(
+            x="Miles_per_Gallon:Q", y="Horsepower:Q",
+        )
+        return (base + hi).properties(width="container", height=320)
+
+
+app = App(app_ui, server)
+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="putting-it-together-full-styled-dashboard-editor" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="putting-it-together-full-styled-dashboard-editor">Putting it together: full styled dashboard (editor)</h2>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets, altair, shinywidgets, faicons]
+
+import pandas as pd
+import altair as alt
+from vega_datasets import data as vega_data
+from shiny import App, ui, render, reactive
+from shinywidgets import output_widget, render_altair
+from faicons import icon_svg
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+display_cols = ["Name", "Miles_per_Gallon", "Cylinders", "Horsepower", "Origin"]
+BASELINE = {
+    "mpg": cars["Miles_per_Gallon"].mean(),
+    "hp": cars["Horsepower"].mean(),
+}
+
+
+def compare(current, baseline, higher_is_better=True):
+    if baseline == 0 or pd.isna(current):
+        return dict(icon="circle-minus", theme="secondary", badge="no data")
+    pct = (current - baseline) / abs(baseline) * 100
+    is_good = (pct &gt; 0) if higher_is_better else (pct &lt; 0)
+    abs_pct = abs(pct)
+    sign = "+" if pct &gt;= 0 else ""
+    badge = f"{sign}{pct:.1f}% vs avg"
+    if abs_pct &lt; 1:
+        return dict(icon="arrow-right", theme="secondary", badge="≈ avg")
+    icon = "arrow-trend-up" if pct &gt; 0 else "arrow-trend-down"
+    theme = (
+        "success" if (is_good and abs_pct &gt;= 5) else
+        "teal"    if is_good                    else
+        "danger"  if abs_pct &gt;= 5               else
+        "warning"
+    )
+    return dict(icon=icon, theme=theme, badge=badge)
+
+
+# Header: bg-primary is theme-aware; d-flex pushes badge to the right
+header = ui.div(
+    ui.div(
+        ui.h2("Cars Explorer", class_="mb-0 fs-4"),
+        ui.p("Fuel economy dataset · 1970–1982", class_="mb-0 opacity-75 small"),
+    ),
+    ui.tags.span("v1.0", class_="badge bg-light text-dark"),
+    class_="bg-primary text-white p-3 d-flex justify-content-between align-items-center",
+)
+
+sidebar = ui.sidebar(
+    ui.h6("Filters"),
+    ui.input_select("origin", "Origin", choices=["All"] + origins),
+    ui.hr(),
+    ui.p("Select rows in the table to highlight in the chart.",
+         style="font-size:0.8rem; color:#6B7280;"),
+    width=200,
+)
+
+app_ui = ui.page_fluid(
+    header,
+    ui.layout_sidebar(
+        sidebar,
+        ui.layout_column_wrap(
+            ui.output_ui("n_rows_box"),
+            ui.output_ui("mpg_box"),
+            ui.output_ui("hp_box"),
+            fill=False,
+            width=1 / 3,
+        ),
+        ui.layout_columns(
+            ui.card(
+                ui.card_header("Data"),
+                ui.output_data_frame("tbl"),
+                full_screen=True,
+            ),
+            ui.card(
+                ui.card_header("MPG vs Horsepower"),
+                output_widget("scatter"),
+                full_screen=True,
+            ),
+            col_widths=[5, 7],
+        ),
+    ),
+)
+
+
+def server(input, output, session):
+    @reactive.calc
+    def filtered():
+        df = cars.copy()
+        if input.origin() != "All":
+            df = df[df["Origin"] == input.origin()]
+        return df[display_cols].reset_index(drop=True)
+
+    @render.ui
+    def n_rows_box():
+        n = len(filtered())
+        total = len(cars)
+        return ui.value_box(
+            "Total rows", str(n), f"of {total}",
+            showcase=icon_svg("table", height="2em"),
+            theme="primary",
+        )
+
+    @render.ui
+    def mpg_box():
+        val = filtered()["Miles_per_Gallon"].mean()
+        cmp = compare(val, BASELINE["mpg"], higher_is_better=True)
+        return ui.value_box(
+            "Mean MPG", f"{val:.1f}", cmp["badge"],
+            showcase=icon_svg(cmp["icon"], height="2em"),
+            theme=cmp["theme"],
+        )
+
+    @render.ui
+    def hp_box():
+        val = filtered()["Horsepower"].mean()
+        cmp = compare(val, BASELINE["hp"], higher_is_better=False)
+        return ui.value_box(
+            "Mean HP", f"{val:.0f}", cmp["badge"],
+            showcase=icon_svg(cmp["icon"], height="2em"),
+            theme=cmp["theme"],
+        )
+
+    @render.data_frame
+    def tbl():
+        return render.DataGrid(filtered(), selection_mode="rows", height="350px")
+
+    @render_altair
+    def scatter():
+        df = filtered()
+        selected = tbl.data_view(selected=True)
+        base = alt.Chart(df).mark_circle(color="#D1D5DB", size=60).encode(
+            x="Miles_per_Gallon:Q", y="Horsepower:Q",
+            tooltip=display_cols,
+        )
+        if selected is None or selected.empty:
+            return base.properties(width="container", height=320)
+        hi = alt.Chart(selected).mark_circle(color="#3B82F6", size=90).encode(
+            x="Miles_per_Gallon:Q", y="Horsepower:Q",
+        )
+        return (base + hi).properties(width="container", height=320)
+
+
+app = App(app_ui, server)
+
+</code></pre>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Design principle</strong> (from <a href="01b-dashboard-design.qmd#summary-4-design-principles">01b</a>): This example combines <strong>concise KPIs</strong>, <strong>logical layout</strong>, and <strong>context</strong> — use it as a template when assembling your own dashboard.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="tips-for-clean-layouts" class="level2">
+<h2 class="anchored" data-anchor-id="tips-for-clean-layouts">Tips for clean layouts</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Use cards + value boxes</strong></p>
+<ul>
+<li>Wrap every output in <code>ui.card()</code> for visual separation</li>
+<li><code>ui.card_header()</code> labels each panel</li>
+<li><code>full_screen=True</code> lets users expand charts</li>
+<li>Value boxes highlight KPIs at the top</li>
+</ul>
+<p><strong>Sidebar + accordion for controls</strong></p>
+<ul>
+<li>Put global filters in the sidebar</li>
+<li>Use <code>ui.accordion()</code> to group &amp; collapse related controls</li>
+<li><code>ui.hr()</code> or space between unrelated widgets</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>Consistent spacing</strong></p>
+<ul>
+<li>Use <code>padding</code> and <code>margin</code> on <code>ui.div()</code> wrappers</li>
+<li><code>layout_columns(col_widths=)</code> handles the grid</li>
+<li>One accent colour + neutrals is usually enough</li>
+<li>Reserve <code>styles=</code> on DataGrid for meaningful signals, not decoration</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Design principle</strong> (from <a href="01b-dashboard-design.qmd#general-tips">01b</a>): <strong>Match user expectations</strong> and <strong>use color purposefully</strong> — let layout do the heavy lifting, then use color sparingly for emphasis.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="block-4-advanced-reactivity" class="level2">
+<h2 class="anchored" data-anchor-id="block-4-advanced-reactivity">Block 4 — Advanced reactivity</h2>
+<p>Linked filters · Column picker · CSV export · Selection reset · Editable tables</p>
+</section>
+<section id="reactive-input-components-linked-filters" class="level2">
+<h2 class="anchored" data-anchor-id="reactive-input-components-linked-filters">Reactive input components: linked filters</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  U((👤)) -.select origin.-&gt; A
+  A[/input_origin/] --&gt; F{{filtered_by_origin}}
+  F --&gt;|"@render.ui"| S[/input_mpg/]
+  F --&gt; T([tbl])
+  S --&gt; T
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style F fill:#F3E5F5,stroke:#9C27B0
+  style S fill:#FFF3E0,stroke:#FF9800
+  style T fill:#E3F2FD,stroke:#2196F3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><code>@render.ui</code> returns an entirely new input widget each time <code>origin</code> changes — range min and max reflect only the currently visible data.</p>
+<p><strong>How it works</strong></p>
+<ul>
+<li><code>filtered_by_origin()</code> is a <code>@reactive.calc</code> — recomputes when <code>origin</code> changes</li>
+<li><code>@render.ui</code> returns a <strong>brand-new</strong> <code>input_slider</code> each time — range, label, and default value all update</li>
+<li><a href="https://shiny.posit.co/py/api/core/req.html"><code>req(input.mpg)</code></a> in <code>tbl</code> prevents the table from rendering before the slider exists</li>
+<li>The slider <code>id</code> stays the same (<code>"mpg"</code>), so downstream code reads it with <code>input.mpg()</code> as usual</li>
+<li>Use <code>@render.ui</code> when the <strong>valid range, choices, or widget type</strong> must change — not just the value</li>
+</ul>
+</div><div class="column" style="width:60%;">
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+import pandas as pd
+from vega_datasets import data as vega_data
+from shiny import App, ui, render, reactive, req
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+display_cols = ["Name", "Miles_per_Gallon", "Cylinders", "Horsepower", "Origin"]
+
+app_ui = ui.page_fluid(
+    ui.h4("Linked filters: origin → MPG slider range"),
+    ui.layout_columns(
+        ui.input_select("origin", "Origin", choices=["All"] + origins),
+        ui.output_ui("mpg_slider"),   # placeholder — slider is built reactively
+        col_widths=[6, 6],
+    ),
+    ui.output_data_frame("tbl"),
+)
+
+
+def server(input, output, session):
+    @reactive.calc
+    def filtered_by_origin():
+        df = cars.copy()
+        if input.origin() != "All":
+            df = df[df["Origin"] == input.origin()]
+        return df
+
+    @render.ui
+    def mpg_slider():
+        # Slider range is computed from the currently visible data — not the whole dataset.
+        # When origin changes, this slider re-renders with an updated range.
+        mpg_vals = filtered_by_origin()["Miles_per_Gallon"].dropna()
+        if mpg_vals.empty:
+            return ui.p("No MPG data.", class_="text-muted small")
+        lo, hi = int(mpg_vals.min()), int(mpg_vals.max())
+        return ui.input_slider("mpg", f"Min MPG ({lo}–{hi})", min=lo, max=hi, value=lo)
+
+    @render.data_frame
+    def tbl():
+        req(input.mpg)   # wait for the dynamic slider to exist before reading it
+        df = filtered_by_origin().dropna(subset=["Miles_per_Gallon"])
+        df = df[df["Miles_per_Gallon"] &gt;= input.mpg()]
+        return render.DataGrid(df[display_cols].reset_index(drop=True), height="350px")
+
+
+app = App(app_ui, server)
+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="reactive-input-components-linked-filters-1" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="reactive-input-components-linked-filters-1">Reactive input components: linked filters</h2>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+import pandas as pd
+from vega_datasets import data as vega_data
+from shiny import App, ui, render, reactive, req
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+display_cols = ["Name", "Miles_per_Gallon", "Cylinders", "Horsepower", "Origin"]
+
+app_ui = ui.page_fluid(
+    ui.h4("Linked filters: origin → MPG slider range"),
+    ui.layout_columns(
+        ui.input_select("origin", "Origin", choices=["All"] + origins),
+        ui.output_ui("mpg_slider"),   # placeholder — slider is built reactively
+        col_widths=[6, 6],
+    ),
+    ui.output_data_frame("tbl"),
+)
+
+
+def server(input, output, session):
+    @reactive.calc
+    def filtered_by_origin():
+        df = cars.copy()
+        if input.origin() != "All":
+            df = df[df["Origin"] == input.origin()]
+        return df
+
+    @render.ui
+    def mpg_slider():
+        # Slider range is computed from the currently visible data — not the whole dataset.
+        # When origin changes, this slider re-renders with an updated range.
+        mpg_vals = filtered_by_origin()["Miles_per_Gallon"].dropna()
+        if mpg_vals.empty:
+            return ui.p("No MPG data.", class_="text-muted small")
+        lo, hi = int(mpg_vals.min()), int(mpg_vals.max())
+        return ui.input_slider("mpg", f"Min MPG ({lo}–{hi})", min=lo, max=hi, value=lo)
+
+    @render.data_frame
+    def tbl():
+        req(input.mpg)   # wait for the dynamic slider to exist before reading it
+        df = filtered_by_origin().dropna(subset=["Miles_per_Gallon"])
+        df = df[df["Miles_per_Gallon"] &gt;= input.mpg()]
+        return render.DataGrid(df[display_cols].reset_index(drop=True), height="350px")
+
+
+app = App(app_ui, server)
+
+</code></pre>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/render.ui.html"><code>render.ui</code></a> · <a href="https://shiny.posit.co/py/api/core/req.html"><code>req()</code></a> · <a href="https://shiny.posit.co/py/api/core/ui.update_slider.html"><code>ui.update_slider</code></a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="alternative-reactive.effect-ui.update_slider" class="level2">
+<h2 class="anchored" data-anchor-id="alternative-reactive.effect-ui.update_slider">Alternative: <code>@reactive.effect</code> + <code>ui.update_slider()</code></h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>Instead of replacing the widget, <strong>update it in place</strong> with <code>@reactive.effect</code> + <code>ui.update_*()</code>:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  U((👤)) -.select origin.-&gt; A
+  A[/input_origin/] --&gt; E["@reactive.effect"]
+  E ==&gt;|"ui.update_slider()"| S[/input_slider/]
+  S --&gt; R([render output])
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style E fill:#FCE4EC,stroke:#E91E63
+  style S fill:#FFF3E0,stroke:#FF9800
+  style R fill:#E3F2FD,stroke:#2196F3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div style="display:flex; gap:1.2em; font-size:0.75em; color:#555; margin-top:0.3em;">
+<p><span style="display:flex;align-items:center"><span style="display:inline-block;width:2em;border-top:2px solid #999;vertical-align:middle;margin-right:0.3em"></span> reactive dep</span> <span style="display:flex;align-items:center"><span style="display:inline-block;width:2em;border-top:4px solid #999;vertical-align:middle;margin-right:0.3em"></span> side-effect push</span> <span style="display:flex;align-items:center"><span style="display:inline-block;width:2em;border-top:2px dashed #4CAF50;vertical-align:middle;margin-right:0.3em"></span> user action</span></p>
+</div>
+<p><strong>How <code>@reactive.effect</code> works</strong></p>
+<ul>
+<li>Runs <strong>automatically</strong> whenever any reactive value it reads changes — here, when <code>origin</code> changes, <code>@reactive.effect</code> re-executes</li>
+<li>Unlike <code>@render.*</code>, it <strong>does not produce an output</strong> — it is a “fire-and-forget” function that performs <strong>side effects</strong> only (e.g., calling <code>ui.update_slider()</code> to send new min/max/value to an existing widget)</li>
+<li><code>ui.update_slider()</code> sends a message to the existing widget — no rebuild, no flicker</li>
+<li>Use <code>@render.ui</code> instead when the <strong>widget type or set of choices</strong> must change, not just the value</li>
+</ul>
+</div><div class="column" style="width:60%;">
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+import pandas as pd
+from vega_datasets import data as vega_data
+from shiny import App, ui, render, reactive, req
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+display_cols = ["Name", "Miles_per_Gallon", "Cylinders", "Horsepower", "Origin"]
+
+# The slider is declared statically in the UI — not inside @render.ui.
+app_ui = ui.page_fluid(
+    ui.h4("Linked filters: update_slider approach"),
+    ui.layout_columns(
+        ui.input_select("origin", "Origin", choices=["All"] + origins),
+        ui.input_slider("mpg", "Min MPG", min=0, max=50, value=0),
+        col_widths=[6, 6],
+    ),
+    ui.output_data_frame("tbl"),
+)
+
+
+def server(input, output, session):
+    @reactive.calc
+    def filtered_by_origin():
+        df = cars.copy()
+        if input.origin() != "All":
+            df = df[df["Origin"] == input.origin()]
+        return df
+
+    @reactive.effect
+    def _update_mpg():
+        mpg_vals = filtered_by_origin()["Miles_per_Gallon"].dropna()
+        if mpg_vals.empty:
+            return
+        lo, hi = int(mpg_vals.min()), int(mpg_vals.max())
+        ui.update_slider("mpg", label=f"Min MPG ({lo}–{hi})",
+                         min=lo, max=hi, value=lo)
+
+    @render.data_frame
+    def tbl():
+        df = filtered_by_origin().dropna(subset=["Miles_per_Gallon"])
+        df = df[df["Miles_per_Gallon"] &gt;= input.mpg()]
+        return render.DataGrid(df[display_cols].reset_index(drop=True), height="350px")
+
+
+app = App(app_ui, server)
+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="alternative-reactive.effect-ui.update_slider-1" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="alternative-reactive.effect-ui.update_slider-1">Alternative: <code>@reactive.effect</code> + <code>ui.update_slider()</code></h2>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+import pandas as pd
+from vega_datasets import data as vega_data
+from shiny import App, ui, render, reactive, req
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+display_cols = ["Name", "Miles_per_Gallon", "Cylinders", "Horsepower", "Origin"]
+
+# The slider is declared statically in the UI — not inside @render.ui.
+app_ui = ui.page_fluid(
+    ui.h4("Linked filters: update_slider approach"),
+    ui.layout_columns(
+        ui.input_select("origin", "Origin", choices=["All"] + origins),
+        ui.input_slider("mpg", "Min MPG", min=0, max=50, value=0),
+        col_widths=[6, 6],
+    ),
+    ui.output_data_frame("tbl"),
+)
+
+
+def server(input, output, session):
+    @reactive.calc
+    def filtered_by_origin():
+        df = cars.copy()
+        if input.origin() != "All":
+            df = df[df["Origin"] == input.origin()]
+        return df
+
+    @reactive.effect
+    def _update_mpg():
+        mpg_vals = filtered_by_origin()["Miles_per_Gallon"].dropna()
+        if mpg_vals.empty:
+            return
+        lo, hi = int(mpg_vals.min()), int(mpg_vals.max())
+        ui.update_slider("mpg", label=f"Min MPG ({lo}–{hi})",
+                         min=lo, max=hi, value=lo)
+
+    @render.data_frame
+    def tbl():
+        df = filtered_by_origin().dropna(subset=["Miles_per_Gallon"])
+        df = df[df["Miles_per_Gallon"] &gt;= input.mpg()]
+        return render.DataGrid(df[display_cols].reset_index(drop=True), height="350px")
+
+
+app = App(app_ui, server)
+
+</code></pre>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/reactive.effect.html"><code>@reactive.effect</code></a> · <a href="https://shiny.posit.co/py/api/core/ui.update_slider.html"><code>ui.update_slider</code></a> · <a href="https://shiny.posit.co/py/api/core/">all <code>ui.update_*</code> functions</a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="when-do-you-need-req" class="level2">
+<h2 class="anchored" data-anchor-id="when-do-you-need-req">When do you need <code>req()</code>?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><a href="https://shiny.posit.co/py/api/core/req.html"><code>req()</code></a> = <strong>“stop here until this value exists”</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="at">@render.data_frame</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tbl():</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    req(<span class="bu">input</span>.mpg())        <span class="co"># ← wait until slider exists</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> filtered_data()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><a href="https://shiny.posit.co/py/api/core/req.html"><code>req(input.mpg())</code></a> <strong>silently halts</strong> the render if <code>input.mpg()</code> is <code>None</code>, <code>""</code>, or <code>False</code> — no error, just a blank output until the value arrives.</p>
+</div><div class="column" style="width:50%;">
+<p><strong>When you need it</strong></p>
+<ul>
+<li>When <code>@render.ui</code> creates a widget <strong>dynamically</strong>, the widget doesn’t exist during the first render cycle. Any other render that reads that widget’s value (e.g., <code>input.mpg()</code>) will get <code>None</code> and crash — <code>req(input.mpg())</code> tells Shiny “skip this render silently until the value appears”</li>
+<li>When any input starts empty (e.g., <code>input_text</code> with no default)</li>
+</ul>
+<p><strong>When you don’t</strong></p>
+<ul>
+<li>Static widgets with defaults (<code>input_slider</code>, <code>input_select</code> with <code>selected=</code>) — value is always available</li>
+<li>After <code>@reactive.effect</code> + <code>ui.update_*()</code> — the widget is static, so it always exists</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/req.html"><code>req()</code></a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="selecting-columns-to-show" class="level2">
+<h2 class="anchored" data-anchor-id="selecting-columns-to-show">Selecting columns to show</h2>
+<p>Shiny doesn’t support column click-selection — use <code>ui.input_checkbox_group()</code> for explicit column picking.</p>
+<p>The column choices here are <strong>fixed</strong> (they don’t depend on the data), so a plain static widget is enough. <code>@render.ui</code> is only needed when the set of choices must update dynamically.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shiny <span class="im">import</span> App, ui, render</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vega_datasets <span class="im">import</span> data <span class="im">as</span> vega_data</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>cars <span class="op">=</span> pd.DataFrame(vega_data.cars())</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>all_cols <span class="op">=</span> [<span class="st">"Name"</span>, <span class="st">"Miles_per_Gallon"</span>, <span class="st">"Cylinders"</span>, <span class="st">"Horsepower"</span>, <span class="st">"Origin"</span>]</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>app_ui <span class="op">=</span> ui.page_fluid(</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    ui.input_checkbox_group(<span class="st">"cols"</span>, <span class="st">"Columns"</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>                            choices<span class="op">=</span>all_cols, selected<span class="op">=</span>all_cols[:<span class="dv">3</span>], inline<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    ui.output_data_frame(<span class="st">"tbl"</span>),</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> server(<span class="bu">input</span>, output, session):</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">@render.data_frame</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> tbl():</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>        cols <span class="op">=</span> <span class="bu">list</span>(<span class="bu">input</span>.cols()) <span class="kw">or</span> all_cols  <span class="co"># guard: never pass empty list</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> render.DataGrid(cars[cols], width<span class="op">=</span><span class="st">"100%"</span>, height<span class="op">=</span><span class="st">"350px"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>The <code>or all_cols</code> guard is important — if the user unchecks every box, <code>input.cols()</code> returns <code>()</code> and <code>cars[[]]</code> raises an error.</p>
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/ui.input_checkbox_group.html"><code>ui.input_checkbox_group</code></a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="reminder-data_view" class="level2">
+<h2 class="anchored" data-anchor-id="reminder-data_view">Reminder: <code>data_view()</code></h2>
+<p>Once rendered, the <code>@render.data_frame</code> result exposes methods to read the table’s current state:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tbl.data_view()</code></td>
+<td>All rows after sort + filter</td>
+</tr>
+<tr class="even">
+<td><code>tbl.data_view(selected=True)</code></td>
+<td>Only selected rows</td>
+</tr>
+<tr class="odd">
+<td><code>tbl.data()</code></td>
+<td>Original underlying data</td>
+</tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.calc</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> selected_rows():</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> tbl.data_view(selected<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    req(<span class="kw">not</span> df.empty)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>data_view(selected=True)</code> returns selected rows <strong>with</strong> any sorting/filtering the user has applied — it is the data as the user sees it.</p>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/render.data_frame.html"><code>render.data_frame</code></a> · <a href="https://shiny.posit.co/py/api/core/render.DataGrid.html#shiny.render.DataGrid.data_view"><code>data_view()</code></a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="export-filtered-data-to-csv" class="level2">
+<h2 class="anchored" data-anchor-id="export-filtered-data-to-csv">Export filtered data to CSV</h2>
+<p><code>tbl.data()</code> always returns the <strong>full</strong> underlying dataset — ignores any active filters, sorts, or selections. <code>tbl.data_view()</code> returns <strong>what the user currently sees</strong> — respects the column filters and sort order. (Covered in <a href="06a-tables.qmd#downloading-table-data-data-vs-data_view">06a</a>.)</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  U((👤)) -.select origin.-&gt; A
+  A[/input_origin/] --&gt; T([tbl])
+  U2((👤)) -.click.-&gt; D1
+  U3((👤)) -.click.-&gt; D2
+  T --&gt;|".data()"| D1([download_all])
+  T --&gt;|".data_view()"| D2([download_view])
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style U2 fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style U3 fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style T fill:#E3F2FD,stroke:#2196F3
+  style D1 fill:#E3F2FD,stroke:#2196F3
+  style D2 fill:#E3F2FD,stroke:#2196F3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="at">@render.download</span>(filename<span class="op">=</span><span class="st">"cars_all.csv"</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> download_all():</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> tbl.data().to_csv(index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="at">@render.download</span>(filename<span class="op">=</span><span class="st">"cars_filtered.csv"</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> download_view():</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># also: tbl.data_view(selected=True)</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">#       to export only selected rows</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">yield</span> tbl.data_view().to_csv(index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:60%;">
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+import pandas as pd
+from vega_datasets import data as vega_data
+from shiny import App, ui, render
+
+# Demonstrates the difference between tbl.data() and tbl.data_view():
+#   tbl.data()         — always the full underlying DataFrame
+#   tbl.data_view()    — what the user currently sees (honours column filters + sort)
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+display_cols = ["Name", "Miles_per_Gallon", "Horsepower", "Origin"]
+
+app_ui = ui.page_fluid(
+    ui.h4("Download: original data vs filtered view"),
+    ui.input_select("origin", "Origin", choices=["All"] + origins),
+    ui.layout_columns(
+        ui.download_button("download_all",  "⬇ All data  (tbl.data())",          class_="btn-secondary"),
+        ui.download_button("download_view", "⬇ Filtered view  (tbl.data_view())", class_="btn-primary"),
+        col_widths=[6, 6],
+    ),
+    ui.output_text("counts"),
+    ui.br(),
+    ui.output_data_frame("tbl"),
+)
+
+
+def server(input, output, session):
+    @render.data_frame
+    def tbl():
+        df = cars if input.origin() == "All" else cars[cars["Origin"] == input.origin()]
+        return render.DataGrid(df[display_cols].reset_index(drop=True), height="300px")
+
+    @render.text
+    def counts():
+        return (
+            f"tbl.data(): {len(tbl.data())} rows (always full dataset)   |   "
+            f"tbl.data_view(): {len(tbl.data_view())} rows (current filter)"
+        )
+
+    @render.download(filename="cars_all.csv")
+    def download_all():
+        # tbl.data() ignores any active filters or sort — returns full original data
+        yield tbl.data().to_csv(index=False)
+
+    @render.download(filename="cars_filtered.csv")
+    def download_view():
+        # tbl.data_view() respects column filters and sort order
+        # Add selected=True to export only selected rows
+        yield tbl.data_view().to_csv(index=False)
+
+
+app = App(app_ui, server)
+
+</code></pre>
+</div>
+</div>
+</section>
+<section id="export-filtered-data-to-csv-1" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="export-filtered-data-to-csv-1">Export filtered data to CSV</h2>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+import pandas as pd
+from vega_datasets import data as vega_data
+from shiny import App, ui, render
+
+# Demonstrates the difference between tbl.data() and tbl.data_view():
+#   tbl.data()         — always the full underlying DataFrame
+#   tbl.data_view()    — what the user currently sees (honours column filters + sort)
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+display_cols = ["Name", "Miles_per_Gallon", "Horsepower", "Origin"]
+
+app_ui = ui.page_fluid(
+    ui.h4("Download: original data vs filtered view"),
+    ui.input_select("origin", "Origin", choices=["All"] + origins),
+    ui.layout_columns(
+        ui.download_button("download_all",  "⬇ All data  (tbl.data())",          class_="btn-secondary"),
+        ui.download_button("download_view", "⬇ Filtered view  (tbl.data_view())", class_="btn-primary"),
+        col_widths=[6, 6],
+    ),
+    ui.output_text("counts"),
+    ui.br(),
+    ui.output_data_frame("tbl"),
+)
+
+
+def server(input, output, session):
+    @render.data_frame
+    def tbl():
+        df = cars if input.origin() == "All" else cars[cars["Origin"] == input.origin()]
+        return render.DataGrid(df[display_cols].reset_index(drop=True), height="300px")
+
+    @render.text
+    def counts():
+        return (
+            f"tbl.data(): {len(tbl.data())} rows (always full dataset)   |   "
+            f"tbl.data_view(): {len(tbl.data_view())} rows (current filter)"
+        )
+
+    @render.download(filename="cars_all.csv")
+    def download_all():
+        # tbl.data() ignores any active filters or sort — returns full original data
+        yield tbl.data().to_csv(index=False)
+
+    @render.download(filename="cars_filtered.csv")
+    def download_view():
+        # tbl.data_view() respects column filters and sort order
+        # Add selected=True to export only selected rows
+        yield tbl.data_view().to_csv(index=False)
+
+
+app = App(app_ui, server)
+
+</code></pre>
+<div class="callout callout-style-simple callout-warning no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><code>@render.download()</code> must use <code>yield</code>, not <code>return</code> — it’s a generator. (<code>@session.download_handler</code> is deprecated since Shiny 1.1.)</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Pattern</strong>: Use <code>tbl.data_view(selected=True)</code> to export only the rows the user has clicked/selected.</p>
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/render.download.html"><code>render.download</code></a> · <a href="https://shiny.posit.co/py/api/core/ui.download_button.html"><code>ui.download_button</code></a> · <a href="https://shiny.posit.co/py/docs/reactive-downloading.html">Shiny downloading guide</a> · <a href="https://shiny.posit.co/py/api/core/render.DataGrid.html"><code>DataGrid.data_view()</code></a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="reset-table-selections" class="level2">
+<h2 class="anchored" data-anchor-id="reset-table-selections">Reset table selections</h2>
+<p>When the filter changes, DataGrid automatically clears its selection whenever the underlying data reference changes — because <code>filtered()</code> returns a <strong>new</strong> DataFrame object.</p>
+<p>To also let users manually clear with a button, take an explicit dependency on an <code>action_button</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.calc</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filtered():</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    _ <span class="op">=</span> <span class="bu">input</span>.reset_btn()  <span class="co"># explicit dependency — click invalidates filtered()</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> cars.copy()</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.origin() <span class="op">!=</span> <span class="st">"All"</span>:</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>        df <span class="op">=</span> df[df[<span class="st">"Origin"</span>] <span class="op">==</span> <span class="bu">input</span>.origin()]</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df.reset_index(drop<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Changing <code>origin</code> <strong>or</strong> clicking Reset invalidates <code>filtered()</code>, re-renders the DataGrid, and the selection is gone.</p>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+import pandas as pd
+from vega_datasets import data as vega_data
+from shiny import App, ui, render, reactive
+
+# Demonstrates programmatic selection reset:
+# Changing the origin filter (or clicking Reset) forces filtered() to recompute,
+# which re-renders the DataGrid — DataGrid automatically clears its selection
+# whenever the underlying data reference changes.
+
+cars = pd.DataFrame(vega_data.cars())
+origins = sorted(cars["Origin"].unique())
+
+app_ui = ui.page_fluid(
+    ui.h4("Filter → selection resets automatically"),
+    ui.layout_columns(
+        ui.input_select("origin", "Origin", choices=["All"] + origins),
+        ui.input_action_button("reset_btn", "Reset selection", class_="btn-secondary"),
+        col_widths=[6, 6],
+    ),
+    ui.output_text("selection_info"),
+    ui.br(),
+    ui.output_data_frame("tbl"),
+)
+
+
+def server(input, output, session):
+    @reactive.calc
+    def filtered():
+        # Take an explicit dependency on reset_btn so clicking it invalidates
+        # filtered(), which in turn re-renders the DataGrid and clears the selection.
+        _ = input.reset_btn()
+        df = cars.copy()
+        if input.origin() != "All":
+            df = df[df["Origin"] == input.origin()]
+        return df[["Name", "Miles_per_Gallon", "Cylinders", "Origin"]].reset_index(drop=True)
+
+    @render.data_frame
+    def tbl():
+        return render.DataGrid(filtered(), height="350px", selection_mode="rows")
+
+    @render.text
+    def selection_info():
+        selected = tbl.data_view(selected=True)
+        n = 0 if (selected is None or selected.empty) else len(selected)
+        return f"Selected rows: {n}  (changes filter or click Reset to clear)"
+
+
+app = App(app_ui, server)
+
+</code></pre>
+</section>
+<section id="reset-all-filters-to-defaults" class="level2">
+<h2 class="anchored" data-anchor-id="reset-all-filters-to-defaults">Reset all filters to defaults</h2>
+<p><strong>Why does row selection reset automatically?</strong> DataGrid drops its selection whenever it receives a new DataFrame — a re-render means a fresh table, so old row indices no longer apply. That’s why changing <code>origin</code> or clicking Reset (which invalidates <code>filtered()</code>) clears the selection for free.</p>
+<p>But resetting <strong>filter inputs themselves</strong> (dropdowns, sliders) back to defaults requires explicit action — inputs keep their values until you tell them otherwise. Use <code>@reactive.effect</code> + <code>@reactive.event</code> to reset <strong>all</strong> inputs when a button is clicked:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>ui.input_action_button(<span class="st">"reset_all"</span>, <span class="st">"Reset all filters"</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.effect</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.event</span>(<span class="bu">input</span>.reset_all)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _reset_filters():</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    ui.update_select(<span class="st">"origin"</span>, selected<span class="op">=</span><span class="st">"All"</span>)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    ui.update_slider(<span class="st">"mpg"</span>, value<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    ui.update_checkbox_group(<span class="st">"cols"</span>, selected<span class="op">=</span>[<span class="st">"Name"</span>, <span class="st">"MPG"</span>, <span class="st">"HP"</span>])</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    ui.update_numeric(<span class="st">"n_rows"</span>, value<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    ui.update_switch(<span class="st">"log_scale"</span>, value<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    ui.update_radio_buttons(<span class="st">"chart_type"</span>, selected<span class="op">=</span><span class="st">"scatter"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>@reactive.event(input.reset_all)</code> makes the effect fire <strong>only</strong> when the button is clicked — not on every reactive cycle</li>
+<li>Inside, call as many <code>ui.update_*()</code> functions as needed to restore defaults</li>
+<li>Each update triggers downstream reactivity as usual</li>
+</ul>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/reactive.event.html"><code>@reactive.event</code></a> · <a href="https://shiny.posit.co/py/api/core/ui.update_select.html"><code>ui.update_select</code></a> · <a href="https://shiny.posit.co/py/api/core/ui.input_action_button.html"><code>input_action_button</code></a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="editable-tables-bonus" class="level2">
+<h2 class="anchored" data-anchor-id="editable-tables-bonus">Editable tables (bonus)</h2>
+<p>Set <code>editable=True</code> and handle cell patches with <code>@tbl.set_patch_fn</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="at">@render.data_frame</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tbl():</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> render.DataGrid(df, editable<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="at">@tbl.set_patch_fn</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _(<span class="op">*</span>, patch):</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># patch.row_index, patch.column_index, patch.value</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># validate / transform the value here</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> patch[<span class="st">"value"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>@tbl.set_patches_fn</code> handles batches of edits at once.</p>
+<p>The edited data is accessible via <code>tbl.data_patched()</code>.</p>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>Docs</strong>: <a href="https://shiny.posit.co/py/api/core/render.DataGrid.html"><code>render.DataGrid</code> — <code>editable</code></a> · <a href="https://shiny.posit.co/py/api/core/render.DataGrid.html#shiny.render.DataGrid.set_patch_fn"><code>set_patch_fn</code></a> · <a href="https://shiny.posit.co/py/api/core/render.DataGrid.html#shiny.render.DataGrid.data_patched"><code>data_patched()</code></a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="block-4-advanced-reactivity-lessons" class="level2">
+<h2 class="anchored" data-anchor-id="block-4-advanced-reactivity-lessons">Block 4 — Advanced reactivity: lessons</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Linked filters</strong></p>
+<ul>
+<li><code>@render.ui</code> — return a new widget when choices/range must change</li>
+<li><code>@reactive.effect</code> + <code>ui.update_*()</code> — update in place (no rebuild)</li>
+<li><code>req()</code> — silently skip a render until a dynamic input exists</li>
+</ul>
+<p><strong>Column picker &amp; editable tables</strong></p>
+<ul>
+<li><code>input_checkbox_group</code> for explicit column selection</li>
+<li><code>editable=True</code> + <code>@tbl.set_patch_fn</code> for inline cell editing</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong><code>data()</code> vs <code>data_view()</code></strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tbl.data()</code></td>
+<td>Full original DataFrame — ignores filters, sort</td>
+</tr>
+<tr class="even">
+<td><code>tbl.data_view()</code></td>
+<td>What the user sees — honours column filters + sort</td>
+</tr>
+<tr class="odd">
+<td><code>tbl.data_view(selected=True)</code></td>
+<td>Selected rows only</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Selection &amp; filter reset</strong></p>
+<ul>
+<li>DataGrid auto-clears selection when its data reference changes</li>
+<li><code>input.reset_btn()</code> dependency in <code>@reactive.calc</code> — manual selection reset</li>
+<li><code>@reactive.event</code> + <code>ui.update_*()</code> — reset filter inputs to defaults</li>
+</ul>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>General principle</strong>: prefer <code>tbl.data_view()</code> over maintaining a parallel <code>@reactive.calc</code>-filtered DataFrame for downloads — they’re already in sync.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
