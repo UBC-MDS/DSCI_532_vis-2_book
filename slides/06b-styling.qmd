@@ -1,0 +1,1041 @@
+---
+title: "More Styling 💅"
+---
+
+## Lecture overview
+
+::: {.columns}
+::: {.column width="50%"}
+::: {.callout-note appearance="minimal"}
+### Learning goals
+
+**Block 1 — Styles & themes**
+
+1. Understand how Shiny builds on Bootstrap 5
+2. Swap entire app themes with `ui.Theme` / Bootswatch presets
+3. Prefer Bootstrap utilities; use inline CSS for targeted tweaks
+4. Build a styled dashboard header
+
+**Block 2 — Layout & UX**
+
+5. Arrange outputs with `ui.card()` and `layout_columns(col_widths=)`
+6. Use `ui.accordion()` to collapse groups of controls
+7. Display reactive KPIs with `ui.value_box()`
+
+**Block 3 — Table polish**
+
+8. Apply conditional row styling to highlight data signals
+
+**Block 4 — Advanced reactivity**
+
+9. Make input components reactive (linked filters)
+10. Export filtered data to CSV with `data()` / `data_view()`
+11. Reset table selections programmatically
+:::
+:::
+::: {.column width="50%"}
+::: {.callout-note appearance="minimal"}
+### Topics
+
+**Block 1 — Styles & themes**
+
+- Bootstrap 5 foundation · Bootswatch theme presets
+- `page_fillable` vs `page_fluid`
+- Bootstrap utilities vs inline CSS · styled header
+
+**Block 2 — Layout & UX**
+
+- Cards + `layout_columns(col_widths=)` · Accordion
+- Value boxes with reactive comparison
+
+**Block 3 — Table polish & synthesis**
+
+- Conditional row / cell styling
+- Full styled dashboard · Layout tips
+
+**Block 4 — Advanced reactivity**
+
+- Column picker · Linked filters
+- CSV export (`data()` vs `data_view()`) · Selection reset · Editable tables
+
+**Review**: [01b-dashboard-design](01b-dashboard-design.qmd) design principles
+:::
+:::
+:::
+
+## Block 1 — Styles & themes
+
+Bootstrap 5 foundation · `ui.Theme` presets · Bootstrap utilities · `page_fillable` · styled header
+
+## Shiny and Bootstrap
+
+Shiny's UI layer is built on top of [Bootstrap 5](https://getbootstrap.com/docs/5.3/) — it provides a **12-column responsive grid** and a library of ready-made utility classes.
+
+You can (but if you don't **have to** - don't!) use **any Bootstrap 5 class** via the `class_=` argument on any `ui.tags.*` element.
+
+**Using standard themes >> using Bootstrap-based app CSS >> manually assigning classes >> inline CSS**
+
+::: {.columns}
+::: {.column width="55%"}
+**Utility class groups** — attach via `class_=` on any `ui.div()`, `ui.p()`, `ui.tags.*`
+
+| Group | Key classes | Example |
+|---|---|---|
+| [Spacing](https://getbootstrap.com/docs/5.3/utilities/spacing/) | `mt-3` `px-2` `mb-0` | `class_="mt-3 px-2"` |
+| [Typography](https://getbootstrap.com/docs/5.3/utilities/text/) | `text-muted` `fw-bold` `small` `fs-3` | `class_="text-muted small"` |
+| [Color](https://getbootstrap.com/docs/5.3/utilities/colors/) | `bg-primary` `text-white` `bg-light` | `class_="bg-primary text-white"` |
+| [Flex](https://getbootstrap.com/docs/5.3/utilities/flex/) | `d-flex` `justify-content-between` `align-items-center` | `class_="d-flex justify-content-between"` |
+| [Borders](https://getbootstrap.com/docs/5.3/utilities/borders/) | `border` `rounded` `rounded-3` | `class_="border rounded p-2"` |
+| [Badges](https://getbootstrap.com/docs/5.3/components/badge/) | `badge` `bg-success` `bg-danger` | `ui.tags.span("New", class_="badge bg-success")` |
+
+:::
+::: {.column width="45%"}
+**Responsive 12-column grid**
+
+`layout_columns(col_widths=)` maps directly to Bootstrap columns — widths must sum to 12:
+
+```python
+ui.layout_columns(
+    ui.card(...),   # 5 cols
+    ui.card(...),   # 7 cols
+    col_widths=[5, 7],
+)
+```
+
+Pass a dict for breakpoints — stacks on mobile, side-by-side on desktop:
+
+```python
+col_widths={"sm": [12, 12], "lg": [5, 7]}
+```
+
+:::
+:::
+
+## Theme presets with `ui.Theme`
+
+We can swap the entire look in one line of code: Shiny ships with
+[Bootswatch](https://bootswatch.com/) presets:
+
+```python
+# In a standalone app (not shinylive):
+from shiny import App, ui
+
+app_ui = ui.page_sidebar(
+    ui.sidebar("Controls here"),
+    ui.card(ui.p("Content")),
+    theme=ui.Theme("cosmo"),       # try: "flatly", "darkly", "minty", "lux"
+)
+```
+
+Available presets include:
+`shiny` (default) · `bootstrap` · `cerulean` · `cosmo` · `darkly` · `flatly` ·
+`journal` · `litera` · `lumen` · `lux` · `minty` · `pulse` · `sandstone` ·
+`simplex` · `sketchy` · `slate` · `solar` · `spacelab` · `superhero` · `united` · `yeti`
+
+You can also customise variables:
+
+```python
+my_theme = (
+    ui.Theme("flatly")
+    .add_defaults(primary="#6f42c1")
+    .add_rules("h1 { letter-spacing: 0.05em; }")
+)
+```
+
+::: {.callout-warning appearance="minimal"}
+`ui.Theme` requires `pip install libsass` (or `pip install "shiny[theme]"`) and is compiled at first load. It does **not** work inside shinylive.
+:::
+
+::: {.callout-tip appearance="minimal"}
+**Docs**: [`ui.Theme`](https://shiny.posit.co/py/api/core/ui.Theme.html) · [Shiny theming guide](https://shiny.posit.co/py/docs/theming.html) · [Bootswatch presets](https://bootswatch.com/)
+:::
+
+::: {.callout-tip appearance="minimal"}
+**Design principle** (from [01b](01b-dashboard-design.qmd#general-tips)): Start from **established style and UX conventions** — themes let you adopt a consistent look quickly, then customize.
+:::
+
+## `page_fillable` vs `page_fluid`
+
+::: {.columns}
+::: {.column width="50%"}
+**`ui.page_fluid()`**
+
+- Content has a **fixed max-width** and scrolls vertically
+- Good for text-heavy apps or when output heights are predictable
+- Default behaviour
+:::
+::: {.column width="50%"}
+**`ui.page_fillable()`**
+
+- Content **fills the browser window** vertically
+- Cards and outputs stretch to use available space
+- Best for dashboards with charts / tables
+- Set `fill=False` on individual items to opt out
+:::
+:::
+
+```python
+# Filling layout — cards expand to fill the screen
+app_ui = ui.page_fillable(
+    ui.layout_columns(
+        ui.card(ui.output_data_frame("tbl")),   # fills
+        ui.card(output_widget("chart")),          # fills
+        col_widths=[5, 7],
+    ),
+)
+```
+
+::: {.callout-tip appearance="minimal"}
+Rule of thumb: use `page_fillable` for dashboards, `page_fluid` for reports and forms.
+
+**Docs**: [`ui.page_fillable`](https://shiny.posit.co/py/api/core/ui.page_fillable.html) · [`ui.page_fluid`](https://shiny.posit.co/py/api/core/ui.page_fluid.html)
+:::
+
+::: {.callout-tip appearance="minimal"}
+**Design principle** (from [01b](01b-dashboard-design.qmd#layout-the-app-logically)): A consistent **grid layout** improves scanning — fillable pages keep cards aligned across the viewport.
+:::
+
+## Inline CSS on UI components
+
+**Prefer Bootstrap classes** — they respect the active `ui.Theme()` and need no extra CSS. Use `style=` only for what Bootstrap can't express.
+
+::: {.columns}
+::: {.column width="50%"}
+**Bootstrap first (preferred)**
+
+```python
+# Themed header — bg-primary updates automatically
+# when you swap ui.Theme("flatly") → ui.Theme("darkly")
+ui.div(
+    ui.h4("Cars Explorer", class_="mb-0"),
+    class_="bg-primary text-white p-3 d-flex align-items-center",
+)
+
+# Status badge in a card header
+ui.card_header(
+    "MPG trend",
+    ui.tags.span("live", class_="badge bg-success ms-2"),
+)
+```
+:::
+::: {.column width="50%"}
+**Inline CSS — targeted tweaks only**
+
+```python
+# Custom brand hex — no Bootstrap equivalent
+ui.div(
+    ui.h4("Cars Explorer", class_="mb-0 text-white"),
+    class_="p-3 d-flex align-items-center",
+    style="background-color: #1e40af;",
+)
+
+# Exact sizing Bootstrap's scale can't express
+ui.div(output_widget("chart"), style="min-height: 320px;")
+```
+
+::: {.callout-tip appearance="minimal"}
+Use `style=` when: custom brand colour, exact pixel value, or a CSS property with no Bootstrap utility.
+:::
+:::
+:::
+
+## Creating a styled dashboard header
+
+`bg-primary` picks up the active theme colour — swap `ui.Theme("flatly")` → `ui.Theme("darkly")` and the header updates automatically. Add a subtitle and badge to build a polished header entirely from Bootstrap.
+
+```python
+from shiny import App, ui
+
+# Theme-aware header — bg-primary adapts to any ui.Theme preset
+header = ui.div(
+    ui.div(
+        ui.h1("Cars Explorer", class_="mb-0 fs-3"),
+        ui.p("Fuel economy dataset · 1970–1982", class_="mb-0 opacity-75 small"),
+    ),
+    ui.tags.span("v1.0", class_="badge bg-light text-dark"),
+    class_="bg-primary text-white p-4 d-flex justify-content-between align-items-center",
+)
+```
+
+This is the pattern used in both the Block 1 synthesis and the full dashboard later.
+
+::: {.callout-note appearance="minimal"}
+**Classes used — all from Bootstrap**
+
+| Class | Effect | Docs |
+|---|---|---|
+| `bg-primary` | theme background colour (updates with `ui.Theme`) | [Background](https://getbootstrap.com/docs/5.3/utilities/background/) |
+| `text-white` | white text | [Colors](https://getbootstrap.com/docs/5.3/utilities/colors/) |
+| `p-4` | 1.5 rem padding on all sides | [Spacing](https://getbootstrap.com/docs/5.3/utilities/spacing/) |
+| `mb-0` / `mb-3` | margin-bottom 0 / 1 rem | [Spacing](https://getbootstrap.com/docs/5.3/utilities/spacing/) |
+| `fs-3` | font-size 1.75 rem | [Font size](https://getbootstrap.com/docs/5.3/utilities/text/#font-size) |
+| `small` | 80% font size | [Typography](https://getbootstrap.com/docs/5.3/content/typography/#inline-text-elements) |
+| `opacity-75` | 75% opacity | [Opacity](https://getbootstrap.com/docs/5.3/utilities/opacity/) |
+| `d-flex` | `display: flex` | [Flex](https://getbootstrap.com/docs/5.3/utilities/flex/) |
+| `justify-content-between` | push children to opposite ends | [Flex](https://getbootstrap.com/docs/5.3/utilities/flex/#justify-content) |
+| `align-items-center` | centre children vertically | [Flex](https://getbootstrap.com/docs/5.3/utilities/flex/#align-items) |
+| `badge` | inline pill/chip component | [Badges](https://getbootstrap.com/docs/5.3/components/badge/) |
+
+`d-flex justify-content-between` lets you add a badge or button to the right side without extra CSS — e.g. `ui.tags.span("v1.2", class_="badge bg-light text-dark")`.
+:::
+
+## Block 1 synthesis: styles & themes
+
+::: {.columns}
+::: {.column width="35%"}
+**What this app demonstrates**
+
+- `page_fillable` — cards stretch to fill the viewport
+- Header: `bg-primary`, `text-white`, `d-flex`, `justify-content-between` + badge — **no `style=`**
+- Bootstrap utility classes for spacing, colour, and typography — no external CSS
+- `style=` used only for values Bootstrap can't express: a brand hex and exact font metrics
+
+**Rule**: if Bootstrap has a class for it, use the class.
+`style=` is for the ~10%: brand colours and exact pixel metrics.
+:::
+::: {.column width="65%"}
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+
+{{< include /code/lecture04/app-02-styles-header.py >}}
+```
+:::
+:::
+
+## Block 1 synthesis: styles & themes {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+
+{{< include /code/lecture04/app-02-styles-header.py >}}
+```
+
+## Block 2 — Layout & UX
+
+`ui.card()` · `ui.accordion()` · Value boxes with reactive comparison
+
+## Cards as layout containers
+
+::: {.columns}
+::: {.column width="55%"}
+`ui.card()` visually groups content. `full_screen=True` adds an expand button.
+
+`ui.layout_columns(col_widths=[...])` uses a **12-column grid** — widths must sum to 12.
+:::
+::: {.column width="45%"}
+
+| `col_widths` | Result |
+|---|---|
+| `[4, 4, 4]` | three equal columns |
+| `[3, 9]` | narrow sidebar + wide main |
+| `[6, 6, 12]` | two cols row 1, full row 2 |
+
+:::
+:::
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+
+from shiny import App, ui
+
+app_ui = ui.page_fillable(
+    ui.layout_columns(
+        ui.card(
+            ui.card_header("Summary statistics"),
+            ui.p("Table goes here."),
+            full_screen=True,
+        ),
+        ui.card(
+            ui.card_header("Trend chart"),
+            ui.p("Chart goes here."),
+            full_screen=True,
+        ),
+        ui.card(
+            ui.card_header("Distribution"),
+            ui.p("Another chart."),
+            full_screen=True,
+        ),
+        col_widths=[4, 4, 4],
+    ),
+)
+
+def server(input, output, session):
+    pass
+
+app = App(app_ui, server)
+```
+
+::: {.callout-tip appearance="minimal"}
+**Design principle** (from [01b](01b-dashboard-design.qmd#layout-the-app-logically)): Design your app in a **grid layout** — [Miller's law](https://en.wikipedia.org/wiki/Miller%27s_law) suggests 5–9 panels per view.
+
+**Responsive**: pass a dict for breakpoints — `col_widths={"sm": [12, 12, 12], "lg": [4, 4, 4]}` stacks on mobile, 3-col on desktop.
+
+**Docs**: [`ui.card`](https://shiny.posit.co/py/api/core/ui.card.html) · [`ui.layout_columns`](https://shiny.posit.co/py/api/core/ui.layout_columns.html)
+:::
+
+## Accordion: collapsible sections
+
+`ui.accordion()` groups controls into collapsible panels.
+
+Useful when you have many controls and want to avoid an overwhelming sidebar:
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+
+from shiny import App, ui
+
+sidebar = ui.sidebar(
+    ui.accordion(
+        ui.accordion_panel(
+            "Data filters",
+            ui.input_select("origin", "Origin", ["All", "USA", "Europe", "Japan"]),
+            ui.input_slider("mpg", "Min MPG", 0, 50, 10),
+        ),
+        ui.accordion_panel(
+            "Chart options",
+            ui.input_select("color", "Color by", ["Origin", "Cylinders"]),
+            ui.input_switch("log", "Log scale", False),
+        ),
+        ui.accordion_panel(
+            "About",
+            ui.p("Cars dataset explorer. Select rows to highlight."),
+        ),
+        open="Data filters",   # only this panel open initially
+    ),
+    width=260,
+)
+
+app_ui = ui.page_fillable(
+    ui.layout_sidebar(
+        sidebar,
+        ui.card(
+            ui.card_header("Main content"),
+            ui.p("Outputs go here."),
+        ),
+    ),
+)
+
+def server(input, output, session):
+    pass
+
+app = App(app_ui, server)
+```
+
+::: {.callout-tip appearance="minimal"}
+**Design principle** (from [01b](01b-dashboard-design.qmd#be-concise)): Use accordions to respect **Miller's law** (7±2 chunks) — collapse advanced filters so users aren't overwhelmed on first load.
+
+**Docs**: [`ui.accordion`](https://shiny.posit.co/py/api/core/ui.accordion.html) · [`ui.accordion_panel`](https://shiny.posit.co/py/api/core/ui.accordion_panel.html)
+:::
+
+Set `open=True` to open all, `open=False` to collapse all, or pass a panel title string.
+
+## Value boxes {.scrollable}
+
+::: {.columns}
+::: {.column width="35%"}
+
+[`ui.value_box()`](https://shiny.posit.co/py/api/core/ui.value_box.html) highlights a single KPI.
+
+**`theme` is static**, to make it react to data, return the **whole `value_box()`** from `@render.ui`:
+
+```python
+ui.output_ui("mpg_box")   # UI: placeholder only
+
+@render.ui                 # Server: returns full box
+def mpg_box():
+    cmp = compare(val, baseline, higher_is_better=True)
+    return ui.value_box("Mean MPG", f"{val:.1f}",
+                        theme=cmp["theme"])
+```
+
+| Argument | Role |
+|---|---|
+| `title` | Label |
+| `value` | Big number |
+| `*args` | Badge, etc. |
+| `showcase` | Icon |
+| `theme` | Colour |
+
+
+We factored out `compare()` helper that returns one of **five states**: significantly/slightly above, stable (< 1% Δ), slightly/significantly below, and maps each to a colour.
+
+`higher_is_better=False` flips semantics: lower HP is greener than higher HP in a fuel-economy context.
+
+::: {.callout-tip appearance="minimal"}
+**Design rule**: show deltas for trends, not absolutes: "+5.6 MPG (+24%)" beats "29.1" in most cases.
+:::
+
+:::
+::: {.column width="65%"}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets, faicons]
+
+{{< include /code/lecture04/app-01-valuebox-comparison.py >}}
+```
+
+:::
+:::
+
+## Value boxes: comparison example {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets, faicons]
+
+{{< include /code/lecture04/app-01-valuebox-comparison.py >}}
+```
+
+::: {.callout-tip appearance="minimal"}
+**Docs**: [`ui.value_box`](https://shiny.posit.co/py/api/core/ui.value_box.html) · [`faicons`](https://github.com/posit-dev/py-faicons): use `icon_svg("name")` for the `showcase=` argument; `fill="currentColor"` (default) inherits the box theme colour automatically.
+
+**Responsive layouts** — pass a dict to [`col_widths`](https://shiny.posit.co/py/api/core/ui.layout_columns.html) to change layout per [breakpoint](https://getbootstrap.com/docs/5.3/layout/breakpoints/): `col_widths={"sm": [12, 12, 12], "lg": [4, 4, 4]}` stacks on mobile, 3-col on desktop.
+:::
+
+## Block 3 — Table polish & synthesis
+
+Conditional row styling · Full styled dashboard
+
+## Conditional row styling
+
+`render.DataGrid(styles=[...])` applies CSS to specific rows or cells. **Prefer row-level highlights** — they read as a coherent signal. DataGrid doesn't use Bootstrap's `.table` element, so this is one case where `style=` with a direct colour value is the right tool.
+
+```python
+styles = [
+    # Row-level (preferred): inline colour — DataGrid doesn't inherit Bootstrap table classes
+    {"rows": [0, 2, 5], "style": {"background-color": "#D4E6F1"}},  # blue  — high MPG
+    {"rows": [3],        "style": {"background-color": "#F5CBA7"}},  # orange — low MPG
+    {"rows": [7],        "style": {"background-color": "#FCF3CF"}},  # yellow — borderline
+
+    # Cell-level (use sparingly — for precise, targeted signals)
+    # {"rows": [1], "cols": [1], "style": {"font-weight": "bold"}},
+    # {"cols": [2], "style": {"font-style": "italic"}},  # whole column
+]
+```
+
+Row and column indices are **0-based integers**.
+
+::: {.callout-tip appearance="minimal"}
+**Design principle**: Use colour purposefully — one signal (green = good, red = bad) per table. Avoid styling multiple unrelated columns; it creates visual noise.
+
+**Docs**: [`render.DataGrid` — `styles=` parameter](https://shiny.posit.co/py/api/core/render.DataGrid.html)
+:::
+
+## Conditional row styling: live example {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture04/app-03-conditional-row-styling.py >}}
+```
+
+## Putting it together {.scrollable}
+
+Styled header + dynamic value boxes + sidebar + cards + linked table/chart:
+
+::: {.columns}
+::: {.column width="40%"}
+
+```{mermaid}
+flowchart LR
+  U((👤)) -.select origin.-> A
+  A[/input_origin/] --> F{{filtered}}
+  F --> NB([n_rows_box])
+  F --> MB([mpg_box])
+  F --> HB([hp_box])
+  F --> T([tbl])
+  U2((👤)) -.select rows.-> T
+  T -.row select.-> S([scatter])
+  F --> S
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style U2 fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style F fill:#F3E5F5,stroke:#9C27B0
+  style NB fill:#E3F2FD,stroke:#2196F3
+  style MB fill:#E3F2FD,stroke:#2196F3
+  style HB fill:#E3F2FD,stroke:#2196F3
+  style T fill:#E3F2FD,stroke:#2196F3
+  style S fill:#E3F2FD,stroke:#2196F3
+```
+
+`@reactive.calc filtered()` is the shared hub — all five outputs depend on it.
+
+Value boxes use `@render.ui` so the **entire box** (colour, icon, badge) reacts to data via the `compare()` helper — the same pattern from the Value boxes slide.
+
+Row selection `tbl.data_view(selected=True)` feeds a second Altair layer on `scatter`.
+:::
+::: {.column width="60%"}
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets, altair, shinywidgets, faicons]
+
+{{< include /code/lecture04/app-04-full-dashboard.py >}}
+```
+:::
+:::
+
+## Putting it together: full styled dashboard (editor) {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets, altair, shinywidgets, faicons]
+
+{{< include /code/lecture04/app-04-full-dashboard.py >}}
+```
+
+::: {.callout-tip appearance="minimal"}
+**Design principle** (from [01b](01b-dashboard-design.qmd#summary-4-design-principles)): This example combines **concise KPIs**, **logical layout**, and **context** — use it as a template when assembling your own dashboard.
+:::
+
+## Tips for clean layouts
+
+::: {.columns}
+::: {.column width="50%"}
+**Use cards + value boxes**
+
+- Wrap every output in `ui.card()` for visual separation
+- `ui.card_header()` labels each panel
+- `full_screen=True` lets users expand charts
+- Value boxes highlight KPIs at the top
+
+**Sidebar + accordion for controls**
+
+- Put global filters in the sidebar
+- Use `ui.accordion()` to group & collapse related controls
+- `ui.hr()` or space between unrelated widgets
+:::
+::: {.column width="50%"}
+**Consistent spacing**
+
+- Use `padding` and `margin` on `ui.div()` wrappers
+- `layout_columns(col_widths=)` handles the grid
+- One accent colour + neutrals is usually enough
+- Reserve `styles=` on DataGrid for meaningful signals, not decoration
+:::
+:::
+
+::: {.callout-tip appearance="minimal"}
+**Design principle** (from [01b](01b-dashboard-design.qmd#general-tips)): **Match user expectations** and **use color purposefully** — let layout do the heavy lifting, then use color sparingly for emphasis.
+:::
+
+## Block 4 — Advanced reactivity
+
+Linked filters · Column picker · CSV export · Selection reset · Editable tables
+
+## Reactive input components: linked filters
+
+::: {.columns}
+::: {.column width="40%"}
+```{mermaid}
+flowchart LR
+  U((👤)) -.select origin.-> A
+  A[/input_origin/] --> F{{filtered_by_origin}}
+  F -->|"@render.ui"| S[/input_mpg/]
+  F --> T([tbl])
+  S --> T
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style F fill:#F3E5F5,stroke:#9C27B0
+  style S fill:#FFF3E0,stroke:#FF9800
+  style T fill:#E3F2FD,stroke:#2196F3
+```
+
+`@render.ui` returns an entirely new input widget each time `origin` changes — range min and max reflect only the currently visible data.
+
+**How it works**
+
+- `filtered_by_origin()` is a `@reactive.calc` — recomputes when `origin` changes
+- `@render.ui` returns a **brand-new** `input_slider` each time — range, label, and default value all update
+- [`req(input.mpg)`](https://shiny.posit.co/py/api/core/req.html) in `tbl` prevents the table from rendering before the slider exists
+- The slider `id` stays the same (`"mpg"`), so downstream code reads it with `input.mpg()` as usual
+- Use `@render.ui` when the **valid range, choices, or widget type** must change — not just the value
+:::
+::: {.column width="60%"}
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture04/app-05-linked-filters.py >}}
+```
+:::
+:::
+
+## Reactive input components: linked filters {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture04/app-05-linked-filters.py >}}
+```
+
+::: {.callout-tip appearance="minimal"}
+**Docs**: [`render.ui`](https://shiny.posit.co/py/api/core/render.ui.html) · [`req()`](https://shiny.posit.co/py/api/core/req.html) · [`ui.update_slider`](https://shiny.posit.co/py/api/core/ui.update_slider.html)
+:::
+
+## Alternative: `@reactive.effect` + `ui.update_slider()`
+
+::: {.columns}
+::: {.column width="40%"}
+
+Instead of replacing the widget, **update it in place** with `@reactive.effect` + `ui.update_*()`:
+
+```{mermaid}
+flowchart LR
+  U((👤)) -.select origin.-> A
+  A[/input_origin/] --> E["@reactive.effect"]
+  E ==>|"ui.update_slider()"| S[/input_slider/]
+  S --> R([render output])
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style E fill:#FCE4EC,stroke:#E91E63
+  style S fill:#FFF3E0,stroke:#FF9800
+  style R fill:#E3F2FD,stroke:#2196F3
+```
+
+::: {style="display:flex; gap:1.2em; font-size:0.75em; color:#555; margin-top:0.3em;"}
+[<span style="display:inline-block;width:2em;border-top:2px solid #999;vertical-align:middle;margin-right:0.3em"></span> reactive dep]{style="display:flex;align-items:center"}
+[<span style="display:inline-block;width:2em;border-top:4px solid #999;vertical-align:middle;margin-right:0.3em"></span> side-effect push]{style="display:flex;align-items:center"}
+[<span style="display:inline-block;width:2em;border-top:2px dashed #4CAF50;vertical-align:middle;margin-right:0.3em"></span> user action]{style="display:flex;align-items:center"}
+:::
+
+**How `@reactive.effect` works**
+
+- Runs **automatically** whenever any reactive value it reads changes — here, when `origin` changes, `@reactive.effect` re-executes
+- Unlike `@render.*`, it **does not produce an output** — it is a "fire-and-forget" function that performs **side effects** only (e.g., calling `ui.update_slider()` to send new min/max/value to an existing widget)
+- `ui.update_slider()` sends a message to the existing widget — no rebuild, no flicker
+- Use `@render.ui` instead when the **widget type or set of choices** must change, not just the value
+
+:::
+::: {.column width="60%"}
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture04/app-05b-linked-update.py >}}
+```
+:::
+:::
+
+## Alternative: `@reactive.effect` + `ui.update_slider()` {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture04/app-05b-linked-update.py >}}
+```
+
+::: {.callout-tip appearance="minimal"}
+**Docs**: [`@reactive.effect`](https://shiny.posit.co/py/api/core/reactive.effect.html) · [`ui.update_slider`](https://shiny.posit.co/py/api/core/ui.update_slider.html) · [all `ui.update_*` functions](https://shiny.posit.co/py/api/core/)
+:::
+
+## When do you need `req()`?
+
+::: {.columns}
+::: {.column width="50%"}
+
+[`req()`](https://shiny.posit.co/py/api/core/req.html) = **"stop here until this value exists"**
+
+```python
+@render.data_frame
+def tbl():
+    req(input.mpg())        # ← wait until slider exists
+    return filtered_data()
+```
+
+[`req(input.mpg())`](https://shiny.posit.co/py/api/core/req.html) **silently halts** the render if `input.mpg()` is `None`, `""`, or `False` — no error, just a blank output until the value arrives.
+
+:::
+::: {.column width="50%"}
+
+**When you need it**
+
+- When `@render.ui` creates a widget **dynamically**, the widget doesn't exist during the first render cycle. Any other render that reads that widget's value (e.g., `input.mpg()`) will get `None` and crash — `req(input.mpg())` tells Shiny "skip this render silently until the value appears"
+- When any input starts empty (e.g., `input_text` with no default)
+
+**When you don't**
+
+- Static widgets with defaults (`input_slider`, `input_select` with `selected=`) — value is always available
+- After `@reactive.effect` + `ui.update_*()` — the widget is static, so it always exists
+
+:::
+:::
+
+::: {.callout-tip appearance="minimal"}
+**Docs**: [`req()`](https://shiny.posit.co/py/api/core/req.html)
+:::
+
+## Selecting columns to show
+
+Shiny doesn't support column click-selection — use `ui.input_checkbox_group()` for explicit column picking.
+
+The column choices here are **fixed** (they don't depend on the data), so a plain static widget is enough. `@render.ui` is only needed when the set of choices must update dynamically.
+
+```python
+from shiny import App, ui, render
+import pandas as pd
+from vega_datasets import data as vega_data
+
+cars = pd.DataFrame(vega_data.cars())
+all_cols = ["Name", "Miles_per_Gallon", "Cylinders", "Horsepower", "Origin"]
+
+app_ui = ui.page_fluid(
+    ui.input_checkbox_group("cols", "Columns",
+                            choices=all_cols, selected=all_cols[:3], inline=True),
+    ui.output_data_frame("tbl"),
+)
+
+def server(input, output, session):
+    @render.data_frame
+    def tbl():
+        cols = list(input.cols()) or all_cols  # guard: never pass empty list
+        return render.DataGrid(cars[cols], width="100%", height="350px")
+```
+
+::: {.callout-tip appearance="minimal"}
+The `or all_cols` guard is important — if the user unchecks every box, `input.cols()` returns `()` and `cars[[]]` raises an error.
+
+**Docs**: [`ui.input_checkbox_group`](https://shiny.posit.co/py/api/core/ui.input_checkbox_group.html)
+:::
+
+## Reminder: `data_view()`
+
+Once rendered, the `@render.data_frame` result exposes methods to read the table's current state:
+
+| Method | Returns |
+|---|---|
+| `tbl.data_view()` | All rows after sort + filter |
+| `tbl.data_view(selected=True)` | Only selected rows |
+| `tbl.data()` | Original underlying data |
+
+```python
+@reactive.calc
+def selected_rows():
+    df = tbl.data_view(selected=True)
+    req(not df.empty)
+    return df
+```
+
+`data_view(selected=True)` returns selected rows **with** any sorting/filtering the user has applied — it is the data as the user sees it.
+
+::: {.callout-tip appearance="minimal"}
+**Docs**: [`render.data_frame`](https://shiny.posit.co/py/api/core/render.data_frame.html) · [`data_view()`](https://shiny.posit.co/py/api/core/render.DataGrid.html#shiny.render.DataGrid.data_view)
+:::
+
+## Export filtered data to CSV
+
+`tbl.data()` always returns the **full** underlying dataset — ignores any active filters, sorts, or selections. `tbl.data_view()` returns **what the user currently sees** — respects the column filters and sort order. (Covered in [06a](06a-tables.qmd#downloading-table-data-data-vs-data_view).)
+
+::: {.columns}
+::: {.column width="40%"}
+```{mermaid}
+flowchart LR
+  U((👤)) -.select origin.-> A
+  A[/input_origin/] --> T([tbl])
+  U2((👤)) -.click.-> D1
+  U3((👤)) -.click.-> D2
+  T -->|".data()"| D1([download_all])
+  T -->|".data_view()"| D2([download_view])
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style U2 fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style U3 fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style T fill:#E3F2FD,stroke:#2196F3
+  style D1 fill:#E3F2FD,stroke:#2196F3
+  style D2 fill:#E3F2FD,stroke:#2196F3
+```
+
+```python
+@render.download(filename="cars_all.csv")
+def download_all():
+    yield tbl.data().to_csv(index=False)
+
+@render.download(filename="cars_filtered.csv")
+def download_view():
+    # also: tbl.data_view(selected=True)
+    #       to export only selected rows
+    yield tbl.data_view().to_csv(index=False)
+```
+:::
+::: {.column width="60%"}
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture04/app-07-export-csv.py >}}
+```
+:::
+:::
+
+## Export filtered data to CSV {.scrollable}
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture04/app-07-export-csv.py >}}
+```
+
+::: {.callout-warning appearance="minimal"}
+`@render.download()` must use `yield`, not `return` — it's a generator. (`@session.download_handler` is deprecated since Shiny 1.1.)
+:::
+
+::: {.callout-tip appearance="minimal"}
+**Pattern**: Use `tbl.data_view(selected=True)` to export only the rows the user has clicked/selected.
+
+**Docs**: [`render.download`](https://shiny.posit.co/py/api/core/render.download.html) · [`ui.download_button`](https://shiny.posit.co/py/api/core/ui.download_button.html) · [Shiny downloading guide](https://shiny.posit.co/py/docs/reactive-downloading.html) · [`DataGrid.data_view()`](https://shiny.posit.co/py/api/core/render.DataGrid.html)
+:::
+
+## Reset table selections
+
+When the filter changes, DataGrid automatically clears its selection whenever the underlying data reference changes — because `filtered()` returns a **new** DataFrame object.
+
+To also let users manually clear with a button, take an explicit dependency on an `action_button`:
+
+```python
+@reactive.calc
+def filtered():
+    _ = input.reset_btn()  # explicit dependency — click invalidates filtered()
+    df = cars.copy()
+    if input.origin() != "All":
+        df = df[df["Origin"] == input.origin()]
+    return df.reset_index(drop=True)
+```
+
+Changing `origin` **or** clicking Reset invalidates `filtered()`, re-renders the DataGrid, and the selection is gone.
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture04/app-08-reset-selections.py >}}
+```
+
+## Reset all filters to defaults
+
+**Why does row selection reset automatically?** DataGrid drops its selection whenever it receives a new DataFrame — a re-render means a fresh table, so old row indices no longer apply. That's why changing `origin` or clicking Reset (which invalidates `filtered()`) clears the selection for free.
+
+But resetting **filter inputs themselves** (dropdowns, sliders) back to defaults requires explicit action — inputs keep their values until you tell them otherwise. Use `@reactive.effect` + `@reactive.event` to reset **all** inputs when a button is clicked:
+
+```python
+ui.input_action_button("reset_all", "Reset all filters")
+
+@reactive.effect
+@reactive.event(input.reset_all)
+def _reset_filters():
+    ui.update_select("origin", selected="All")
+    ui.update_slider("mpg", value=0)
+    ui.update_checkbox_group("cols", selected=["Name", "MPG", "HP"])
+    ui.update_numeric("n_rows", value=10)
+    ui.update_switch("log_scale", value=False)
+    ui.update_radio_buttons("chart_type", selected="scatter")
+```
+
+- `@reactive.event(input.reset_all)` makes the effect fire **only** when the button is clicked — not on every reactive cycle
+- Inside, call as many `ui.update_*()` functions as needed to restore defaults
+- Each update triggers downstream reactivity as usual
+
+::: {.callout-tip appearance="minimal"}
+**Docs**: [`@reactive.event`](https://shiny.posit.co/py/api/core/reactive.event.html) · [`ui.update_select`](https://shiny.posit.co/py/api/core/ui.update_select.html) · [`input_action_button`](https://shiny.posit.co/py/api/core/ui.input_action_button.html)
+:::
+
+## Editable tables (bonus)
+
+Set `editable=True` and handle cell patches with `@tbl.set_patch_fn`:
+
+```python
+@render.data_frame
+def tbl():
+    return render.DataGrid(df, editable=True)
+
+@tbl.set_patch_fn
+def _(*, patch):
+    # patch.row_index, patch.column_index, patch.value
+    # validate / transform the value here
+    return patch["value"]
+```
+
+`@tbl.set_patches_fn` handles batches of edits at once.
+
+The edited data is accessible via `tbl.data_patched()`.
+
+::: {.callout-tip appearance="minimal"}
+**Docs**: [`render.DataGrid` — `editable`](https://shiny.posit.co/py/api/core/render.DataGrid.html) · [`set_patch_fn`](https://shiny.posit.co/py/api/core/render.DataGrid.html#shiny.render.DataGrid.set_patch_fn) · [`data_patched()`](https://shiny.posit.co/py/api/core/render.DataGrid.html#shiny.render.DataGrid.data_patched)
+:::
+
+## Block 4 — Advanced reactivity: lessons
+
+::: {.columns}
+::: {.column width="50%"}
+**Linked filters**
+
+- `@render.ui` — return a new widget when choices/range must change
+- `@reactive.effect` + `ui.update_*()` — update in place (no rebuild)
+- `req()` — silently skip a render until a dynamic input exists
+
+**Column picker & editable tables**
+
+- `input_checkbox_group` for explicit column selection
+- `editable=True` + `@tbl.set_patch_fn` for inline cell editing
+
+:::
+::: {.column width="50%"}
+**`data()` vs `data_view()`**
+
+| Method | Returns |
+|---|---|
+| `tbl.data()` | Full original DataFrame — ignores filters, sort |
+| `tbl.data_view()` | What the user sees — honours column filters + sort |
+| `tbl.data_view(selected=True)` | Selected rows only |
+
+**Selection & filter reset**
+
+- DataGrid auto-clears selection when its data reference changes
+- `input.reset_btn()` dependency in `@reactive.calc` — manual selection reset
+- `@reactive.event` + `ui.update_*()` — reset filter inputs to defaults
+
+::: {.callout-tip appearance="minimal"}
+**General principle**: prefer `tbl.data_view()` over maintaining a parallel `@reactive.calc`-filtered DataFrame for downloads — they're already in sync.
+:::
+:::
+:::
+
