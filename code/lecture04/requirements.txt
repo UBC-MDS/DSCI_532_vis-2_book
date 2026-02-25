@@ -1,0 +1,13 @@
+jupyter
+shiny
+faicons
+altair
+plotnine
+pandas
+polars
+narwhals
+palmerpenguins
+shinylive
+shinywidgets
+vega_datasets
+setuptools<81

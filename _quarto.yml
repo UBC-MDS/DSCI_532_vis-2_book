@@ -43,7 +43,10 @@ website:
         contents:
           - 030-geoviz-intro.qmd
           - 030-tables-intro.qmd
-
+      - section: "Lecture 4"
+        contents:
+          - 040-styling.qmd
+          # - 040-advanced-geoviz.qmd
 format:
   html:
     theme:

@@ -1,1 +1,54 @@
 /* css styles */
+
+/* Slides: base font size — keeps text compact on content-heavy slides */
+.reveal .slides {
+	font-size: 0.6em;
+}
+
+/* Slides: make code/chunk outputs compact and readable */
+.reveal .cell-output,
+.reveal .cell-output-display,
+.reveal .output {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+		"Liberation Mono", "Courier New", monospace;
+	font-size: 0.7em;
+	line-height: 1.1;
+}
+
+/* Large rendered outputs (e.g., geopandas/pandas tables) get scrollbars */
+.reveal .cell-output-display {
+	max-height: 65vh;
+	overflow: auto;
+}
+
+/* Mermaid diagrams: exempt from max-height so they can grow to fit */
+.reveal .cell-output-display:has(.mermaid) {
+	max-height: none;
+	overflow: visible;
+}
+
+.reveal .cell-output-display table,
+.reveal .cell-output-display .dataframe {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+		"Liberation Mono", "Courier New", monospace;
+	font-size: 0.9em;
+}
+
+/* Runnable examples (shinylive) should stay inside the slide with scrolling */
+.reveal .shinylive-wrapper,
+.reveal .shinylive-container,
+.reveal .shinylive-output-cell,
+.reveal .shinylive-viewer {
+	overflow: auto;
+}
+
+/* Slides: compact code blocks */
+.reveal pre code {
+	font-size: 0.9em;
+	line-height: 1.35;
+}
+
+/* Slides: compact argument/comparison tables */
+.reveal table {
+	font-size: 0.8em;
+}
