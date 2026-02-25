@@ -29,6 +29,7 @@
     }
   </style>
   <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link rel="stylesheet" href="../style.css">
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -44,6 +45,7 @@
     }
     .reveal .slide:not(.center) {
       height: 100%;
+      overflow-y: auto;
     }
     .reveal .slide.scrollable {
       overflow-y: auto;
@@ -132,7 +134,7 @@
 </div>
 
 </section>
-<section id="what-is-a-shiny-app" class="slide level2">
+<section id="what-is-a-shiny-app" class="slide level2 scrollable">
 <h2>What is a Shiny app?</h2>
 <p>Each Shiny app involves:</p>
 <ol type="1">
@@ -141,7 +143,7 @@
 </ol>
 
 <img data-src="../img/app-architecture.001.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="what-is-a-shiny-app-1" class="slide level2">
+<section id="what-is-a-shiny-app-1" class="slide level2 scrollable">
 <h2>What is a Shiny app?</h2>
 <p>Each Shiny app involves:</p>
 <ol type="1">
@@ -150,7 +152,7 @@
 </ol>
 
 <img data-src="../img/app-architecture.002.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="what-is-a-shiny-app-2" class="slide level2">
+<section id="what-is-a-shiny-app-2" class="slide level2 scrollable">
 <h2>What is a Shiny app?</h2>
 <p>Each Shiny app involves:</p>
 <ol type="1">
@@ -159,7 +161,7 @@
 </ol>
 
 <img data-src="../img/app-architecture.003.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="components" class="slide level2">
+<section id="components" class="slide level2 scrollable">
 <h2>Components</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
@@ -171,7 +173,7 @@
 <p><img data-src="../img/app-components.001.png"></p>
 </div></div>
 </section>
-<section id="components-1" class="slide level2">
+<section id="components-1" class="slide level2 scrollable">
 <h2>Components</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
@@ -184,7 +186,7 @@
 <p><img data-src="../img/app-components.002.png"></p>
 </div></div>
 </section>
-<section id="components-2" class="slide level2">
+<section id="components-2" class="slide level2 scrollable">
 <h2>Components</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
@@ -207,7 +209,7 @@
 <p><img data-src="../img/app-components.003.png"></p>
 </div></div>
 </section>
-<section id="spreadsheet-analogy" class="slide level2">
+<section id="spreadsheet-analogy" class="slide level2 scrollable">
 <h2>Spreadsheet Analogy</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -220,7 +222,7 @@
 <li>Instructions on how to build outputs from inputs</li>
 </ol>
 </section>
-<section id="spreadsheet-analogy-1" class="slide level2">
+<section id="spreadsheet-analogy-1" class="slide level2 scrollable">
 <h2>Spreadsheet Analogy</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -301,7 +303,7 @@
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
-'smaller': true,
+'smaller': false,
  
         // Display controls in the bottom right corner
         controls: false,
