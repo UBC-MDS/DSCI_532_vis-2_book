@@ -8,4 +8,4 @@ title: Geoviz Intro
 
 :::
 
-{{< include slides/05a-geoviz.qmd >}}
+{{< include /slides/05a-geoviz.qmd >}}

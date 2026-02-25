@@ -7,3 +7,5 @@ title: More UI pattern examples
 {{< revealjs file="slides/06b-styling.html" height="500px" class="ratio ratio-16x9" >}}
 
 :::
+
+{{< include /slides/06b-styling.qmd >}}

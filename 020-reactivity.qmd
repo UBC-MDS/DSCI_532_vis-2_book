@@ -8,4 +8,4 @@ title: Reactivity
 
 :::
 
-{{< include slides/03-reactivity.qmd >}}
+{{< include /slides/03-reactivity.qmd >}}

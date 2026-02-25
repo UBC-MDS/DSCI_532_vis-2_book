@@ -8,4 +8,4 @@ title: Shiny Tables Introduction
 
 :::
 
-{{< include slides/06a-tables.qmd >}}
+{{< include /slides/06a-tables.qmd >}}
