@@ -14,7 +14,6 @@ app_ui = ui.page_fluid(
 
 
 def server(input, output, session):
-    @output
     @render_altair
     def map():
         return (

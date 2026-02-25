@@ -1,0 +1,11 @@
+shiny
+shinywidgets
+altair
+pandas
+vega_datasets
+geopandas
+lxml
+anthropic
+chatlas
+inspect-ai
+#keplergl
