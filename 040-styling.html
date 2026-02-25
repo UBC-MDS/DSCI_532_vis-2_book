@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Publish your application – DSCI 532: Data Visualization 2</title>
+<title>More UI pattern examples – DSCI 532: Data Visualization 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -69,6 +69,13 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+ 
+  <style>
+  .slide-deck {
+      border: 3px solid #dee2e6;
+  }
+  </style>
+  
 
 
 <link rel="stylesheet" href="styles.css">
@@ -117,7 +124,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./020-reactivity.html">Lecture 2</a></li><li class="breadcrumb-item"><a href="./020-publish.html">Publish your application</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More UI pattern examples</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -189,7 +196,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./020-publish.html" class="sidebar-item-text sidebar-link active">
+  <a href="./020-publish.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Publish your application</span></a>
   </div>
 </li>
@@ -229,7 +236,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./040-styling.html" class="sidebar-item-text sidebar-link">
+  <a href="./040-styling.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">More UI pattern examples</span></a>
   </div>
 </li>
@@ -240,26 +247,15 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#posit-connect-cloud" id="toc-posit-connect-cloud" class="nav-link active" data-scroll-target="#posit-connect-cloud">Posit Connect Cloud</a>
-  <ul class="collapse">
-  <li><a href="#step-1-get-your-application-on-github" id="toc-step-1-get-your-application-on-github" class="nav-link" data-scroll-target="#step-1-get-your-application-on-github">Step 1: Get your application on GitHub</a></li>
-  <li><a href="#step-2-publish-on-connect-cloud" id="toc-step-2-publish-on-connect-cloud" class="nav-link" data-scroll-target="#step-2-publish-on-connect-cloud">Step 2: Publish on Connect Cloud</a></li>
-  </ul></li>
-  <li><a href="#render.com" id="toc-render.com" class="nav-link" data-scroll-target="#render.com">render.com</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./020-reactivity.html">Lecture 2</a></li><li class="breadcrumb-item"><a href="./020-publish.html">Publish your application</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More UI pattern examples</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Publish your application</h1>
+<h1 class="title">More UI pattern examples</h1>
 </div>
 
 
@@ -276,34 +272,15 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="posit-connect-cloud" class="level2">
-<h2 class="anchored" data-anchor-id="posit-connect-cloud">Posit Connect Cloud</h2>
-<p><a href="https://connect.posit.cloud/" class="uri">https://connect.posit.cloud/</a></p>
-<section id="step-1-get-your-application-on-github" class="level3">
-<h3 class="anchored" data-anchor-id="step-1-get-your-application-on-github">Step 1: Get your application on GitHub</h3>
-<ul>
-<li>Take your application and put it up on a github repository.</li>
-</ul>
-</section>
-<section id="step-2-publish-on-connect-cloud" class="level3">
-<h3 class="anchored" data-anchor-id="step-2-publish-on-connect-cloud">Step 2: Publish on Connect Cloud</h3>
-<p>Make an account on Posit Connect Cloud: <a href="https://connect.posit.cloud/" class="uri">https://connect.posit.cloud/</a></p>
-<ol type="1">
-<li>Log In to Connect Cloud. First time will prompt you to connect to GitHub.</li>
-<li>Click the Publish button in the upper right of the screen.</li>
-<li>Select the framework you want to deploy (Shiny).</li>
-<li>Select your Repository.</li>
-<li>Confirm the Branch (main).</li>
-<li>Select your Primary file (app.py)</li>
-<li>Python deployments require a <code>requirements.txt</code>.</li>
-</ol>
-</section>
-</section>
-<section id="render.com" class="level2">
-<h2 class="anchored" data-anchor-id="render.com">render.com</h2>
+<div class="column-page-inset-right">
+    <p><a href="slides/06b-styling.html" target="_blank">View slides in full screen</a></p>
+       <div class="ratio ratio-16x9">
+      <iframe class="slide-deck" src="slides/06b-styling.html" height="500px" width="100%"></iframe>
+    </div>
+  
+</div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
