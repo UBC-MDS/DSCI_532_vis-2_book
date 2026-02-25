@@ -442,10 +442,7 @@ Set `open=True` to open all, `open=False` to collapse all, or pass a panel title
 ::: {.columns}
 ::: {.column width="35%"}
 
-`ui.value_box()` highlights a single KPI.
-
-::: {.columns}
-::: {.column width="60%"}
+[`ui.value_box()`](https://shiny.posit.co/py/api/core/ui.value_box.html) highlights a single KPI.
 
 **`theme` is static**, to make it react to data, return the **whole `value_box()`** from `@render.ui`:
 
@@ -459,9 +456,6 @@ def mpg_box():
                         theme=cmp["theme"])
 ```
 
-:::
-::: {.column width="40%"}
-
 | Argument | Role |
 |---|---|
 | `title` | Label |
@@ -470,8 +464,6 @@ def mpg_box():
 | `showcase` | Icon |
 | `theme` | Colour |
 
-:::
-:::
 
 We factored out `compare()` helper that returns one of **five states**: significantly/slightly above, stable (< 1% Δ), slightly/significantly below, and maps each to a colour.
 
@@ -553,21 +545,34 @@ Row and column indices are **0-based integers**.
 {{< include /code/lecture04/app-03-conditional-row-styling.py >}}
 ```
 
-## Putting it together: full styled dashboard {.scrollable}
+## Putting it together {.scrollable}
 
 Styled header + dynamic value boxes + sidebar + cards + linked table/chart:
 
 ::: {.columns}
 ::: {.column width="40%"}
+
 ```{mermaid}
 flowchart LR
+  U((👤)) -.select origin.-> A
   A[/input_origin/] --> F{{filtered}}
   F --> NB([n_rows_box])
   F --> MB([mpg_box])
   F --> HB([hp_box])
   F --> T([tbl])
+  U2((👤)) -.select rows.-> T
   T -.row select.-> S([scatter])
   F --> S
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style U2 fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style F fill:#F3E5F5,stroke:#9C27B0
+  style NB fill:#E3F2FD,stroke:#2196F3
+  style MB fill:#E3F2FD,stroke:#2196F3
+  style HB fill:#E3F2FD,stroke:#2196F3
+  style T fill:#E3F2FD,stroke:#2196F3
+  style S fill:#E3F2FD,stroke:#2196F3
 ```
 
 `@reactive.calc filtered()` is the shared hub — all five outputs depend on it.
@@ -644,10 +649,17 @@ Linked filters · Column picker · CSV export · Selection reset · Editable tab
 ::: {.column width="40%"}
 ```{mermaid}
 flowchart LR
+  U((👤)) -.select origin.-> A
   A[/input_origin/] --> F{{filtered_by_origin}}
   F -->|"@render.ui"| S[/input_mpg/]
   F --> T([tbl])
   S --> T
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style F fill:#F3E5F5,stroke:#9C27B0
+  style S fill:#FFF3E0,stroke:#FF9800
+  style T fill:#E3F2FD,stroke:#2196F3
 ```
 
 `@render.ui` returns an entirely new input widget each time `origin` changes — range min and max reflect only the currently visible data.
@@ -696,10 +708,23 @@ Instead of replacing the widget, **update it in place** with `@reactive.effect` 
 
 ```{mermaid}
 flowchart LR
+  U((👤)) -.select origin.-> A
   A[/input_origin/] --> E["@reactive.effect"]
-  E -->|ui.update_slider| S[/input_slider/]
+  E ==>|"ui.update_slider()"| S[/input_slider/]
   S --> R([render output])
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style E fill:#FCE4EC,stroke:#E91E63
+  style S fill:#FFF3E0,stroke:#FF9800
+  style R fill:#E3F2FD,stroke:#2196F3
 ```
+
+::: {style="display:flex; gap:1.2em; font-size:0.75em; color:#555; margin-top:0.3em;"}
+[<span style="display:inline-block;width:2em;border-top:2px solid #999;vertical-align:middle;margin-right:0.3em"></span> reactive dep]{style="display:flex;align-items:center"}
+[<span style="display:inline-block;width:2em;border-top:4px solid #999;vertical-align:middle;margin-right:0.3em"></span> side-effect push]{style="display:flex;align-items:center"}
+[<span style="display:inline-block;width:2em;border-top:2px dashed #4CAF50;vertical-align:middle;margin-right:0.3em"></span> user action]{style="display:flex;align-items:center"}
+:::
 
 **How `@reactive.effect` works**
 
@@ -837,9 +862,20 @@ def selected_rows():
 ::: {.column width="40%"}
 ```{mermaid}
 flowchart LR
+  U((👤)) -.select origin.-> A
   A[/input_origin/] --> T([tbl])
+  U2((👤)) -.click.-> D1
+  U3((👤)) -.click.-> D2
   T -->|".data()"| D1([download_all])
   T -->|".data_view()"| D2([download_view])
+
+  style U fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style U2 fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style U3 fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px
+  style A fill:#FFF3E0,stroke:#FF9800
+  style T fill:#E3F2FD,stroke:#2196F3
+  style D1 fill:#E3F2FD,stroke:#2196F3
+  style D2 fill:#E3F2FD,stroke:#2196F3
 ```
 
 ```python
