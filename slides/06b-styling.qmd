@@ -947,7 +947,6 @@ Changing `origin` **or** clicking Reset invalidates `filtered()`, re-renders the
 ::: {.column width="60%"}
 ```{shinylive-python}
 #| standalone: true
-#| components: [viewer]
 #| viewerHeight: 500
 #| packages: [vega_datasets]
 
