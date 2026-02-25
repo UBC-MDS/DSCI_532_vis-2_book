@@ -925,6 +925,9 @@ def download_view():
 
 ## Reset table selections
 
+::: {.columns}
+::: {.column width="40%"}
+
 When the filter changes, DataGrid automatically clears its selection whenever the underlying data reference changes — because `filtered()` returns a **new** DataFrame object.
 
 To also let users manually clear with a button, take an explicit dependency on an `action_button`:
@@ -932,7 +935,7 @@ To also let users manually clear with a button, take an explicit dependency on a
 ```python
 @reactive.calc
 def filtered():
-    _ = input.reset_btn()  # explicit dependency — click invalidates filtered()
+    _ = input.reset_btn()  # click invalidates filtered()
     df = cars.copy()
     if input.origin() != "All":
         df = df[df["Origin"] == input.origin()]
@@ -940,6 +943,20 @@ def filtered():
 ```
 
 Changing `origin` **or** clicking Reset invalidates `filtered()`, re-renders the DataGrid, and the selection is gone.
+:::
+::: {.column width="60%"}
+```{shinylive-python}
+#| standalone: true
+#| components: [viewer]
+#| viewerHeight: 500
+#| packages: [vega_datasets]
+
+{{< include /code/lecture04/app-08-reset-selections.py >}}
+```
+:::
+:::
+
+## Reset table selections {.scrollable}
 
 ```{shinylive-python}
 #| standalone: true
