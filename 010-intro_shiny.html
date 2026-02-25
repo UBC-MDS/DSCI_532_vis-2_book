@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to shiny – DSCI 532: Data Visualization 2</title>
+<title>Introduction to Shiny – DSCI 532: Data Visualization 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -124,7 +124,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./010-intro_dashboards.html">Lecture 1</a></li><li class="breadcrumb-item"><a href="./010-intro_shiny.html">Introduction to shiny</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./010-intro_dashboards.html">Lecture 1</a></li><li class="breadcrumb-item"><a href="./010-intro_shiny.html">Introduction to Shiny</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -162,13 +162,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./010-intro_shiny.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Introduction to shiny</span></a>
+ <span class="menu-text">Introduction to Shiny</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./010-first_app.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Your first app</span></a>
+ <span class="menu-text">Your first Shiny application</span></a>
   </div>
 </li>
       </ul>
@@ -185,7 +185,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./020-reactivity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Reactivity</span></a>
+ <span class="menu-text">What is Reactivity?</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -214,13 +214,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./030-geoviz-intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Geoviz Intro</span></a>
+ <span class="menu-text">Geospatial visualization</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./030-tables-intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Shiny Tables Introduction</span></a>
+ <span class="menu-text">Tables in Shiny</span></a>
   </div>
 </li>
       </ul>
@@ -247,15 +247,32 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-is-a-shiny-app" id="toc-what-is-a-shiny-app" class="nav-link active" data-scroll-target="#what-is-a-shiny-app">What is a Shiny app?</a></li>
+  <li><a href="#what-is-a-shiny-app-1" id="toc-what-is-a-shiny-app-1" class="nav-link" data-scroll-target="#what-is-a-shiny-app-1">What is a Shiny app?</a></li>
+  <li><a href="#what-is-a-shiny-app-2" id="toc-what-is-a-shiny-app-2" class="nav-link" data-scroll-target="#what-is-a-shiny-app-2">What is a Shiny app?</a></li>
+  <li><a href="#components" id="toc-components" class="nav-link" data-scroll-target="#components">Components</a></li>
+  <li><a href="#components-1" id="toc-components-1" class="nav-link" data-scroll-target="#components-1">Components</a></li>
+  <li><a href="#components-2" id="toc-components-2" class="nav-link" data-scroll-target="#components-2">Components</a></li>
+  <li><a href="#reactivity" id="toc-reactivity" class="nav-link" data-scroll-target="#reactivity">Reactivity</a></li>
+  <li><a href="#spreadsheet-analogy" id="toc-spreadsheet-analogy" class="nav-link" data-scroll-target="#spreadsheet-analogy">Spreadsheet Analogy</a></li>
+  <li><a href="#spreadsheet-analogy-1" id="toc-spreadsheet-analogy-1" class="nav-link" data-scroll-target="#spreadsheet-analogy-1">Spreadsheet Analogy</a></li>
+  <li><a href="#key-features-of-reactivity" id="toc-key-features-of-reactivity" class="nav-link" data-scroll-target="#key-features-of-reactivity">Key features of reactivity</a></li>
+  <li><a href="#why-shiny-for-python" id="toc-why-shiny-for-python" class="nav-link" data-scroll-target="#why-shiny-for-python">Why Shiny for Python?</a></li>
+  <li><a href="#shiny-syntax" id="toc-shiny-syntax" class="nav-link" data-scroll-target="#shiny-syntax">Shiny Syntax</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./010-intro_dashboards.html">Lecture 1</a></li><li class="breadcrumb-item"><a href="./010-intro_shiny.html">Introduction to shiny</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./010-intro_dashboards.html">Lecture 1</a></li><li class="breadcrumb-item"><a href="./010-intro_shiny.html">Introduction to Shiny</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Introduction to shiny</h1>
+<h1 class="title">Introduction to Shiny</h1>
 </div>
 
 
@@ -279,8 +296,155 @@ ul.task-list li input[type="checkbox"] {
     </div>
   
 </div>
+<section id="what-is-a-shiny-app" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-shiny-app">What is a Shiny app?</h2>
+<p>Each Shiny app involves:</p>
+<ol type="1">
+<li>A web page</li>
+<li>A computer that watches the web page and responds to user events on that page</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/app-architecture.001.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="what-is-a-shiny-app-1" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-shiny-app-1">What is a Shiny app?</h2>
+<p>Each Shiny app involves:</p>
+<ol type="1">
+<li>A web page</li>
+<li>A computer that watches the web page and responds to user events on that page</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/app-architecture.002.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="what-is-a-shiny-app-2" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-shiny-app-2">What is a Shiny app?</h2>
+<p>Each Shiny app involves:</p>
+<ol type="1">
+<li>A web page</li>
+<li>A computer that watches the web page and responds to user events on that page</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/app-architecture.003.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="components" class="level2">
+<h2 class="anchored" data-anchor-id="components">Components</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>Each Shiny app consists of:</p>
+<ol type="1">
+<li>Inputs</li>
+</ol>
+</div><div class="column" style="width:60%;">
+<p><img src="./img/app-components.001.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="components-1" class="level2">
+<h2 class="anchored" data-anchor-id="components-1">Components</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>Each Shiny app consists of:</p>
+<ol type="1">
+<li>Inputs</li>
+<li>Outputs</li>
+</ol>
+</div><div class="column" style="width:60%;">
+<p><img src="./img/app-components.002.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="components-2" class="level2">
+<h2 class="anchored" data-anchor-id="components-2">Components</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>Each Shiny app consists of:</p>
+<ol type="1">
+<li>Inputs</li>
+<li>Outputs</li>
+<li>Instructions on how to build outputs from inputs</li>
+</ol>
+</div><div class="column" style="width:60%;">
+<p><img src="./img/app-components.003.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="reactivity" class="level2">
+<h2 class="anchored" data-anchor-id="reactivity">Reactivity</h2>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p>When an input changes, Shiny reacts by rebuilding the outputs that depend on it, and <em>only those outputs</em>.</p>
+</div><div class="column" style="width:60%;">
+<p><img src="./img/app-components.003.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="spreadsheet-analogy" class="level2">
+<h2 class="anchored" data-anchor-id="spreadsheet-analogy">Spreadsheet Analogy</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/spreadsheets.gif" class="quarto-figure quarto-figure-center figure-img" height="300"></p>
+</figure>
+</div>
+<ol type="1">
+<li>Inputs</li>
+<li>Outputs</li>
+<li>Instructions on how to build outputs from inputs</li>
+</ol>
+</section>
+<section id="spreadsheet-analogy-1" class="level2">
+<h2 class="anchored" data-anchor-id="spreadsheet-analogy-1">Spreadsheet Analogy</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./img/spreadsheets-2.gif" class="quarto-figure quarto-figure-center figure-img" height="300"></p>
+</figure>
+</div>
+<p>Updates:</p>
+<ol type="1">
+<li>When an input changes</li>
+<li>Only the parts of the app that depend on the input</li>
+</ol>
+</section>
+<section id="key-features-of-reactivity" class="level2">
+<h2 class="anchored" data-anchor-id="key-features-of-reactivity">Key features of reactivity</h2>
+<ul>
+<li>Easy enough to use for prototypes</li>
+<li>Efficient enough to handle complexity</li>
+<li>Scales to build production quality apps</li>
+</ul>
+</section>
+<section id="why-shiny-for-python" class="level2">
+<h2 class="anchored" data-anchor-id="why-shiny-for-python">Why Shiny for Python?</h2>
+<p>Shiny lets you quickly create reactive web apps without worrying about:</p>
+<ul>
+<li>cache</li>
+<li>state</li>
+<li>callbacks</li>
+<li>…or even HTML, CSS, and JavaScript</li>
+</ul>
+<p>And, these apps can scale from prototype to production-ready.</p>
+</section>
+<section id="shiny-syntax" class="level2">
+<h2 class="anchored" data-anchor-id="shiny-syntax">Shiny Syntax</h2>
+<ul>
+<li>Shiny for R</li>
+<li>Shiny for Python
+<ul>
+<li>Core syntax: similar to Shiny for R</li>
+<li>Express syntax: similar to Streamlit</li>
+</ul></li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
