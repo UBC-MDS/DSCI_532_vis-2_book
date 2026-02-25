@@ -7,3 +7,5 @@ title: Introduction to shiny
 {{< revealjs file="slides/01-intro_shiny.html" height="500px" class="ratio ratio-16x9" >}}
 
 :::
+
+{{< include slides/01-intro_shiny.qmd >}}

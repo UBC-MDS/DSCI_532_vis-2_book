@@ -7,3 +7,5 @@ title: Reactivity
 {{< revealjs file="slides/03-reactivity.html" height="500px" class="ratio ratio-16x9" >}}
 
 :::
+
+{{< include slides/03-reactivity.qmd >}}
