@@ -2290,58 +2290,57 @@
 <span id="cb31-2"><a></a>#|   shinylive does not work in self-contained HTML documents.</span>
 <span id="cb31-3"><a></a>#|   Please set `embed-resources: false` in your metadata.</span>
 <span id="cb31-4"><a></a>#| standalone: true</span>
-<span id="cb31-5"><a></a>#| components: [viewer]</span>
-<span id="cb31-6"><a></a>#| viewerHeight: 500</span>
-<span id="cb31-7"><a></a>#| packages: [vega_datasets]</span>
-<span id="cb31-8"><a></a></span>
-<span id="cb31-9"><a></a>import pandas as pd</span>
-<span id="cb31-10"><a></a>from vega_datasets import data as vega_data</span>
-<span id="cb31-11"><a></a>from shiny import App, ui, render, reactive</span>
-<span id="cb31-12"><a></a></span>
-<span id="cb31-13"><a></a># Demonstrates programmatic selection reset:</span>
-<span id="cb31-14"><a></a># Changing the origin filter (or clicking Reset) forces filtered() to recompute,</span>
-<span id="cb31-15"><a></a># which re-renders the DataGrid — DataGrid automatically clears its selection</span>
-<span id="cb31-16"><a></a># whenever the underlying data reference changes.</span>
-<span id="cb31-17"><a></a></span>
-<span id="cb31-18"><a></a>cars = pd.DataFrame(vega_data.cars())</span>
-<span id="cb31-19"><a></a>origins = sorted(cars["Origin"].unique())</span>
-<span id="cb31-20"><a></a></span>
-<span id="cb31-21"><a></a>app_ui = ui.page_fluid(</span>
-<span id="cb31-22"><a></a>    ui.h4("Filter → selection resets automatically"),</span>
-<span id="cb31-23"><a></a>    ui.layout_columns(</span>
-<span id="cb31-24"><a></a>        ui.input_select("origin", "Origin", choices=["All"] + origins),</span>
-<span id="cb31-25"><a></a>        ui.input_action_button("reset_btn", "Reset selection", class_="btn-secondary"),</span>
-<span id="cb31-26"><a></a>        col_widths=[6, 6],</span>
-<span id="cb31-27"><a></a>    ),</span>
-<span id="cb31-28"><a></a>    ui.output_text("selection_info"),</span>
-<span id="cb31-29"><a></a>    ui.br(),</span>
-<span id="cb31-30"><a></a>    ui.output_data_frame("tbl"),</span>
-<span id="cb31-31"><a></a>)</span>
+<span id="cb31-5"><a></a>#| viewerHeight: 500</span>
+<span id="cb31-6"><a></a>#| packages: [vega_datasets]</span>
+<span id="cb31-7"><a></a></span>
+<span id="cb31-8"><a></a>import pandas as pd</span>
+<span id="cb31-9"><a></a>from vega_datasets import data as vega_data</span>
+<span id="cb31-10"><a></a>from shiny import App, ui, render, reactive</span>
+<span id="cb31-11"><a></a></span>
+<span id="cb31-12"><a></a># Demonstrates programmatic selection reset:</span>
+<span id="cb31-13"><a></a># Changing the origin filter (or clicking Reset) forces filtered() to recompute,</span>
+<span id="cb31-14"><a></a># which re-renders the DataGrid — DataGrid automatically clears its selection</span>
+<span id="cb31-15"><a></a># whenever the underlying data reference changes.</span>
+<span id="cb31-16"><a></a></span>
+<span id="cb31-17"><a></a>cars = pd.DataFrame(vega_data.cars())</span>
+<span id="cb31-18"><a></a>origins = sorted(cars["Origin"].unique())</span>
+<span id="cb31-19"><a></a></span>
+<span id="cb31-20"><a></a>app_ui = ui.page_fluid(</span>
+<span id="cb31-21"><a></a>    ui.h4("Filter → selection resets automatically"),</span>
+<span id="cb31-22"><a></a>    ui.layout_columns(</span>
+<span id="cb31-23"><a></a>        ui.input_select("origin", "Origin", choices=["All"] + origins),</span>
+<span id="cb31-24"><a></a>        ui.input_action_button("reset_btn", "Reset selection", class_="btn-secondary"),</span>
+<span id="cb31-25"><a></a>        col_widths=[6, 6],</span>
+<span id="cb31-26"><a></a>    ),</span>
+<span id="cb31-27"><a></a>    ui.output_text("selection_info"),</span>
+<span id="cb31-28"><a></a>    ui.br(),</span>
+<span id="cb31-29"><a></a>    ui.output_data_frame("tbl"),</span>
+<span id="cb31-30"><a></a>)</span>
+<span id="cb31-31"><a></a></span>
 <span id="cb31-32"><a></a></span>
-<span id="cb31-33"><a></a></span>
-<span id="cb31-34"><a></a>def server(input, output, session):</span>
-<span id="cb31-35"><a></a>    @reactive.calc</span>
-<span id="cb31-36"><a></a>    def filtered():</span>
-<span id="cb31-37"><a></a>        # Take an explicit dependency on reset_btn so clicking it invalidates</span>
-<span id="cb31-38"><a></a>        # filtered(), which in turn re-renders the DataGrid and clears the selection.</span>
-<span id="cb31-39"><a></a>        _ = input.reset_btn()</span>
-<span id="cb31-40"><a></a>        df = cars.copy()</span>
-<span id="cb31-41"><a></a>        if input.origin() != "All":</span>
-<span id="cb31-42"><a></a>            df = df[df["Origin"] == input.origin()]</span>
-<span id="cb31-43"><a></a>        return df[["Name", "Miles_per_Gallon", "Cylinders", "Origin"]].reset_index(drop=True)</span>
-<span id="cb31-44"><a></a></span>
-<span id="cb31-45"><a></a>    @render.data_frame</span>
-<span id="cb31-46"><a></a>    def tbl():</span>
-<span id="cb31-47"><a></a>        return render.DataGrid(filtered(), height="350px", selection_mode="rows")</span>
-<span id="cb31-48"><a></a></span>
-<span id="cb31-49"><a></a>    @render.text</span>
-<span id="cb31-50"><a></a>    def selection_info():</span>
-<span id="cb31-51"><a></a>        selected = tbl.data_view(selected=True)</span>
-<span id="cb31-52"><a></a>        n = 0 if (selected is None or selected.empty) else len(selected)</span>
-<span id="cb31-53"><a></a>        return f"Selected rows: {n}  (changes filter or click Reset to clear)"</span>
+<span id="cb31-33"><a></a>def server(input, output, session):</span>
+<span id="cb31-34"><a></a>    @reactive.calc</span>
+<span id="cb31-35"><a></a>    def filtered():</span>
+<span id="cb31-36"><a></a>        # Take an explicit dependency on reset_btn so clicking it invalidates</span>
+<span id="cb31-37"><a></a>        # filtered(), which in turn re-renders the DataGrid and clears the selection.</span>
+<span id="cb31-38"><a></a>        _ = input.reset_btn()</span>
+<span id="cb31-39"><a></a>        df = cars.copy()</span>
+<span id="cb31-40"><a></a>        if input.origin() != "All":</span>
+<span id="cb31-41"><a></a>            df = df[df["Origin"] == input.origin()]</span>
+<span id="cb31-42"><a></a>        return df[["Name", "Miles_per_Gallon", "Cylinders", "Origin"]].reset_index(drop=True)</span>
+<span id="cb31-43"><a></a></span>
+<span id="cb31-44"><a></a>    @render.data_frame</span>
+<span id="cb31-45"><a></a>    def tbl():</span>
+<span id="cb31-46"><a></a>        return render.DataGrid(filtered(), height="350px", selection_mode="rows")</span>
+<span id="cb31-47"><a></a></span>
+<span id="cb31-48"><a></a>    @render.text</span>
+<span id="cb31-49"><a></a>    def selection_info():</span>
+<span id="cb31-50"><a></a>        selected = tbl.data_view(selected=True)</span>
+<span id="cb31-51"><a></a>        n = 0 if (selected is None or selected.empty) else len(selected)</span>
+<span id="cb31-52"><a></a>        return f"Selected rows: {n}  (changes filter or click Reset to clear)"</span>
+<span id="cb31-53"><a></a></span>
 <span id="cb31-54"><a></a></span>
-<span id="cb31-55"><a></a></span>
-<span id="cb31-56"><a></a>app = App(app_ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb31-55"><a></a>app = App(app_ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div></div>
 </section>
 <section id="reset-table-selections-1" class="slide level2 scrollable">
