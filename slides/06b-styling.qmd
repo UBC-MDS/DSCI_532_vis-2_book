@@ -73,7 +73,7 @@ Shiny's UI layer is built on top of [Bootstrap 5](https://getbootstrap.com/docs/
 
 You can (but if you don't **have to** - don't!) use **any Bootstrap 5 class** via the `class_=` argument on any `ui.tags.*` element.
 
-**Using standart themes >> using boostrap-based app ccs >> manually assigning classess >> inline css**
+**Using standard themes >> using Bootstrap-based app CSS >> manually assigning classes >> inline CSS**
 
 ::: {.columns}
 ::: {.column width="55%"}
