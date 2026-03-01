@@ -1,0 +1,11 @@
+---
+title: Hallucinations
+---
+
+:::{.column-page-inset-right}
+
+{{< revealjs file="slides/07b-ai-hallucinations.html" height="500px" class="ratio ratio-16x9" >}}
+
+:::
+
+{{< include slides/07b-ai-hallucinations.qmd >}}

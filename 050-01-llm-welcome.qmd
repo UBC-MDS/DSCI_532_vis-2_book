@@ -1,0 +1,11 @@
+---
+title: Welcome to LLMs
+---
+
+:::{.column-page-inset-right}
+
+{{< revealjs file="slides/07a-llm-welcome.html" height="500px" class="ratio ratio-16x9" >}}
+
+:::
+
+{{< include slides/07a-llm-welcome.qmd >}}

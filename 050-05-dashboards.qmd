@@ -1,0 +1,12 @@
+---
+title: Data Science AI Dashboards
+---
+
+
+:::{.column-page-inset-right}
+
+{{< revealjs file="slides/07d-dashboards.html" height="500px" class="ratio ratio-16x9" >}}
+
+:::
+
+{{< include slides/07d-dashboards.qmd >}}
