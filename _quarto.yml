@@ -56,6 +56,9 @@ website:
           - 050-04-chat.qmd
           - 050-05-dashboards.qmd
           - 050-06-env.qmd
+      - section: "Review"
+        contents:
+          - review/01-wiring.qmd
 
 format:
   html:
