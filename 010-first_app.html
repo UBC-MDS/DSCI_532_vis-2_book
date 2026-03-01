@@ -326,6 +326,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Data Science Dashboards</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./050-06-env.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Environment Variables</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -401,7 +407,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="visualizing-penguin-data" class="level2">
 <h2 class="anchored" data-anchor-id="visualizing-penguin-data">Visualizing penguin data</h2>
 <!--TODO: #| output-location: slide is broken -->
-<div id="cfd3c2d9" class="cell" data-execution_count="1">
+<div id="6d8b59c5" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -432,23 +438,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display" data-execution_count="1">
 
 <style>
-  #altair-viz-7d064c4015084575ae750aa551a4e61a.vega-embed {
+  #altair-viz-db4731c7e54b4a1692a21d046d84b931.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-7d064c4015084575ae750aa551a4e61a.vega-embed details,
-  #altair-viz-7d064c4015084575ae750aa551a4e61a.vega-embed details summary {
+  #altair-viz-db4731c7e54b4a1692a21d046d84b931.vega-embed details,
+  #altair-viz-db4731c7e54b4a1692a21d046d84b931.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-7d064c4015084575ae750aa551a4e61a"></div>
+<div id="altair-viz-db4731c7e54b4a1692a21d046d84b931"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-7d064c4015084575ae750aa551a4e61a") {
-      outputDiv = document.getElementById("altair-viz-7d064c4015084575ae750aa551a4e61a");
+    if (outputDiv.id !== "altair-viz-db4731c7e54b4a1692a21d046d84b931") {
+      outputDiv = document.getElementById("altair-viz-db4731c7e54b4a1692a21d046d84b931");
     }
 
     const paths = {
@@ -504,7 +510,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="change-the-species" class="level2">
 <h2 class="anchored" data-anchor-id="change-the-species">Change the species</h2>
 <!-- TODO: #| output-location: slide is broken -->
-<div id="e9b0ea4e" class="cell" data-execution_count="2">
+<div id="33ca7d6f" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -535,23 +541,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display" data-execution_count="2">
 
 <style>
-  #altair-viz-9e83a6653a79415593f5a7bcd603240f.vega-embed {
+  #altair-viz-5e49032224eb468dae1f304f16e6d309.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-9e83a6653a79415593f5a7bcd603240f.vega-embed details,
-  #altair-viz-9e83a6653a79415593f5a7bcd603240f.vega-embed details summary {
+  #altair-viz-5e49032224eb468dae1f304f16e6d309.vega-embed details,
+  #altair-viz-5e49032224eb468dae1f304f16e6d309.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-9e83a6653a79415593f5a7bcd603240f"></div>
+<div id="altair-viz-5e49032224eb468dae1f304f16e6d309"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-9e83a6653a79415593f5a7bcd603240f") {
-      outputDiv = document.getElementById("altair-viz-9e83a6653a79415593f5a7bcd603240f");
+    if (outputDiv.id !== "altair-viz-5e49032224eb468dae1f304f16e6d309") {
+      outputDiv = document.getElementById("altair-viz-5e49032224eb468dae1f304f16e6d309");
     }
 
     const paths = {
@@ -611,7 +617,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Input Components Gallery: <a href="https://shiny.posit.co/py/components/#inputs" class="uri">https://shiny.posit.co/py/components/#inputs</a></p></li>
 <li><p>What might be a good component to use?</p></li>
 </ul>
-<countdown-timer id="timer_8f8848ef3b9307a65358cbb52657fe4b0de58e10" minutes="01" seconds="00" class="countdown" warn-when="0" update-every="1" play-sound="false" blink-colon="false" start-immediately="false" tabindex="0" style="right: 0;bottom: 0;">
+<countdown-timer id="timer_7290ed482a42bd6d2870a3e7da5828abdd827eb7" minutes="01" seconds="00" class="countdown" warn-when="0" update-every="1" play-sound="false" blink-colon="false" start-immediately="false" tabindex="0" style="right: 0;bottom: 0;">
  </countdown-timer>
 </section>
 <section id="radio-buttons" class="level2">

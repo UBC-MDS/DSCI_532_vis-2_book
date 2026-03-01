@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Publish your application – DSCI 532: Data Visualization 2</title>
+<title>Environment Variables – DSCI 532: Data Visualization 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -117,7 +152,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./020-reactivity.html">Lecture 2</a></li><li class="breadcrumb-item"><a href="./020-publish.html">Publish your application</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./050-01-llm-welcome.html">Lecture 5</a></li><li class="breadcrumb-item"><a href="./050-06-env.html">Environment Variables</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -189,7 +224,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./020-publish.html" class="sidebar-item-text sidebar-link active">
+  <a href="./020-publish.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Publish your application</span></a>
   </div>
 </li>
@@ -276,7 +311,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./050-06-env.html" class="sidebar-item-text sidebar-link">
+  <a href="./050-06-env.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Environment Variables</span></a>
   </div>
 </li>
@@ -292,21 +327,17 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#posit-connect-cloud" id="toc-posit-connect-cloud" class="nav-link active" data-scroll-target="#posit-connect-cloud">Posit Connect Cloud</a>
-  <ul class="collapse">
-  <li><a href="#step-1-get-your-application-on-github" id="toc-step-1-get-your-application-on-github" class="nav-link" data-scroll-target="#step-1-get-your-application-on-github">Step 1: Get your application on GitHub</a></li>
-  <li><a href="#step-2-publish-on-connect-cloud" id="toc-step-2-publish-on-connect-cloud" class="nav-link" data-scroll-target="#step-2-publish-on-connect-cloud">Step 2: Publish on Connect Cloud</a></li>
-  </ul></li>
-  <li><a href="#render.com" id="toc-render.com" class="nav-link" data-scroll-target="#render.com">render.com</a></li>
+  <li><a href="#python" id="toc-python" class="nav-link active" data-scroll-target="#python">Python</a></li>
+  <li><a href="#r" id="toc-r" class="nav-link" data-scroll-target="#r">R</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./020-reactivity.html">Lecture 2</a></li><li class="breadcrumb-item"><a href="./020-publish.html">Publish your application</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./050-01-llm-welcome.html">Lecture 5</a></li><li class="breadcrumb-item"><a href="./050-06-env.html">Environment Variables</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Publish your application</h1>
+<h1 class="title">Environment Variables</h1>
 </div>
 
 
@@ -323,32 +354,37 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="posit-connect-cloud" class="level2">
-<h2 class="anchored" data-anchor-id="posit-connect-cloud">Posit Connect Cloud</h2>
-<p><a href="https://connect.posit.cloud/" class="uri">https://connect.posit.cloud/</a></p>
-<section id="step-1-get-your-application-on-github" class="level3">
-<h3 class="anchored" data-anchor-id="step-1-get-your-application-on-github">Step 1: Get your application on GitHub</h3>
-<ul>
-<li>Take your application and put it up on a github repository.</li>
-</ul>
+<p>There are a few ways for you to read in an environment variable. For individual projects, the convension is to use a <code>.env</code> (R/Python) or <code>.Renviron</code> (R) file. These files are typically ignored in the <code>.gitignore</code></p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>DO <strong>NOT</strong> commit your environment variable files into the repository. Espeically if you have a password or API key in them.</p>
+</div>
+</div>
+<p>For global environment variables, you can use your <code>~/.zshrc</code> or <code>~/.bashrc</code> file, but the below packages will override these variables.</p>
+<section id="python" class="level2">
+<h2 class="anchored" data-anchor-id="python">Python</h2>
+<p><a href="https://github.com/theskumar/python-dotenv" class="uri">https://github.com/theskumar/python-dotenv</a></p>
+<pre data-code-line-numbers=""><code>pip install python-dotenv</code></pre>
+<p>Create a <code>.env</code> file with <code>KEY=VALUE</code> pairs</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>load_dotenv()  <span class="co"># reads variables from a .env file and sets them in os.environ</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You then use it with <code>os.environ['YOUR_KEY']</code></p>
 </section>
-<section id="step-2-publish-on-connect-cloud" class="level3">
-<h3 class="anchored" data-anchor-id="step-2-publish-on-connect-cloud">Step 2: Publish on Connect Cloud</h3>
-<p>Make an account on Posit Connect Cloud: <a href="https://connect.posit.cloud/" class="uri">https://connect.posit.cloud/</a></p>
-<ol type="1">
-<li>Log In to Connect Cloud. First time will prompt you to connect to GitHub.</li>
-<li>Click the Publish button in the upper right of the screen.</li>
-<li>Select the framework you want to deploy (Shiny).</li>
-<li>Select your Repository.</li>
-<li>Confirm the Branch (main).</li>
-<li>Select your Primary file (app.py)</li>
-<li>Python deployments require a <code>requirements.txt</code>.</li>
-</ol>
-</section>
-</section>
-<section id="render.com" class="level2">
-<h2 class="anchored" data-anchor-id="render.com">render.com</h2>
-<p>You can also use <a href="https://render.com/" class="uri">https://render.com/</a> to make deployments.</p>
+<section id="r" class="level2">
+<h2 class="anchored" data-anchor-id="r">R</h2>
+<p>CRAN also has a <code>dotenv</code> package: <a href="https://cran.r-project.org/web/packages/dotenv/index.html" class="uri">https://cran.r-project.org/web/packages/dotenv/index.html</a></p>
+<p>You can also use the <code>.Renviron</code> file that will be read when R loads up (<a href="https://docs.posit.co/ide/user/ide/guide/environments/r/managing-r.html" class="uri">https://docs.posit.co/ide/user/ide/guide/environments/r/managing-r.html</a>).</p>
 
 
 </section>
