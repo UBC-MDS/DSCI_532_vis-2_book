@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>More UI pattern examples – DSCI 532: Data Visualization 2</title>
+<title>Data Science Dashboards – DSCI 532: Data Visualization 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -124,7 +159,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More UI pattern examples</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./050-01-llm-welcome.html">Lecture 5</a></li><li class="breadcrumb-item"><a href="./050-05-dashboards.html">Data Science Dashboards</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -236,7 +271,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./040-styling.html" class="sidebar-item-text sidebar-link active">
+  <a href="./040-styling.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">More UI pattern examples</span></a>
   </div>
 </li>
@@ -277,7 +312,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./050-05-dashboards.html" class="sidebar-item-text sidebar-link">
+  <a href="./050-05-dashboards.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Data Science Dashboards</span></a>
   </div>
 </li>
@@ -288,15 +323,29 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#dashboards-are-complex" id="toc-dashboards-are-complex" class="nav-link active" data-scroll-target="#dashboards-are-complex">Dashboards are complex</a></li>
+  <li><a href="#querychat" id="toc-querychat" class="nav-link" data-scroll-target="#querychat">Querychat</a></li>
+  <li><a href="#demo-querychat-basics" id="toc-demo-querychat-basics" class="nav-link" data-scroll-target="#demo-querychat-basics">Demo: Querychat basics</a></li>
+  <li><a href="#demo-querychat-dashboard" id="toc-demo-querychat-dashboard" class="nav-link" data-scroll-target="#demo-querychat-dashboard">Demo: Querychat dashboard</a></li>
+  <li><a href="#you-can-get-started" id="toc-you-can-get-started" class="nav-link" data-scroll-target="#you-can-get-started">You can get started</a>
+  <ul class="collapse">
+  <li><a href="#use-a-free-local-llama-model" id="toc-use-a-free-local-llama-model" class="nav-link" data-scroll-target="#use-a-free-local-llama-model">Use a free local llama model</a></li>
+  <li><a href="#github-model" id="toc-github-model" class="nav-link" data-scroll-target="#github-model">GitHub Model</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More UI pattern examples</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./050-01-llm-welcome.html">Lecture 5</a></li><li class="breadcrumb-item"><a href="./050-05-dashboards.html">Data Science Dashboards</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">More UI pattern examples</h1>
+<h1 class="title">Data Science Dashboards</h1>
 </div>
 
 
@@ -314,14 +363,79 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="column-page-inset-right">
-    <p><a href="slides/06b-styling.html" target="_blank">View slides in full screen</a></p>
+    <p><a href="slides/07d-dashboards.html" target="_blank">View slides in full screen</a></p>
        <div class="ratio ratio-16x9">
-      <iframe class="slide-deck" src="slides/06b-styling.html" height="500px" width="100%"></iframe>
+      <iframe class="slide-deck" src="slides/07d-dashboards.html" height="500px" width="100%"></iframe>
     </div>
   
 </div>
+<section id="dashboards-are-complex" class="level2">
+<h2 class="anchored" data-anchor-id="dashboards-are-complex">Dashboards are complex</h2>
+<ul>
+<li>Many possible user inputs</li>
+<li>You don’t want the LLM to completely generate the application</li>
+</ul>
+</section>
+<section id="querychat" class="level2">
+<h2 class="anchored" data-anchor-id="querychat">Querychat</h2>
+<p><img src="./img/llm/package-querychat.png" class="img-fluid"></p>
+</section>
+<section id="demo-querychat-basics" class="level2">
+<h2 class="anchored" data-anchor-id="demo-querychat-basics">Demo: Querychat basics</h2>
+<p><a href="https://shiny.posit.co/py/templates/querychat/" class="uri">https://shiny.posit.co/py/templates/querychat/</a></p>
+</section>
+<section id="demo-querychat-dashboard" class="level2">
+<h2 class="anchored" data-anchor-id="demo-querychat-dashboard">Demo: Querychat dashboard</h2>
+<p><a href="https://shiny.posit.co/py/templates/sidebot/" class="uri">https://shiny.posit.co/py/templates/sidebot/</a></p>
+</section>
+<section id="you-can-get-started" class="level1">
+<h1>You can get started</h1>
+<section id="use-a-free-local-llama-model" class="level2">
+<h2 class="anchored" data-anchor-id="use-a-free-local-llama-model">Use a free local llama model</h2>
+<ul>
+<li>Free, local</li>
+<li>Models are not as good out of the box compared to other providers</li>
+</ul>
+<div class="columns">
+<div class="column">
+<p>Python Chatlas</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> chatlas <span class="im">as</span> clt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> clt.ChatOllama(model<span class="op">=</span><span class="st">"qwen3:0.6b"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>chat.chat(<span class="st">"what is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<p>R Ellmer</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers=""><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ellmer)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>chat <span class="ot">&lt;-</span>  <span class="fu">chat_ollama</span>(<span class="at">model=</span><span class="st">"qwen3:0.6b"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>chat<span class="sc">$</span><span class="fu">chat</span>(<span class="st">"what is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="github-model" class="level2">
+<h2 class="anchored" data-anchor-id="github-model">GitHub Model</h2>
+<ul>
+<li>You will need to create a GitHub Personal Access Token (PAT).</li>
+<li>It does not need any context (e.g., repo, workflow, etc).</li>
+<li>Let’s you use OpenAI and other models, with a rate limit.</li>
+</ul>
+<p>Save it into an environment variable, <code>GITHUB_TOKEN</code></p>
+<p><a href="https://github.com/marketplace?type=models" class="uri">https://github.com/marketplace?type=models</a></p>
+<div class="columns">
+<div class="column">
+<p>Python Chatlas</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> chatlas <span class="im">as</span> clt</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> clt.ChatGithub()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>chat.chat(<span class="st">"what is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<p>R Ellmer</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-code-line-numbers=""><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ellmer)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>chat <span class="ot">&lt;-</span>  <span class="fu">chat_github</span>()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>chat<span class="sc">$</span><span class="fu">chat</span>(<span class="st">"what is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

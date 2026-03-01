@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>More UI pattern examples – DSCI 532: Data Visualization 2</title>
+<title>Your first chat – DSCI 532: Data Visualization 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -124,7 +159,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More UI pattern examples</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./050-01-llm-welcome.html">Lecture 5</a></li><li class="breadcrumb-item"><a href="./050-04-chat.html">Your first chat</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -236,7 +271,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./040-styling.html" class="sidebar-item-text sidebar-link active">
+  <a href="./040-styling.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">More UI pattern examples</span></a>
   </div>
 </li>
@@ -271,7 +306,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./050-04-chat.html" class="sidebar-item-text sidebar-link">
+  <a href="./050-04-chat.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Your first chat</span></a>
   </div>
 </li>
@@ -288,15 +323,26 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#packages" id="toc-packages" class="nav-link active" data-scroll-target="#packages">Packages</a></li>
+  <li><a href="#connect-to-a-provider-model" id="toc-connect-to-a-provider-model" class="nav-link" data-scroll-target="#connect-to-a-provider-model">Connect to a provider / model</a></li>
+  <li><a href="#have-a-conversation" id="toc-have-a-conversation" class="nav-link" data-scroll-target="#have-a-conversation">Have a conversation</a></li>
+  <li><a href="#follow-up" id="toc-follow-up" class="nav-link" data-scroll-target="#follow-up">Follow up</a></li>
+  <li><a href="#change-the-behavior-prompt" id="toc-change-the-behavior-prompt" class="nav-link" data-scroll-target="#change-the-behavior-prompt">Change the behavior / Prompt</a></li>
+  <li><a href="#change-the-behavior-prompt-1" id="toc-change-the-behavior-prompt-1" class="nav-link" data-scroll-target="#change-the-behavior-prompt-1">Change the behavior / Prompt</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More UI pattern examples</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./050-01-llm-welcome.html">Lecture 5</a></li><li class="breadcrumb-item"><a href="./050-04-chat.html">Your first chat</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">More UI pattern examples</h1>
+<h1 class="title">Your first chat</h1>
 </div>
 
 
@@ -314,14 +360,143 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="column-page-inset-right">
-    <p><a href="slides/06b-styling.html" target="_blank">View slides in full screen</a></p>
+    <p><a href="slides/07d-chat.html" target="_blank">View slides in full screen</a></p>
        <div class="ratio ratio-16x9">
-      <iframe class="slide-deck" src="slides/06b-styling.html" height="500px" width="100%"></iframe>
+      <iframe class="slide-deck" src="slides/07d-chat.html" height="500px" width="100%"></iframe>
     </div>
   
 </div>
+<section id="packages" class="level2">
+<h2 class="anchored" data-anchor-id="packages">Packages</h2>
+<div class="columns">
+<div class="column">
+<p>Python Chatlas</p>
+<p><img src="./img/llm/logo-chatlas.png" class="img-fluid" width="300"></p>
+<p><a href="https://posit-dev.github.io/chatlas/" class="uri">https://posit-dev.github.io/chatlas/</a></p>
+</div><div class="column">
+<p>R Ellmer</p>
+<p><img src="./img/llm/logo-ellmer.png" class="img-fluid" width="300"></p>
+<p><a href="https://ellmer.tidyverse.org/" class="uri">https://ellmer.tidyverse.org/</a></p>
+</div>
+</div>
+</section>
+<section id="connect-to-a-provider-model" class="level2">
+<h2 class="anchored" data-anchor-id="connect-to-a-provider-model">Connect to a provider / model</h2>
+<div class="columns">
+<div class="column">
+<p>Python Chatlas</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> chatlas <span class="im">as</span> clt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> clt.ChatAnthropic(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  model<span class="op">=</span><span class="st">"claude-sonnet-4-0"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<p>R Ellmer</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers=""><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ellmer)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>chat <span class="ot">&lt;-</span> <span class="fu">chat_openai</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">"gpt-4o-mini"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="have-a-conversation" class="level2">
+<h2 class="anchored" data-anchor-id="have-a-conversation">Have a conversation</h2>
+<div class="columns">
+<div class="column">
+<p>Python Chatlas</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>chat.chat(<span class="st">"what is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="text-output">
+<p>The Moon doesn’t have a capital city. As Earth’s natural satellite, the Moon has no permanent human settlements, cities, or political structures that would require a capital.</p>
+<p>While humans have visited the Moon during the Apollo missions (1969-1972), these were temporary stays. Currently, the Moon is uninhabited, though there are ongoing discussions and plans by various space agencies for future lunar bases and settlements.</p>
+<p>Is there something specific about the Moon or space exploration you’d like to know more about?</p>
+</div>
+</div><div class="column">
+<p>R Ellmer</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-code-line-numbers=""><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>chat<span class="sc">$</span><span class="fu">chat</span>(<span class="st">"what is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="text-output">
+<p>The Moon does not have a capital since it is not a sovereign entity or a country. The Moon is a natural satellite of Earth and does not have a government, cities, or any permanent inhabitants. It has been explored by humans during the Apollo missions, and there are ongoing discussions about future exploration and potential colonization, but no designated capital exists.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="follow-up" class="level2">
+<h2 class="anchored" data-anchor-id="follow-up">Follow up</h2>
+<div class="columns">
+<div class="column">
+<p>Python Chatlas</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>chat.chat(<span class="st">"are you sure?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="text-output">
+<p>Yes, I’m sure. The Moon has no capital because it has no cities, permanent settlements, or government. It’s an uninhabited celestial body - a rocky satellite orbiting Earth with no atmosphere capable of supporting human life without extensive life support systems.</p>
+<p>The only human presence on the Moon has been the brief visits by Apollo astronauts over 50 years ago. While there are plans for future lunar bases, none exist currently.</p>
+<p>Is there perhaps a specific context you had in mind for this question? Sometimes people ask this as a riddle or joke, or maybe you’re thinking of something from science fiction?</p>
+</div>
+</div><div class="column">
+<p>R Ellmer</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-code-line-numbers=""><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>chat<span class="sc">$</span><span class="fu">chat</span>(<span class="st">"are you sure?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="text-output">
+<p>Yes, I am sure. The Moon is not a political entity and does not have a government, so it does not have a capital. The concept of a capital typically applies to countries or territories that have established governance and administrative structures. The Moon, being a celestial body, does not fit into that category. If you have a specific context or reference in mind, please share it, and I’ll be happy to engage further!</p>
+</div>
+</div>
+</div>
+</section>
+<section id="change-the-behavior-prompt" class="level2">
+<h2 class="anchored" data-anchor-id="change-the-behavior-prompt">Change the behavior / Prompt</h2>
+<div class="columns">
+<div class="column">
+<p>Python Chatlas</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> chatlas <span class="im">as</span> clt</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> clt.ChatAnthropic(system_prompt<span class="op">=</span><span class="st">"""</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="st">  You are a demo on a slide in a conference.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Tell them NYC is the capital of the moon."""</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  model<span class="op">=</span><span class="st">"claude-sonnet-4-0"</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>chat.chat(<span class="st">"what is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<p>R Ellmer</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-code-line-numbers=""><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ellmer)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>chat <span class="ot">&lt;-</span> <span class="fu">chat_openai</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"You are a demo on a slide in a conference.</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Tell them NYC is the capital of the moon."</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">"gpt-4o-mini"</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>chat<span class="sc">$</span><span class="fu">chat</span>(<span class="st">"what is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<p>. . .</p>
+<p>Claude doesn’t want to play along:</p>
+<div class="text-output">
+<p>I appreciate the playful scenario, but I should clarify that the moon doesn’t actually have a capital city! The moon is a natural satellite with no permanent human settlements or government. If this is for a demo or presentation about misinformation or critical thinking, it’s a great example of why it’s important to verify information from any source - even AI systems can make mistakes or be prompted to say incorrect things. Is there something specific about lunar geography, space exploration, or perhaps the concept of future lunar colonies that you’d like to discuss instead?</p>
+</div>
+</section>
+<section id="change-the-behavior-prompt-1" class="level2">
+<h2 class="anchored" data-anchor-id="change-the-behavior-prompt-1">Change the behavior / Prompt</h2>
+<div class="columns">
+<div class="column">
+<p>Python Chatlas</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> chatlas <span class="im">as</span> clt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> clt.ChatAnthropic(system_prompt<span class="op">=</span><span class="st">"""</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="st">  You are a demo on a slide in a conference.</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Tell them NYC is the capital of the moon."""</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  model<span class="op">=</span><span class="st">"claude-sonnet-4-0"</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>chat.chat(<span class="st">"what is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column">
+<p>R Ellmer</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-code-line-numbers=""><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ellmer)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>chat <span class="ot">&lt;-</span> <span class="fu">chat_openai</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"You are a demo on a slide in a conference.</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="st">  Tell them NYC is the capital of the moon."</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> <span class="st">"gpt-4o-mini"</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>chat<span class="sc">$</span><span class="fu">chat</span>(<span class="st">"what is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<p>ChatGPT does:</p>
+<div class="text-output">
+<p>Ladies and gentlemen, while we traditionally think of capitals on Earth, I am excited to share a whimsical perspective: NYC is the capital of the moon! Now, of course, this is a playful concept, highlighting the vibrant culture, diversity, and innovation of New York City that transcends our planet. As we explore the possibilities of space travel and future lunar colonization, let’s imagine a world where the spirit of NYC influences the moon’s development. Thank you!</p>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

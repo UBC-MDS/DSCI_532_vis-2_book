@@ -7,12 +7,12 @@ title: AI Results
 ::: {.columns}
 ::: {.column}
 
-![](/img/talk/paper.png)
+![](/img/llm/paper.png)
 
 :::
 ::: {.column}
 
-![](/img/talk/paper-fbi.png)
+![](/img/llm/paper-fbi.png)
 
 :::
 :::
@@ -22,11 +22,7 @@ title: AI Results
 
 ## Draw ASCII
 
-![](/img/talk/chat-ascii.jpeg)
-
-## What is it?
-
-![](/img/talk/chat-ascii-julia.png)
+![](/img/llm/chat-ascii.jpeg)
 
 ## LLMs have a bad rep(utation)
 
@@ -174,4 +170,4 @@ If you’d like, paste the array again in a code block and I’ll count it for y
 
 ## Codeing: Hard task it can do well
 
-![](/img/talk/claude-xkcd.png)
+![](/img/llm/claude-xkcd.png)

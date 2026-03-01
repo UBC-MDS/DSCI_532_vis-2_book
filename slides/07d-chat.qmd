@@ -8,7 +8,7 @@ title: Your first chat
 ::: {.column}
 Python Chatlas
 
-![](/img/logo-chatlas.png){width="300"}
+![](/img/llm/logo-chatlas.png){width="300"}
 
 <https://posit-dev.github.io/chatlas/>
 
@@ -16,7 +16,7 @@ Python Chatlas
 ::: {.column}
 R Ellmer
 
-![](/img/logo-ellmer.png){width="300"}
+![](/img/llm/logo-ellmer.png){width="300"}
 
 <https://ellmer.tidyverse.org/>
 

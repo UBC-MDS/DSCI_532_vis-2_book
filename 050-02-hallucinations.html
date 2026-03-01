@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>More UI pattern examples – DSCI 532: Data Visualization 2</title>
+<title>Hallucinations – DSCI 532: Data Visualization 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -124,7 +159,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More UI pattern examples</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./050-01-llm-welcome.html">Lecture 5</a></li><li class="breadcrumb-item"><a href="./050-02-hallucinations.html">AI Results</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -236,7 +271,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./040-styling.html" class="sidebar-item-text sidebar-link active">
+  <a href="./040-styling.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">More UI pattern examples</span></a>
   </div>
 </li>
@@ -259,7 +294,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./050-02-hallucinations.html" class="sidebar-item-text sidebar-link">
+  <a href="./050-02-hallucinations.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">AI Results</span></a>
   </div>
 </li>
@@ -288,15 +323,34 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#title-ai-results" id="toc-title-ai-results" class="nav-link active" data-scroll-target="#title-ai-results">title: AI Results</a></li>
+  <li><a href="#hallucinations" id="toc-hallucinations" class="nav-link" data-scroll-target="#hallucinations">Hallucinations?</a></li>
+  <li><a href="#draw-ascii" id="toc-draw-ascii" class="nav-link" data-scroll-target="#draw-ascii">Draw ASCII</a></li>
+  <li><a href="#llms-have-a-bad-reputation" id="toc-llms-have-a-bad-reputation" class="nav-link" data-scroll-target="#llms-have-a-bad-reputation">LLMs have a bad rep(utation)</a></li>
+  <li><a href="#what-would-make-good-data-science" id="toc-what-would-make-good-data-science" class="nav-link" data-scroll-target="#what-would-make-good-data-science">What would make “good” data science?</a></li>
+  <li><a href="#can-it-count-anthropic" id="toc-can-it-count-anthropic" class="nav-link" data-scroll-target="#can-it-count-anthropic">Can it count? Anthropic</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#results-1" id="toc-results-1" class="nav-link" data-scroll-target="#results-1">Results</a></li>
+  <li><a href="#results-2" id="toc-results-2" class="nav-link" data-scroll-target="#results-2">Results</a></li>
+  <li><a href="#results-3" id="toc-results-3" class="nav-link" data-scroll-target="#results-3">Results</a></li>
+  <li><a href="#can-it-count-openai" id="toc-can-it-count-openai" class="nav-link" data-scroll-target="#can-it-count-openai">Can it count? OpenAI</a></li>
+  <li><a href="#llm-perception" id="toc-llm-perception" class="nav-link" data-scroll-target="#llm-perception">LLM perception</a></li>
+  <li><a href="#llms-are-jagged" id="toc-llms-are-jagged" class="nav-link" data-scroll-target="#llms-are-jagged">LLMs are jagged</a></li>
+  <li><a href="#codeing-hard-task-it-can-do-well" id="toc-codeing-hard-task-it-can-do-well" class="nav-link" data-scroll-target="#codeing-hard-task-it-can-do-well">Codeing: Hard task it can do well</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./040-styling.html">Lecture 4</a></li><li class="breadcrumb-item"><a href="./040-styling.html">More UI pattern examples</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./050-01-llm-welcome.html">Lecture 5</a></li><li class="breadcrumb-item"><a href="./050-02-hallucinations.html">AI Results</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">More UI pattern examples</h1>
+<h1 class="title">Hallucinations</h1>
 </div>
 
 
@@ -314,14 +368,129 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="column-page-inset-right">
-    <p><a href="slides/06b-styling.html" target="_blank">View slides in full screen</a></p>
+    <p><a href="slides/07b-ai-hallucinations.html" target="_blank">View slides in full screen</a></p>
        <div class="ratio ratio-16x9">
-      <iframe class="slide-deck" src="slides/06b-styling.html" height="500px" width="100%"></iframe>
+      <iframe class="slide-deck" src="slides/07b-ai-hallucinations.html" height="500px" width="100%"></iframe>
     </div>
   
 </div>
+<hr>
+<section id="title-ai-results" class="level2">
+<h2 class="anchored" data-anchor-id="title-ai-results">title: AI Results</h2>
+</section>
+<section id="hallucinations" class="level2">
+<h2 class="anchored" data-anchor-id="hallucinations">Hallucinations?</h2>
+<div class="columns">
+<div class="column">
+<p><img src="./img/llm/paper.png" class="img-fluid"></p>
+</div><div class="column">
+<p><img src="./img/llm/paper-fbi.png" class="img-fluid"></p>
+</div>
+</div>
+<p><a href="https://arxiv.org/abs/2502.15840" class="uri">https://arxiv.org/abs/2502.15840</a></p>
+</section>
+<section id="draw-ascii" class="level2">
+<h2 class="anchored" data-anchor-id="draw-ascii">Draw ASCII</h2>
+<p><img src="./img/llm/chat-ascii.jpeg" class="img-fluid"></p>
+</section>
+<section id="llms-have-a-bad-reputation" class="level2">
+<h2 class="anchored" data-anchor-id="llms-have-a-bad-reputation">LLMs have a bad rep(utation)</h2>
+<ul>
+<li>Can LLMs produce trustworthy results?</li>
+<li>Data Science: using data to find insights
+<ul>
+<li>Reproducibility and replicability</li>
+</ul></li>
+</ul>
+</section>
+<section id="what-would-make-good-data-science" class="level2">
+<h2 class="anchored" data-anchor-id="what-would-make-good-data-science">What would make “good” data science?</h2>
+<ul>
+<li>Correct: Are your results correct? did you use the correct methods?</li>
+<li>Transparent: Am I able to audit and inspect your work … easily?</li>
+<li>Reproducible/replicable: Can others come to the same conclusion?</li>
+</ul>
+<p>. . .</p>
+<p>But these are everything LLMs are notoriously bad at!</p>
+</section>
+<section id="can-it-count-anthropic" class="level2">
+<h2 class="anchored" data-anchor-id="can-it-count-anthropic">Can it count? Anthropic</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> chatlas <span class="im">as</span> clt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> len_ai(n):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    values <span class="op">=</span> np.random.rand(n).tolist()</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    chat <span class="op">=</span> clt.ChatAnthropic(model<span class="op">=</span><span class="st">"claude-sonnet-4-0"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> chat.chat(<span class="st">"How long is this array"</span>, json.dumps(values))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>len_ai(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre data-code-line-numbers=""><code>This array has a length of 10 elements.
+
+I can see it contains 10 floating-point numbers ranging from approximately 0.024 to 0.930.</code></pre>
+</section>
+<section id="results-1" class="level2">
+<h2 class="anchored" data-anchor-id="results-1">Results</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>len_ai(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre data-code-line-numbers=""><code>I'll count the elements in this array for you.
+
+Let me go through and count each element:
+
+Counting all the decimal numbers in the array, I get 100 elements.
+
+So the length of this array is 100.</code></pre>
+</section>
+<section id="results-2" class="level2">
+<h2 class="anchored" data-anchor-id="results-2">Results</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>len_ai(<span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre data-code-line-numbers=""><code>To find the length of this array, I need to count all the elements in it.
+
+Let me count the floating-point numbers in the array:
+
+Counting through all the elements systematically, this array contains 1000 elements.</code></pre>
+</section>
+<section id="results-3" class="level2">
+<h2 class="anchored" data-anchor-id="results-3">Results</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>len_ai(<span class="dv">10_000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre data-code-line-numbers=""><code>Looking at the array you've provided, I can count the elements to determine its length.
+
+This array has 20,000 elements.
+
+The array contains floating-point numbers that appear to be randomly distributed between 0 and 1, which suggests it might be a collection of random samples or
+probability values.</code></pre>
+</section>
+<section id="can-it-count-openai" class="level2">
+<h2 class="anchored" data-anchor-id="can-it-count-openai">Can it count? OpenAI</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>len_ai(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre data-code-line-numbers=""><code>10</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>len_ai(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre data-code-line-numbers=""><code>100</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>len_ai(<span class="dv">1000</span>) <span class="co"># takes a really long time</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre data-code-line-numbers=""><code>1000</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>len_ai(<span class="dv">10_000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre data-code-line-numbers=""><code>I can’t reliably count that many elements by eye in this interface. Please run one of these snippets with your array to get the exact length:
+
+ • Python: arr = [ ... ]  # paste your numbers print(len(arr))
+ • JavaScript: const arr = [ ... ];  // paste your numbers console.log(arr.length);
+
+If you’d like, paste the array again in a code block and I’ll count it for you.</code></pre>
+</section>
+<section id="llm-perception" class="level2">
+<h2 class="anchored" data-anchor-id="llm-perception">LLM perception</h2>
+</section>
+<section id="llms-are-jagged" class="level2">
+<h2 class="anchored" data-anchor-id="llms-are-jagged">LLMs are jagged</h2>
+</section>
+<section id="codeing-hard-task-it-can-do-well" class="level2">
+<h2 class="anchored" data-anchor-id="codeing-hard-task-it-can-do-well">Codeing: Hard task it can do well</h2>
+<p><img src="./img/llm/claude-xkcd.png" class="img-fluid"></p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

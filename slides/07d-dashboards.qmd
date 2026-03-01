@@ -10,14 +10,14 @@ title: Data Science Dashboards
 
 ## Querychat
 
-![](/img/talk/package-querychat.png)
+![](/img/llm/package-querychat.png)
 
 
 ## Demo: Querychat basics
 
 <https://shiny.posit.co/py/templates/querychat/>
 
-## Demo: Querychat dashbaord
+## Demo: Querychat dashboard
 
 <https://shiny.posit.co/py/templates/sidebot/>
 
