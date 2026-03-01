@@ -6,6 +6,7 @@ project:
   render:
     - "./*.qmd"
     - "slides/*.qmd"
+    - "review/*.qmd"
     - "!slides/01a-dashboards.qmd"
   resources:
     - slides
@@ -63,6 +64,7 @@ brand: _brand.yml
 
 filters:
   - shinylive
+  - quizdown
   - quarto
   - line-highlight
   - countdown

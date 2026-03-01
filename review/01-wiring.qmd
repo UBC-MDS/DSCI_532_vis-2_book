@@ -1,0 +1,859 @@
+---
+title: "Review 1 — Reactivity Basics"
+subtitle: "Inputs → reactive.calc → Outputs"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+filters:
+  - quizdown
+---
+
+This review covers the **core reactivity pattern** in Shiny for Python:
+how inputs connect to outputs, why the decorators matter, and how
+`@reactive.calc` lets you share filtered data across multiple outputs.
+
+By the end of review, you will remind yourself/learn how to:
+
+1. Describe the three-part rule connecting a UI output widget to its server render function
+2. Identify which connection part is absent in a broken app
+3. Spot an ID mismatch when all parts are present but something is still silent
+4. Connect up a skeleton app spots using correct decorator and input syntax
+5. Refactor duplicated filter logic into @reactive.calc and classify when caching helps
+
+Work through each section in order. Every quiz block gives you instant feedback
+with a pointer back to the relevant lecture slides. 
+
+All blocks are built from app examples we covered in lectures. 
+If you want to play with them more, there are links to the app code in repository.
+
+---
+
+## A. App Anatomy {#sec-anatomy}
+
+A Shiny (Core) app has a specific structure. Look at the code below from our skeleton app.
+It contains a UI input but no output.
+Read it carefully, then answer the ordering question that follows:
+
+```python
+from shiny import App, ui
+
+app_ui = ui.page_fluid(
+    ui.input_radio_buttons(
+        id="species",
+        label="Species",
+        choices=["Adelie", "Gentoo", "Chinstrap"],
+    )
+)
+
+
+def server(input, output, session):
+    pass
+
+
+app = App(app_ui, server)
+```
+
+::: {.callout-note collapse="true"}
+## Source
+
+App: [`code/lecture01/app-01-core-radio.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-01-core-radio.py) · Lecture: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html)
+:::
+
+Put the **key ingredients** of a Shiny Core app above
+in the correct order:
+
+```{quizdown}
+---
+shuffleAnswers: false
+---
+
+### Put the key parts of a Shiny Core app in the correct order.
+
+> Think about what must exist before it can be used. You can't reference the layout or the server until they are defined.
+
+1. Import the framework's core building blocks
+2. Build the page layout with widgets for user input and placeholders for output
+3. Write the server logic that reads user choices and produces results
+4. Bind the layout and the logic together into a runnable app
+```
+
+::: {.callout-tip collapse="true"}
+## Reveal answer
+
+The correct order is:
+
+1. **Import** the framework's core building blocks
+2. **Build the page layout** with widgets for user input and placeholders for output
+3. **Write the server logic** that reads user choices and produces results
+4. **Bind the layout and the logic** together into a runnable app
+
+The standard Shiny Core pattern is: `import` -> create the UI tree -> define the server function -> bind them with `App()`. 
+Each step depends on the previous one: you can't reference `ui` until it's imported, and you can't pass `app_ui` and `server` to `App()` until both are defined. 
+See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 5-10.
+:::
+
+---
+
+## B. What's missing? {#sec-error}
+
+Now that you know the structure, let's see what happens when parts are
+missing.
+
+::: {.callout-note collapse="true"}
+## Refresher: The three-part connection rule
+
+Every Shiny output requires three things working together: (1) a
+`ui.output_*()` placeholder in the UI that reserves space on the page,
+(2) a server function decorated with the matching `@render.*` decorator,
+and (3) an `input.id()` call inside that function to read the user's
+selection. All three must be present - missing any one silently breaks
+the connection. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 11-13.
+:::
+
+This app **looks** like it should work: there is an input and the
+server builds a chart. But it has **three connection errors**.
+Read the code carefully and try to spot all three, then select them in
+the quiz below:
+
+```python
+from shiny import ui, render, App
+import altair as alt
+from palmerpenguins import load_penguins
+
+dat = load_penguins().dropna()
+
+app_ui = ui.page_fluid(
+    ui.input_radio_buttons(
+        id="species",
+        label="Species",
+        choices=["Adelie", "Gentoo", "Chinstrap"],
+        inline=True,
+    )
+)
+
+def server(input, output, session):
+    species = "Gentoo"  # selected species
+    sel = dat.loc[dat.species == species]  # selected data
+    # Base histogram for all data
+    base = (
+        alt.Chart(dat)
+        .mark_bar(color="#C2C2C4", binSpacing=0)
+        .encode(
+            alt.X("bill_length_mm:Q", bin=alt.Bin(step=1), title="bill_length_mm"),
+            alt.Y("count()", title="count"),
+        )
+    )
+    # Overlay histogram for selected species
+    overlay = (
+        alt.Chart(sel)
+        .mark_bar(color="#447099", binSpacing=0)
+        .encode(alt.X("bill_length_mm:Q", bin=alt.Bin(step=1)), alt.Y("count()"))
+    )
+    return base + overlay
+
+app = App(app_ui, server)
+```
+
+::: {.callout-note collapse="true"}
+## Source
+
+App: [`code/lecture01/app-03-core-altair-error.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-03-core-altair-error.py) · Lecture: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html)
+:::
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### This app has three connection errors. Select **all three**.
+
+- [x] The server hardcodes a species name instead of reading the user's selection from the input widget.
+  > Correct! The server uses `species = "Gentoo"` instead of `species = input.species()`. Without reading from the input, the chart will never respond to the radio buttons. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+- [x] There is no render decorator to tell Shiny what kind of output to produce.
+  > Correct! The chart-building code runs as plain Python inside the server, not inside a decorated function like `@render_altair`. Without a decorator, Shiny has no way to capture the chart and send it to the UI. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+- [x] There is no output placeholder in the UI to display the result.
+  > Correct! The UI only has an input widget — it is missing an `output_widget("plot")` (or similar) that tells Shiny where to render the chart. Without a placeholder, there is nowhere for the output to appear. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+- [ ] The `load_penguins()` function should be called inside the server, not at the top level.
+  > Not quite. Loading data outside the server is actually a good practice — it runs once when the app starts rather than once per user session, which is more efficient. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+- [ ] The `return` statement at the end of the server is the correct way to send output to the UI.
+  > Not quite. In Shiny Core, you don't return from the server function to create output. You use render decorators (`@render_altair`, `@render.text`, etc.) that bind a named function to an output placeholder in the UI. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+```
+
+---
+
+## C. Fix It Yourself {#sec-wiring}
+
+You identified the three problems in Section B. Now **fix them** in the
+live editor below. The app starts broken — edit the code and click ▶ to
+check that the app responds correctly. When all three fixes are correct, the chart
+will react to the radio buttons. Watch for TODOs in code.
+If you need extra hints, see them below the editor.
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+
+from shiny import ui, render, App
+import altair as alt
+from palmerpenguins import load_penguins
+from shinywidgets import render_altair, output_widget
+
+dat = load_penguins().dropna()
+
+app_ui = ui.page_fluid(
+    ui.input_radio_buttons(
+        id="species",
+        label="Species",
+        choices=["Adelie", "Gentoo", "Chinstrap"],
+        inline=True,
+    )
+    # TODO: add an output placeholder here
+)
+
+def server(input, output, session):
+    species = "Gentoo"  # TODO: read from input instead
+    sel = dat.loc[dat.species == species]
+    # Base histogram for all data
+    base = (
+        alt.Chart(dat)
+        .mark_bar(color="#C2C2C4", binSpacing=0)
+        .encode(
+            alt.X("bill_length_mm:Q", bin=alt.Bin(step=1), title="bill_length_mm"),
+            alt.Y("count()", title="count"),
+        )
+    )
+    # Overlay histogram for selected species
+    overlay = (
+        alt.Chart(sel)
+        .mark_bar(color="#447099", binSpacing=0)
+        .encode(alt.X("bill_length_mm:Q", bin=alt.Bin(step=1)), alt.Y("count()"))
+    )
+    return base + overlay
+
+app = App(app_ui, server)
+```
+
+::: {.callout-tip collapse="true"}
+## Hints — the three fixes
+
+1. **Is there an `output_widget()` call in your UI layout?**
+
+   ::: {.callout-warning collapse="true"}
+   ### Fix 1: Add output placeholder
+
+   Add an output placeholder `output_widget("plot")` in the UI so Shiny knows where to display the chart.
+
+   ::: {.callout-note collapse="true"}
+   ## Exact code
+
+   Add `output_widget("plot")` after the radio buttons, separated by a comma:
+
+   ```python
+   app_ui = ui.page_fluid(
+       ui.input_radio_buttons(
+           id="species",
+           label="Species",
+           choices=["Adelie", "Gentoo", "Chinstrap"],
+           inline=True,
+       ),
+       output_widget("plot"),  # <-- add this
+   )
+   ```
+   :::
+   :::
+
+2. **Does your render function's name match the output placeholder id?**
+
+   ::: {.callout-warning collapse="true"}
+   ### Fix 2: Add render decorator
+
+   Wrap the chart code in a render decorator `@render_altair` so Shiny captures the output. The function name must match the output placeholder id (`"plot"`).
+
+   ::: {.callout-note collapse="true"}
+   ## Exact code
+
+   ```python
+   def server(input, output, session):
+       @render_altair
+       def plot():          # <-- name matches output_widget("plot")
+           # ... chart code goes here ...
+           return base + overlay
+   ```
+   :::
+   :::
+
+3. **Are you reading `input.species()` (with parentheses) instead of a hardcoded value?**
+
+   ::: {.callout-warning collapse="true"}
+   ### Fix 3: Read from input
+
+   Read the user's selection from the input widget `input.species()` instead of hardcoding a species name.
+
+   ::: {.callout-note collapse="true"}
+   ## Exact code
+
+   Replace the hardcoded `"Gentoo"` with `input.species()` inside the render function:
+
+   ```python
+           species = input.species()  # <-- reads user's selection
+   ```
+
+   Note the parentheses — `input.species()` returns the current value,
+   while `input.species` (without parentheses) would return the reactive
+   object itself.
+   :::
+   :::
+
+:::
+
+::: {.callout-tip}
+## What's next?
+
+The id-matching pattern you just applied is exactly what Section D will test — but with a subtler mismatch where every piece is present yet the output stays blank. You now have the rule; Section D shows why it matters in a larger codebase.
+:::
+
+---
+
+## C.2 Why Output IDs Matter {#sec-output-id-invariant}
+
+You fixed three bugs in the editor above. Now let's deepen your understanding:
+**what is the one thing that must never change** when you modify an app?
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### You just fixed the app by matching the output ID `"plot"` to the function name `plot`.
+Now imagine you decide to change the widget from radio buttons to a select input.
+What must stay the same in the UI and server for the connection to keep working?
+
+- [x] The output ID must remain `"plot"` and the function name must still be `def plot()`.
+  > Correct! The output ID is the **contract** between UI and server. Shiny doesn't care what widget you use — radio, select, slider — it only checks: "Is there a placeholder with id X? Is there a function named X?" Changing the widget type doesn't break anything. Changing the ID breaks everything. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+- [ ] The widget type and the function name must match (e.g., `def select()` for `input_select`).
+  > Not quite. The function name doesn't need to reflect the widget type. Whether the input is a radio button or a select box, the render function is still just `@render_altair def plot()`. The widget is cosmetic; the ID is structural.
+- [ ] Only the output placeholder needs to stay the same; the function name can change.
+  > Not quite. Both must match. The UI says "put output here with id X" and the server says "my function is named X" — both halves of the contract are necessary.
+- [ ] You must keep the exact same widget because changing it will confuse Shiny's rendering.
+  > Not quite. Shiny doesn't care about widget *type*. The ID is what matters. You can swap radio buttons for select, slider, action buttons — as long as the ID and function name stay matched, the connection works.
+```
+
+---
+
+## D. Dashboard Skeleton {#sec-skeleton}
+
+In Section C you fixed three connection errors. There is one more rule that
+catches almost everyone — and unlike the previous three, it produces
+**no error message**: the app runs, but an output stays blank.
+
+Read the skeleton app below to get familiar with the structure. 
+After that, read the next code chunk, which represents your fellow student's 
+attempt to connect the first value box to the server.
+Then, answer the following question.
+
+```python
+from shiny import App, ui
+
+# UI
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar("sidebar inputs", open="desktop"),
+        ui.layout_columns(
+            ui.value_box("Total tippers", "Value 1"),
+            ui.value_box("Average tip", "Value 2"),
+            ui.value_box("Average bill", "Value 3"),
+            fill=False,
+        ),
+        ui.layout_columns(
+            ui.card(ui.card_header("Tips data"), full_screen=True),
+            ui.card(ui.card_header("Total bill vs tip"), full_screen=True),
+            col_widths=[6, 6],
+        ),
+        ui.layout_columns(
+            ui.card(ui.card_header("Tip percentages"), full_screen=True)
+        ),
+    ),
+)
+
+# Server
+def server(input, output, session):
+    pass
+
+# Create app
+app = App(app_ui, server)
+```
+
+::: {.callout-note collapse="true"}
+## Source
+
+App: [`code/lecture02/core/app-01-ui.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture02/core/app-01-ui.py) · Lecture: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html)
+:::
+
+Now suppose your fellow student tries to make the first value box work. They add
+`ui.output_text("tippers")` inside it and write a render function in
+the server. Read the code chunk and help them to spot an error in the quiz below.
+
+```python
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider("slider", "Bill amount",
+                            min=0, max=60, value=[0, 60]),
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("tippers")),
+            ui.value_box("Average tip", "Value 2"),
+            ui.value_box("Average bill", "Value 3"),
+            fill=False,
+        ),
+    ),
+)
+
+def server(input, output, session):
+    @render.text
+    def total_count():
+        return tips.shape[0]
+```
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### The value box stays blank even though the server logic is correct. Why?
+
+- [x] The render function name `total_count` does not match the output id `tippers` — rename it to `def tippers():`.
+  > Correct! Shiny matches the render function name to the output placeholder id. The UI has `ui.output_text("tippers")` but the function is `def total_count()`. Renaming the function to `def tippers()` connects them. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 10-15.
+- [ ] `ui.value_box` needs a special `id` parameter to receive render output.
+  > Not quite. `ui.value_box` does not need its own id. The connection between UI and server happens through `ui.output_text("tippers")` placed inside the value box and a render function whose name matches that id. Here the name `total_count` does not match `tippers`. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 10-15.
+- [ ] The `@render.text` decorator cannot be used inside `ui.value_box`.
+  > Not quite. `@render.text` works perfectly inside value boxes — that is exactly how you populate them with dynamic content. The problem is the name mismatch: the function is called `total_count` but the output placeholder id is `tippers`. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 10-15.
+- [ ] The server function needs to `return` from the top level, not from inside a decorated function.
+  > Not quite. In Shiny, you return values from inside decorated render functions — that is the correct pattern. The server function itself should not return anything. The actual issue is that `def total_count()` does not match `ui.output_text("tippers")`. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 10-15.
+```
+
+::: {.callout-tip collapse="true"}
+## Hint
+
+In Section B, you found missing pieces — components that were never created. Here every piece is present, but two don't match. This is a subtler class of bug because Shiny fails silently — no error, just a blank.
+
+Shiny connects a UI output placeholder to a server render function by
+matching **string ids**: the id you pass to `ui.output_text("my_id")`
+must be **identical** to the name of the decorated render function
+(`def my_id():`). The match is case-sensitive and must be exact, or it will return a blank component.
+
+::: {.callout-note collapse="true"}
+## Exact fix for this app
+
+The UI has `ui.output_text("tippers")` but the server defines
+`def total_count()`. Rename the function to match the id:
+
+```python
+    @render.text
+    def tippers():          # <-- was total_count; now matches "tippers"
+        return tips.shape[0]
+```
+:::
+
+:::
+
+---
+
+## E. The `reactive.calc` Pattern {#sec-calc}
+
+You can now connect a single output to inputs. But what happens when
+**multiple outputs** need the **same filtered data**? You could copy the
+filter logic into each render function — but there is a better way.
+
+Before diving in, test your memory on the connection rules from Sections C and D:
+
+::: {.callout-note collapse="true"}
+## Quick refresher quiz before you continue
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### The output ID in the UI and the render function name in the server must match exactly. What happens if they don't?
+
+- [x] Shiny silently skips the output — no error message, just a blank area on the page.
+  > Correct! This is the id-matching rule from Section C.2. A mismatch produces no error, which is why it's easy to miss. See Section C.2 for the full context.
+- [ ] Shiny raises an error immediately and the app crashes.
+  > Not quite. The app runs fine — Shiny just can't find a matching render function, so it leaves the output area blank with no error message.
+- [ ] The output displays whatever the server defines, regardless of the id.
+  > Not quite. Shiny requires an exact id match. Without it, the output is invisible.
+
+### When reading an input inside a render function, what is the correct syntax?
+
+- [x] `input.slider_id()` with parentheses — it calls the reactive value and returns the current selection.
+  > Correct! The parentheses are essential. `input.slider_id` (without parentheses) returns the reactive object itself, not the value. See Section C for this distinction.
+- [ ] `input.slider_id` without parentheses — reactive objects don't need to be called like functions.
+  > Not quite. In Shiny, you must call reactive values with parentheses to get their current value. Without them, you get the reactive object, not the value.
+- [ ] `get_input("slider_id")` — use a special getter function.
+  > Not quite. The standard pattern in Shiny Core is `input.id()` with parentheses. No special getter function needed.
+
+### In the app structure, where do render functions live?
+
+- [x] Inside the server function, where they read inputs and produce outputs.
+  > Correct! Render functions are part of step 3 (server logic) from Section A. They're defined inside `def server()`.
+- [ ] In the UI, next to the output placeholders.
+  > Not quite. Render functions are pure server-side logic. The UI only has placeholders (`ui.output_*`); the server has the functions that fill them.
+- [ ] At the top of the file as standalone functions.
+  > Not quite. Render functions must be defined inside the server function so they can access `input` and `output`.
+```
+
+:::
+
+Now answer this warm-up about the new concept:
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### What is the main problem with copying the same filter logic into multiple render functions?
+
+- [x] The filtering operation runs redundantly — once per output — every time any input changes.
+  > Correct! Duplicated logic means repeated computation, and if the filter rule changes you must update every copy in sync. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 11-12.
+- [ ] Shiny raises an error if the same pandas expression appears more than once in the server.
+  > Not quite. Shiny does not detect or forbid duplicated logic — it runs everything, which is why the burden is on you to avoid it.
+- [ ] The outputs will display inconsistent results because each copy filters independently.
+  > Not quite. They read the same inputs so the results are consistent — the real cost is redundant computation and harder maintenance.
+- [ ] It causes a naming conflict because both render functions produce the same output id.
+  > Not quite. Each render function has its own distinct name and output id. Duplicate logic does not cause id conflicts.
+```
+
+Now study the app below. It has one value box that filters the tips
+dataset. After reading the code, answer the quiz, then refactor the app in the editor below:
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+
+import pandas as pd
+import seaborn as sns
+from shiny import App, reactive, render, ui
+
+tips = sns.load_dataset("tips")
+
+# UI
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            fill=False,
+        ),
+    ),
+)
+
+# Server
+def server(input, output, session):
+
+    @render.text
+    def total_tippers():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+
+        return tips_filtered.shape[0]
+
+# Create app
+app = App(app_ui, server)
+```
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### You need to add two more value boxes (`average_tip` and `average_bill`) that use the same filtered data. What is the best approach?
+
+- [x] Create a `@reactive.calc` function that filters the data, then call it from all three render functions.
+  > Correct! `@reactive.calc` computes the filtered data once and caches it. Each render function calls `filtered_data()` (note the parentheses — it behaves like a function). When an input changes, the calc re-runs once, then all outputs that depend on it update. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] Copy the filtering logic into each of the three render functions.
+  > Not quite. This works but violates DRY (Don't Repeat Yourself). If you later add a third filter, you must update three places. `@reactive.calc` centralizes the logic and Shiny caches the result, so the filter runs once instead of three times. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] Filter the data once in a global variable outside the server.
+  > Not quite. A global variable is computed once at startup and never updates when inputs change. You need `@reactive.calc` to recompute the filtered data whenever the slider or checkboxes change. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] Use `@reactive.effect` to store the filtered data in a variable.
+  > Not quite. `@reactive.effect` is for side effects (e.g., updating a UI element) and does not return or cache a value. `@reactive.calc` is designed exactly for this — it returns a cached value that multiple outputs can share. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+```
+
+The app below already has a second output (`average_tip`) added to the UI.
+The filter logic is currently duplicated in both render functions. Refactor it:
+add a `@reactive.calc` called `filtered_data()` and call it from both outputs.
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+
+import pandas as pd
+import seaborn as sns
+from shiny import App, reactive, render, ui
+
+tips = sns.load_dataset("tips")
+
+# UI
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={"Lunch": "Lunch", "Dinner": "Dinner"},
+                selected=["Lunch", "Dinner"],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            ui.value_box("Avg tip ($)", ui.output_text("average_tip")),
+            fill=False,
+        ),
+    ),
+)
+
+# Server
+def server(input, output, session):
+
+    # TODO 1: Add a @reactive.calc function called filtered_data() here.
+    #         Move the filter logic from the render functions into it
+    #         and return the filtered DataFrame.
+
+    @render.text
+    def total_tippers():
+        # TODO 2: Replace the five lines below with one call to filtered_data()
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        return tips_filtered.shape[0]
+
+    @render.text
+    def average_tip():
+        # TODO 3: Replace the five lines below with one call to filtered_data()
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 & idx2]
+        return round(tips_filtered.tip.mean(), 2)
+
+# Create app
+app = App(app_ui, server)
+```
+
+::: {.callout-tip collapse="true"}
+## Hints — refactoring to `@reactive.calc`
+
+1. **Did you create a `@reactive.calc` decorated function called `filtered_data()`?**
+
+   ::: {.callout-warning collapse="true"}
+   ### Step 1: Add `filtered_data()`
+
+   Insert a `@reactive.calc` decorated function inside `server`, above the two render functions. It should contain the filtering logic and `return` the filtered DataFrame.
+
+   ::: {.callout-note collapse="true"}
+   ## Exact code
+
+   Add this block inside `server`, **before** the render functions:
+
+   ```python
+       @reactive.calc
+       def filtered_data():
+           idx1 = tips.total_bill.between(
+               left=input.slider()[0],
+               right=input.slider()[1],
+               inclusive="both",
+           )
+           idx2 = tips.time.isin(input.checkbox_group())
+           return tips[idx1 & idx2]
+   ```
+   :::
+   :::
+
+2. **Did you replace the duplicate filter code in each render function with a call to `filtered_data()`?**
+
+   ::: {.callout-warning collapse="true"}
+   ### Step 2: Simplify `total_tippers()`
+
+   Replace the five filter lines with a single call `filtered_data()` (note the parentheses), then return `.shape[0]` on the result.
+
+   ::: {.callout-note collapse="true"}
+   ## Exact code
+
+   Replace the body of `total_tippers()` with one line:
+
+   ```python
+       @render.text
+       def total_tippers():
+           return filtered_data().shape[0]
+   ```
+   :::
+   :::
+
+3. **Are both render functions now calling the same calc instead of filtering independently?**
+
+   ::: {.callout-warning collapse="true"}
+   ### Step 3: Simplify `average_tip()`
+
+   Same pattern: call `filtered_data()` and return the mean tip rounded to two decimal places.
+
+   ::: {.callout-note collapse="true"}
+   ## Exact code
+
+   Replace the body of `average_tip()` with one line:
+
+   ```python
+       @render.text
+       def average_tip():
+           return round(filtered_data().tip.mean(), 2)
+   ```
+   :::
+   :::
+
+:::
+
+::: {.callout-tip}
+## What's next?
+
+You now know how to extract shared logic into `@reactive.calc`. Section F will test whether you understand **when and why** to use it — and when you don't need it. You have the how; Section F focuses on the why.
+:::
+
+---
+
+## F. Why `reactive.calc`? {#sec-why-calc}
+
+To wrap up, let's make sure you understand **why** the `@reactive.calc`
+pattern exists and when to reach for it. Answer these four questions about
+caching, app structure, and when to use `@reactive.calc`:
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### In the context of reactive computation, what does "caching" mean?
+
+- [x] Storing a computed result and reusing it when inputs have not changed, instead of recomputing.
+  > Correct! A cached reactive value only reruns when its dependencies actually change — otherwise it returns the stored result. See: [slides `03-reactivity`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), slides 3-11.
+- [ ] Saving the app's output to a file on disk so it loads faster next session.
+  > Not quite. That describes persistence or serialization. Reactive caching is in-memory and session-scoped — it lives only while the app is running.
+- [ ] Preventing a reactive expression from ever re-running, permanently freezing its value.
+  > Not quite. Caching reuses a value only while inputs are unchanged — it does recompute when dependencies update. Freezing permanently is a different concept (`isolate`).
+- [ ] Delaying computation until the user clicks a submit button.
+  > Not quite. That describes an action button or `bind_event` pattern. Caching is about avoiding redundant recalculation, not deferring it.
+
+### Where in the app structure should you place a `@reactive.calc` function?
+
+- [x] Inside the server function, before the render functions that will call it.
+  > Correct! `@reactive.calc` lives in the server (step 3 from Section A), alongside your render functions. It must be defined before any render function that calls it, just like any other function in Python. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] In the UI, as a special placeholder like `ui.output_*()`.
+  > Not quite. `@reactive.calc` is pure server-side logic — it has no UI representation. Only render functions produce output that appears on the page.
+- [ ] At the top of the file, before the imports (like a global setup).
+  > Not quite. `@reactive.calc` must be defined inside the server function. If you define it outside server, it runs once at startup and never updates reactively when inputs change.
+- [ ] After all the render functions, as a helper.
+  > Not quite. While Python technically allows you to call a function defined later (if the call happens inside another function), best practice places `@reactive.calc` before the render functions that depend on it. This makes the data flow clear.
+
+### What does `@reactive.calc` cache?
+
+- [x] The return value of the decorated function, recomputed only when its reactive dependencies change.
+  > Correct! `@reactive.calc` is lazy and cached — it only re-runs when one of the `input.*()` values it reads has changed. All outputs that call it get the cached result without triggering a recomputation. See: [slides `03-reactivity`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), slides 15-18.
+- [ ] The HTML output that gets sent to the browser.
+  > Not quite. Render decorators (`@render.text`, `@render_altair`, etc.) are responsible for producing output for the browser. `@reactive.calc` caches an intermediate Python value (like a filtered DataFrame) that render functions can use. See: [slides `03-reactivity`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), slides 15-18.
+- [ ] The reactive dependency graph, so Shiny knows which outputs to invalidate.
+  > Not quite. Shiny's runtime tracks the dependency graph internally — that is separate from `@reactive.calc`. What `@reactive.calc` caches is the *return value* of your function, so multiple outputs can read it without triggering a recomputation. See: [slides `03-reactivity`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), slides 15-18.
+- [ ] Nothing — it re-runs every time any input changes.
+  > Not quite. That would defeat the purpose! `@reactive.calc` tracks which specific inputs the function reads and only invalidates when *those* inputs change. Other unrelated inputs changing will not trigger a recomputation. See: [slides `03-reactivity`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), slides 15-18.
+
+### When should you introduce a `@reactive.calc`?
+
+- [x] When two or more outputs need the same computed value derived from inputs.
+  > Correct! The moment you find yourself copying the same input-reading and filtering logic into multiple render functions, that is the signal to extract it into a `@reactive.calc`. One calc, many consumers. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] For every render function, as a best practice.
+  > Not quite. If only one output uses a particular computation, there is no benefit to wrapping it in `@reactive.calc`. The render function itself already re-runs when its dependencies change. Add `@reactive.calc` when you need to share a value across outputs. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] Only when performance is a problem.
+  > Not quite. Performance (caching) is a benefit, but the primary reason is code organization — centralizing shared logic so you change it in one place. Even for fast computations, `@reactive.calc` makes your code cleaner and less error-prone. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] Never — use global variables instead.
+  > Not quite. Global variables are computed once at startup and never update reactively. `@reactive.calc` re-runs when its dependencies change, which is essential for any value derived from user inputs. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+```
+
+---
+
+## Summary
+
+The core connection pattern in Shiny for Python:
+
+1. **UI layer:** Place input widgets (`ui.input_*`) and output placeholders
+   (`ui.output_*` or `output_widget`) in the page layout.
+2. **Server layer:** Write render functions decorated with `@render.*` whose
+   **function names match** the output placeholder ids.
+3. **Read inputs:** Inside render functions, call `input.id()` to read the
+   current value of an input widget.
+4. **Share computed values:** When multiple outputs need the same data, use
+   `@reactive.calc` to compute it once and cache it.
+
+```{mermaid}
+flowchart LR
+    A[/input_slider/] --> C{{filtered_data}}
+    B[/input_checkbox_group/] --> C
+    C --> D([total_tippers])
+    C --> E([average_tip])
+    C --> F([avg_bill])
+
+    style A fill:#FFF3E0,stroke:#FF9800
+    style B fill:#FFF3E0,stroke:#FF9800
+    style C fill:#F3E5F5,stroke:#9C27B0
+    style D fill:#E3F2FD,stroke:#2196F3
+    style E fill:#E3F2FD,stroke:#2196F3
+    style F fill:#E3F2FD,stroke:#2196F3
+```
+
+::: {.callout-note}
+**Next up:** [Review 2 — Tables & Charts Together](02-tables.qmd) covers
+DataGrid as a reactive source, selection → chart highlighting, and filter
+cascades.
+:::
