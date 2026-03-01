@@ -7,6 +7,10 @@
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdownKatex.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdownHighlight.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown-init.js"></script>
 <meta name="shinylive:serviceworker_dir" content="..">
 <script src="../site_libs/quarto-contrib/shinylive-0.10.7/shinylive/load-shinylive-sw.js" type="module"></script>
 <script src="../site_libs/quarto-contrib/shinylive-0.10.7/shinylive/run-python-blocks.js" type="module"></script>
@@ -220,7 +224,7 @@
 <section id="visualizing-penguin-data" class="slide level2">
 <h2>Visualizing penguin data</h2>
 <!--TODO: #| output-location: slide is broken -->
-<div id="15830432" class="cell" data-execution_count="1">
+<div id="23e3e4e8" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
 <span id="cb1-2"><a></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
 <span id="cb1-3"><a></a></span>
@@ -251,23 +255,23 @@
 <div class="cell-output cell-output-display" data-execution_count="1">
 
 <style>
-  #altair-viz-ea0c53fae89e4bee8c5ead9f5b9eaf19.vega-embed {
+  #altair-viz-445390876ae1427f8a9cd1e9365b7567.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-ea0c53fae89e4bee8c5ead9f5b9eaf19.vega-embed details,
-  #altair-viz-ea0c53fae89e4bee8c5ead9f5b9eaf19.vega-embed details summary {
+  #altair-viz-445390876ae1427f8a9cd1e9365b7567.vega-embed details,
+  #altair-viz-445390876ae1427f8a9cd1e9365b7567.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-ea0c53fae89e4bee8c5ead9f5b9eaf19"></div>
+<div id="altair-viz-445390876ae1427f8a9cd1e9365b7567"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-ea0c53fae89e4bee8c5ead9f5b9eaf19") {
-      outputDiv = document.getElementById("altair-viz-ea0c53fae89e4bee8c5ead9f5b9eaf19");
+    if (outputDiv.id !== "altair-viz-445390876ae1427f8a9cd1e9365b7567") {
+      outputDiv = document.getElementById("altair-viz-445390876ae1427f8a9cd1e9365b7567");
     }
 
     const paths = {
@@ -323,7 +327,7 @@
 <section id="change-the-species" class="slide level2">
 <h2>Change the species</h2>
 <!-- TODO: #| output-location: slide is broken -->
-<div id="7057d3a3" class="cell" data-execution_count="2">
+<div id="9b416b8b" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
 <span id="cb2-2"><a></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
 <span id="cb2-3"><a></a></span>
@@ -354,23 +358,23 @@
 <div class="cell-output cell-output-display" data-execution_count="2">
 
 <style>
-  #altair-viz-7e457178661f4d3790201c06b93bd216.vega-embed {
+  #altair-viz-5488b56b408f44768b2794ac43121fd7.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-7e457178661f4d3790201c06b93bd216.vega-embed details,
-  #altair-viz-7e457178661f4d3790201c06b93bd216.vega-embed details summary {
+  #altair-viz-5488b56b408f44768b2794ac43121fd7.vega-embed details,
+  #altair-viz-5488b56b408f44768b2794ac43121fd7.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-7e457178661f4d3790201c06b93bd216"></div>
+<div id="altair-viz-5488b56b408f44768b2794ac43121fd7"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-7e457178661f4d3790201c06b93bd216") {
-      outputDiv = document.getElementById("altair-viz-7e457178661f4d3790201c06b93bd216");
+    if (outputDiv.id !== "altair-viz-5488b56b408f44768b2794ac43121fd7") {
+      outputDiv = document.getElementById("altair-viz-5488b56b408f44768b2794ac43121fd7");
     }
 
     const paths = {
@@ -430,7 +434,7 @@
 <li><p>Input Components Gallery: <a href="https://shiny.posit.co/py/components/#inputs" class="uri">https://shiny.posit.co/py/components/#inputs</a></p></li>
 <li><p>What might be a good component to use?</p></li>
 </ul>
-<countdown-timer id="timer_e7f3223d72bdcde9d113f8b8249f2068c8d6ea12" minutes="01" seconds="00" class="countdown" warn-when="0" update-every="1" play-sound="false" blink-colon="false" start-immediately="false" tabindex="0" style="right: 0;bottom: 0;">
+<countdown-timer id="timer_8bb073c86a2960f2f649b1d6d4b5f5e50a13bf81" minutes="01" seconds="00" class="countdown" warn-when="0" update-every="1" play-sound="false" blink-colon="false" start-immediately="false" tabindex="0" style="right: 0;bottom: 0;">
  </countdown-timer>
 </section>
 <section id="radio-buttons" class="slide level2">

@@ -1,0 +1,1804 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Review 1 — Reactivity Basics – DSCI 532: Data Visualization 2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-c2184ee79b4189700a07fecab5507ffb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdownKatex.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdownHighlight.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown-init.js"></script>
+<link href="../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
+<meta name="shinylive:serviceworker_dir" content="..">
+<script src="../site_libs/quarto-contrib/shinylive-0.10.7/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="../site_libs/quarto-contrib/shinylive-0.10.7/shinylive/run-python-blocks.js" type="module"></script>
+<link href="../site_libs/quarto-contrib/shinylive-0.10.7/shinylive/shinylive.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">DSCI 532: Data Visualization 2</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../setup.html"> 
+<span class="menu-text">Setup</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/tree/main/code"> 
+<span class="menu-text">Code Examples</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/UBC-MDS/DSCI_532_vis-2_book"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../review/01-wiring.html">Review</a></li><li class="breadcrumb-item"><a href="../review/01-wiring.html">Review 1 — Reactivity Basics</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 1</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../010-intro_dashboards.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction to dashboards</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../010-intro_shiny.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction to Shiny</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../010-first_app.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Your first Shiny application</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../020-reactivity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">What is Reactivity?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../020-dashboard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Build a dashboard</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../020-publish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish your application</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../030-geoviz-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Geospatial visualization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../030-tables-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tables in Shiny</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../040-styling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">More UI pattern examples</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 5</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-01-llm-welcome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome to LLMs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-02-hallucinations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Results</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-03-conversation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Anatomy of a Conversation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-04-chat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Your first chat</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-05-dashboards.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Science Dashboards</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-06-env.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Environment Variables</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Review</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../review/01-wiring.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Review 1 — Reactivity Basics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#sec-anatomy" id="toc-sec-anatomy" class="nav-link active" data-scroll-target="#sec-anatomy">A. App Anatomy</a></li>
+  <li><a href="#sec-error" id="toc-sec-error" class="nav-link" data-scroll-target="#sec-error">B. What’s missing?</a></li>
+  <li><a href="#sec-wiring" id="toc-sec-wiring" class="nav-link" data-scroll-target="#sec-wiring">C. Fix It Yourself</a></li>
+  <li><a href="#sec-output-id-invariant" id="toc-sec-output-id-invariant" class="nav-link" data-scroll-target="#sec-output-id-invariant">C.2 Why Output IDs Matter</a></li>
+  <li><a href="#sec-skeleton" id="toc-sec-skeleton" class="nav-link" data-scroll-target="#sec-skeleton">D. Dashboard Skeleton</a></li>
+  <li><a href="#sec-calc" id="toc-sec-calc" class="nav-link" data-scroll-target="#sec-calc">E. The <code>reactive.calc</code> Pattern</a></li>
+  <li><a href="#sec-why-calc" id="toc-sec-why-calc" class="nav-link" data-scroll-target="#sec-why-calc">F. Why <code>reactive.calc</code>?</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../review/01-wiring.html">Review</a></li><li class="breadcrumb-item"><a href="../review/01-wiring.html">Review 1 — Reactivity Basics</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Review 1 — Reactivity Basics</h1>
+<p class="subtitle lead">Inputs → reactive.calc → Outputs</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This review covers the <strong>core reactivity pattern</strong> in Shiny for Python: how inputs connect to outputs, why the decorators matter, and how <code>@reactive.calc</code> lets you share filtered data across multiple outputs.</p>
+<p>By the end of this review, you will remind yourself/learn how to:</p>
+<ol type="1">
+<li>Describe the three-part rule connecting a UI output widget to its server render function</li>
+<li>Identify which connection part is absent in a broken app</li>
+<li>Spot an ID mismatch when all parts are present but something is still silent</li>
+<li>Wire up a skeleton app using the correct decorator and input syntax</li>
+<li>Refactor duplicated filter logic into <code>@reactive.calc</code> and explain when caching helps</li>
+</ol>
+<p>Work through each section in order. Every quiz block gives you instant feedback with a pointer back to the relevant lecture slides.</p>
+<p>All blocks are built from app examples we covered in lectures. If you want to play with them more, there are links to the app code in repository.</p>
+<hr>
+<section id="sec-anatomy" class="level2">
+<h2 class="anchored" data-anchor-id="sec-anatomy">A. App Anatomy</h2>
+<p>A Shiny (Core) app has a specific structure. Look at the code below from our skeleton app. It contains a UI input but no output. Read it carefully, then answer the ordering question that follows:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shiny <span class="im">import</span> App, ui</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>app_ui <span class="op">=</span> ui.page_fluid(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    ui.input_radio_buttons(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">id</span><span class="op">=</span><span class="st">"species"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        label<span class="op">=</span><span class="st">"Species"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        choices<span class="op">=</span>[<span class="st">"Adelie"</span>, <span class="st">"Gentoo"</span>, <span class="st">"Chinstrap"</span>],</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> server(<span class="bu">input</span>, output, session):</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> App(app_ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>App: <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-01-core-radio.py"><code>code/lecture01/app-01-core-radio.py</code></a> · Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html">slides <code>02-first_shiny</code></a></p>
+</div>
+</div>
+</div>
+<p>Put the <strong>key ingredients</strong> of a Shiny Core app above in the correct order:</p>
+<div class="quizdown">
+---
+shuffleAnswers: false
+---
+
+### Put the key parts of a Shiny Core app in the correct order.
+
+&gt; Think about what must exist before it can be used. You can't reference the layout or the server until they are defined.
+
+1. Import the framework's core building blocks
+2. Build the page layout with widgets for user input and placeholders for output
+3. Write the server logic that reads user choices and produces results
+4. Bind the layout and the logic together into a runnable app
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reveal answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The correct order is:</p>
+<ol type="1">
+<li><strong>Import</strong> the framework’s core building blocks</li>
+<li><strong>Build the page layout</strong> with widgets for user input and placeholders for output</li>
+<li><strong>Write the server logic</strong> that reads user choices and produces results</li>
+<li><strong>Bind the layout and the logic</strong> together into a runnable app</li>
+</ol>
+<p>The standard Shiny Core pattern is: <code>import</code> -&gt; create the UI tree -&gt; define the server function -&gt; bind them with <code>App()</code>. Each step depends on the previous one: you can’t reference <code>ui</code> until it’s imported, and you can’t pass <code>app_ui</code> and <code>server</code> to <code>App()</code> until both are defined. See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html">slides <code>02-first_shiny</code></a>, slides 5-10.</p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="sec-error" class="level2">
+<h2 class="anchored" data-anchor-id="sec-error">B. What’s missing?</h2>
+<p>Now that you know the structure, let’s see what happens when parts are missing.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Refresher: The three-part connection rule
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Every Shiny output requires three things working together: (1) a <code>ui.output_*()</code> placeholder in the UI that reserves space on the page, (2) a server function decorated with the matching <code>@render.*</code> decorator, and (3) an <code>input.id()</code> call inside that function to read the user’s selection. All three must be present - missing any one silently breaks the connection. See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html">slides <code>02-first_shiny</code></a>, slides 11-13.</p>
+</div>
+</div>
+</div>
+<p>This app <strong>looks</strong> like it should work: there is an input and the server builds a chart. But it has <strong>three connection errors</strong>. Read the code carefully and try to spot all three, then select them in the quiz below:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shiny <span class="im">import</span> ui, render, App</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>dat <span class="op">=</span> load_penguins().dropna()</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>app_ui <span class="op">=</span> ui.page_fluid(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    ui.input_radio_buttons(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">id</span><span class="op">=</span><span class="st">"species"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        label<span class="op">=</span><span class="st">"Species"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        choices<span class="op">=</span>[<span class="st">"Adelie"</span>, <span class="st">"Gentoo"</span>, <span class="st">"Chinstrap"</span>],</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        inline<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> server(<span class="bu">input</span>, output, session):</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    species <span class="op">=</span> <span class="st">"Gentoo"</span>  <span class="co"># selected species</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    sel <span class="op">=</span> dat.loc[dat.species <span class="op">==</span> species]  <span class="co"># selected data</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Base histogram for all data</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    base <span class="op">=</span> (</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        alt.Chart(dat)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        .mark_bar(color<span class="op">=</span><span class="st">"#C2C2C4"</span>, binSpacing<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        .encode(</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            alt.X(<span class="st">"bill_length_mm:Q"</span>, <span class="bu">bin</span><span class="op">=</span>alt.Bin(step<span class="op">=</span><span class="dv">1</span>), title<span class="op">=</span><span class="st">"bill_length_mm"</span>),</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>            alt.Y(<span class="st">"count()"</span>, title<span class="op">=</span><span class="st">"count"</span>),</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Overlay histogram for selected species</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    overlay <span class="op">=</span> (</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        alt.Chart(sel)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        .mark_bar(color<span class="op">=</span><span class="st">"#447099"</span>, binSpacing<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        .encode(alt.X(<span class="st">"bill_length_mm:Q"</span>, <span class="bu">bin</span><span class="op">=</span>alt.Bin(step<span class="op">=</span><span class="dv">1</span>)), alt.Y(<span class="st">"count()"</span>))</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> base <span class="op">+</span> overlay</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> App(app_ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>App: <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-03-core-altair-error.py"><code>code/lecture01/app-03-core-altair-error.py</code></a> · Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html">slides <code>02-first_shiny</code></a></p>
+</div>
+</div>
+</div>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### This app has three connection errors. Select **all three**.
+
+- [x] The server hardcodes a species name instead of reading the user's selection from the input widget.
+  &gt; Correct! The server uses `species = "Gentoo"` instead of `species = input.species()`. Without reading from the input, the chart will never respond to the radio buttons. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+- [x] There is no render decorator to tell Shiny what kind of output to produce.
+  &gt; Correct! The chart-building code runs as plain Python inside the server, not inside a decorated function like `@render_altair`. Without a decorator, Shiny has no way to capture the chart and send it to the UI. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+- [x] There is no output placeholder in the UI to display the result.
+  &gt; Correct! The UI only has an input widget — it is missing an `output_widget("plot")` (or similar) that tells Shiny where to render the chart. Without a placeholder, there is nowhere for the output to appear. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+- [ ] The `load_penguins()` function should be called inside the server, not at the top level.
+  &gt; Not quite. Loading data outside the server is actually a good practice — it runs once when the app starts rather than once per user session, which is more efficient. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+- [ ] The `return` statement at the end of the server is the correct way to send output to the UI.
+  &gt; Not quite. In Shiny Core, you don't return from the server function to create output. You use render decorators (`@render_altair`, `@render.text`, etc.) that bind a named function to an output placeholder in the UI. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+</div>
+<hr>
+</section>
+<section id="sec-wiring" class="level2">
+<h2 class="anchored" data-anchor-id="sec-wiring">C. Fix It Yourself</h2>
+<p>You identified the three problems in Section B. Now <strong>fix them</strong> in the live editor below. The app starts broken — edit the code and click ▶ to check that the app responds correctly. When all three fixes are correct, the chart will react to the radio buttons. Watch for TODOs in code. If you need extra hints, see them below the editor.</p>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+
+from shiny import ui, render, App
+import altair as alt
+from palmerpenguins import load_penguins
+from shinywidgets import render_altair, output_widget
+
+dat = load_penguins().dropna()
+
+app_ui = ui.page_fluid(
+    ui.input_radio_buttons(
+        id="species",
+        label="Species",
+        choices=["Adelie", "Gentoo", "Chinstrap"],
+        inline=True,
+    )
+    # TODO: add an output placeholder here
+)
+
+def server(input, output, session):
+    species = "Gentoo"  # TODO: read from input instead
+    sel = dat.loc[dat.species == species]
+    # Base histogram for all data
+    base = (
+        alt.Chart(dat)
+        .mark_bar(color="#C2C2C4", binSpacing=0)
+        .encode(
+            alt.X("bill_length_mm:Q", bin=alt.Bin(step=1), title="bill_length_mm"),
+            alt.Y("count()", title="count"),
+        )
+    )
+    # Overlay histogram for selected species
+    overlay = (
+        alt.Chart(sel)
+        .mark_bar(color="#447099", binSpacing=0)
+        .encode(alt.X("bill_length_mm:Q", bin=alt.Bin(step=1)), alt.Y("count()"))
+    )
+    return base + overlay
+
+app = App(app_ui, server)</code></pre>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Hints — the three fixes
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Is there an <code>output_widget()</code> call in your UI layout?</strong></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Fix 1: Add output placeholder
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Add an output placeholder <code>output_widget("plot")</code> in the UI so Shiny knows where to display the chart.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Exact code
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Add <code>output_widget("plot")</code> after the radio buttons, separated by a comma:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>app_ui <span class="op">=</span> ui.page_fluid(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    ui.input_radio_buttons(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="bu">id</span><span class="op">=</span><span class="st">"species"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        label<span class="op">=</span><span class="st">"Species"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        choices<span class="op">=</span>[<span class="st">"Adelie"</span>, <span class="st">"Gentoo"</span>, <span class="st">"Chinstrap"</span>],</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        inline<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    output_widget(<span class="st">"plot"</span>),  <span class="co"># &lt;-- add this</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+<li><p><strong>Does your render function’s name match the output placeholder id?</strong></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Fix 2: Add render decorator
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Wrap the chart code in a render decorator <code>@render_altair</code> so Shiny captures the output. The function name must match the output placeholder id (<code>"plot"</code>).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Exact code
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> server(<span class="bu">input</span>, output, session):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">@render_altair</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> plot():          <span class="co"># &lt;-- name matches output_widget("plot")</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="co"># ... chart code goes here ...</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> base <span class="op">+</span> overlay</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+<li><p><strong>Are you reading <code>input.species()</code> (with parentheses) instead of a hardcoded value?</strong></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Fix 3: Read from input
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Read the user’s selection from the input widget <code>input.species()</code> instead of hardcoding a species name.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Exact code
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Replace the hardcoded <code>"Gentoo"</code> with <code>input.species()</code> inside the render function:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>        species <span class="op">=</span> <span class="bu">input</span>.species()  <span class="co"># &lt;-- reads user's selection</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Note the parentheses — <code>input.species()</code> returns the current value, while <code>input.species</code> (without parentheses) would return the reactive object itself.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>What’s next?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The id-matching pattern you just applied is exactly what Section D will test — but with a subtler mismatch where every piece is present yet the output stays blank. You now have the rule; Section D shows why it matters in a larger codebase.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="sec-output-id-invariant" class="level2">
+<h2 class="anchored" data-anchor-id="sec-output-id-invariant">C.2 Why Output IDs Matter</h2>
+<p>You fixed three bugs in the editor above. Now let’s deepen your understanding: <strong>what is the one thing that must never change</strong> when you modify an app?</p>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### You just fixed the app by matching the output ID `"plot"` to the function name `plot`.
+Now imagine you decide to change the widget from radio buttons to a select input.
+What must stay the same in the UI and server for the connection to keep working?
+
+- [x] The output ID must remain `"plot"` and the function name must still be `def plot()`.
+  &gt; Correct! The output ID is the **contract** between UI and server. Shiny doesn't care what widget you use — radio, select, slider — it only checks: "Is there a placeholder with id X? Is there a function named X?" Changing the widget type doesn't break anything. Changing the ID breaks everything. See: [slides `02-first_shiny`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html), slides 15-20.
+- [ ] The widget type and the function name must match (e.g., `def select()` for `input_select`).
+  &gt; Not quite. The function name doesn't need to reflect the widget type. Whether the input is a radio button or a select box, the render function is still just `@render_altair def plot()`. The widget is cosmetic; the ID is structural.
+- [ ] Only the output placeholder needs to stay the same; the function name can change.
+  &gt; Not quite. Both must match. The UI says "put output here with id X" and the server says "my function is named X" — both halves of the contract are necessary.
+- [ ] You must keep the exact same widget because changing it will confuse Shiny's rendering.
+  &gt; Not quite. Shiny doesn't care about widget *type*. The ID is what matters. You can swap radio buttons for select, slider, action buttons — as long as the ID and function name stay matched, the connection works.
+</div>
+<hr>
+</section>
+<section id="sec-skeleton" class="level2">
+<h2 class="anchored" data-anchor-id="sec-skeleton">D. Dashboard Skeleton</h2>
+<p>In Section C you fixed three connection errors. There is one more rule that catches almost everyone — and unlike the previous three, it produces <strong>no error message</strong>: the app runs, but an output stays blank.</p>
+<p>Read the skeleton app below to get familiar with the structure. After that, read the next code chunk, which represents your fellow student’s attempt to connect the first value box to the server. Then, answer the following question.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shiny <span class="im">import</span> App, ui</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># UI</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>app_ui <span class="op">=</span> ui.page_fillable(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    ui.panel_title(<span class="st">"Restaurant tipping"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    ui.layout_sidebar(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        ui.sidebar(<span class="st">"sidebar inputs"</span>, <span class="bu">open</span><span class="op">=</span><span class="st">"desktop"</span>),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        ui.layout_columns(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>            ui.value_box(<span class="st">"Total tippers"</span>, <span class="st">"Value 1"</span>),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>            ui.value_box(<span class="st">"Average tip"</span>, <span class="st">"Value 2"</span>),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>            ui.value_box(<span class="st">"Average bill"</span>, <span class="st">"Value 3"</span>),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>            fill<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        ui.layout_columns(</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            ui.card(ui.card_header(<span class="st">"Tips data"</span>), full_screen<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            ui.card(ui.card_header(<span class="st">"Total bill vs tip"</span>), full_screen<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            col_widths<span class="op">=</span>[<span class="dv">6</span>, <span class="dv">6</span>],</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        ui.layout_columns(</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>            ui.card(ui.card_header(<span class="st">"Tip percentages"</span>), full_screen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Server</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> server(<span class="bu">input</span>, output, session):</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">pass</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Create app</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> App(app_ui, server)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>App: <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture02/core/app-01-ui.py"><code>code/lecture02/core/app-01-ui.py</code></a> · Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html">slides <code>04-dashboard-core</code></a></p>
+</div>
+</div>
+</div>
+<p>Now suppose your fellow student tries to make the first value box work. They add <code>ui.output_text("tippers")</code> inside it and write a render function in the server. Read the code chunk and help them to spot an error in the quiz below.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>app_ui <span class="op">=</span> ui.page_fillable(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    ui.panel_title(<span class="st">"Restaurant tipping"</span>),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    ui.layout_sidebar(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        ui.sidebar(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            ui.input_slider(<span class="st">"slider"</span>, <span class="st">"Bill amount"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                            <span class="bu">min</span><span class="op">=</span><span class="dv">0</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">60</span>, value<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">60</span>]),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        ui.layout_columns(</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            ui.value_box(<span class="st">"Total tippers"</span>, ui.output_text(<span class="st">"tippers"</span>)),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>            ui.value_box(<span class="st">"Average tip"</span>, <span class="st">"Value 2"</span>),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>            ui.value_box(<span class="st">"Average bill"</span>, <span class="st">"Value 3"</span>),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>            fill<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> server(<span class="bu">input</span>, output, session):</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">@render.text</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> total_count():</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tips.shape[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### The value box stays blank even though the server logic is correct. Why?
+
+- [x] The render function name `total_count` does not match the output id `tippers` — rename it to `def tippers():`.
+  &gt; Correct! Shiny matches the render function name to the output placeholder id. The UI has `ui.output_text("tippers")` but the function is `def total_count()`. Renaming the function to `def tippers()` connects them. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 10-15.
+- [ ] `ui.value_box` needs a special `id` parameter to receive render output.
+  &gt; Not quite. `ui.value_box` does not need its own id. The connection between UI and server happens through `ui.output_text("tippers")` placed inside the value box and a render function whose name matches that id. Here the name `total_count` does not match `tippers`. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 10-15.
+- [ ] The `@render.text` decorator cannot be used inside `ui.value_box`.
+  &gt; Not quite. `@render.text` works perfectly inside value boxes — that is exactly how you populate them with dynamic content. The problem is the name mismatch: the function is called `total_count` but the output placeholder id is `tippers`. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 10-15.
+- [ ] The server function needs to `return` from the top level, not from inside a decorated function.
+  &gt; Not quite. In Shiny, you return values from inside decorated render functions — that is the correct pattern. The server function itself should not return anything. The actual issue is that `def total_count()` does not match `ui.output_text("tippers")`. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 10-15.
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Hint
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>In Section B, you found missing pieces — components that were never created. Here every piece is present, but two don’t match. This is a subtler class of bug because Shiny fails silently — no error, just a blank.</p>
+<p>Shiny connects a UI output placeholder to a server render function by matching <strong>string ids</strong>: the id you pass to <code>ui.output_text("my_id")</code> must be <strong>identical</strong> to the name of the decorated render function (<code>def my_id():</code>). The match is case-sensitive and must be exact, or it will return a blank component.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Exact fix for this app
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The UI has <code>ui.output_text("tippers")</code> but the server defines <code>def total_count()</code>. Rename the function to match the id:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>    <span class="at">@render.text</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> tippers():          <span class="co"># &lt;-- was total_count; now matches "tippers"</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tips.shape[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="sec-calc" class="level2">
+<h2 class="anchored" data-anchor-id="sec-calc">E. The <code>reactive.calc</code> Pattern</h2>
+<p>You can now connect a single output to inputs. But what happens when <strong>multiple outputs</strong> need the <strong>same filtered data</strong>? You could copy the filter logic into each render function — but there is a better way.</p>
+<p>Before diving in, test your memory on the connection rules from Sections C and D:</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Quick refresher quiz before you continue
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### The output ID in the UI and the render function name in the server must match exactly. What happens if they don't?
+
+- [x] Shiny silently skips the output — no error message, just a blank area on the page.
+  &gt; Correct! This is the id-matching rule from Section C.2. A mismatch produces no error, which is why it's easy to miss. See Section C.2 for the full context.
+- [ ] Shiny raises an error immediately and the app crashes.
+  &gt; Not quite. The app runs fine — Shiny just can't find a matching render function, so it leaves the output area blank with no error message.
+- [ ] The output displays whatever the server defines, regardless of the id.
+  &gt; Not quite. Shiny requires an exact id match. Without it, the output is invisible.
+
+### When reading an input inside a render function, what is the correct syntax?
+
+- [x] `input.slider_id()` with parentheses — it calls the reactive value and returns the current selection.
+  &gt; Correct! The parentheses are essential. `input.slider_id` (without parentheses) returns the reactive object itself, not the value. See Section C for this distinction.
+- [ ] `input.slider_id` without parentheses — reactive objects don't need to be called like functions.
+  &gt; Not quite. In Shiny, you must call reactive values with parentheses to get their current value. Without them, you get the reactive object, not the value.
+- [ ] `get_input("slider_id")` — use a special getter function.
+  &gt; Not quite. The standard pattern in Shiny Core is `input.id()` with parentheses. No special getter function needed.
+
+### In the app structure, where do render functions live?
+
+- [x] Inside the server function, where they read inputs and produce outputs.
+  &gt; Correct! Render functions are part of step 3 (server logic) from Section A. They're defined inside `def server()`.
+- [ ] In the UI, next to the output placeholders.
+  &gt; Not quite. Render functions are pure server-side logic. The UI only has placeholders (`ui.output_*`); the server has the functions that fill them.
+- [ ] At the top of the file as standalone functions.
+  &gt; Not quite. Render functions must be defined inside the server function so they can access `input` and `output`.
+</div>
+</div>
+</div>
+</div>
+<p>Now answer this warm-up about the new concept:</p>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### What is the main problem with copying the same filter logic into multiple render functions?
+
+- [x] The filtering operation runs redundantly — once per output — every time any input changes.
+  &gt; Correct! Duplicated logic means repeated computation, and if the filter rule changes you must update every copy in sync. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 11-12.
+- [ ] Shiny raises an error if the same pandas expression appears more than once in the server.
+  &gt; Not quite. Shiny does not detect or forbid duplicated logic — it runs everything, which is why the burden is on you to avoid it.
+- [ ] The outputs will display inconsistent results because each copy filters independently.
+  &gt; Not quite. They read the same inputs so the results are consistent — the real cost is redundant computation and harder maintenance.
+- [ ] It causes a naming conflict because both render functions produce the same output id.
+  &gt; Not quite. Each render function has its own distinct name and output id. Duplicate logic does not cause id conflicts.
+</div>
+<p>Now study the app below. It has one value box that filters the tips dataset. After reading the code, answer the quiz, then refactor the app in the editor below:</p>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+
+import pandas as pd
+import seaborn as sns
+from shiny import App, reactive, render, ui
+
+tips = sns.load_dataset("tips")
+
+# UI
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={
+                    "Lunch": "Lunch",
+                    "Dinner": "Dinner",
+                },
+                selected=[
+                    "Lunch",
+                    "Dinner",
+                ],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            fill=False,
+        ),
+    ),
+)
+
+# Server
+def server(input, output, session):
+
+    @render.text
+    def total_tippers():
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 &amp; idx2]
+
+        return tips_filtered.shape[0]
+
+# Create app
+app = App(app_ui, server)</code></pre>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### You need to add two more value boxes (`average_tip` and `average_bill`) that use the same filtered data. What is the best approach?
+
+- [x] Create a `@reactive.calc` function that filters the data, then call it from all three render functions.
+  &gt; Correct! `@reactive.calc` computes the filtered data once and caches it. Each render function calls `filtered_data()` (note the parentheses — it behaves like a function). When an input changes, the calc re-runs once, then all outputs that depend on it update. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] Copy the filtering logic into each of the three render functions.
+  &gt; Not quite. This works but violates DRY (Don't Repeat Yourself). If you later add a third filter, you must update three places. `@reactive.calc` centralizes the logic and Shiny caches the result, so the filter runs once instead of three times. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] Filter the data once in a global variable outside the server.
+  &gt; Not quite. A global variable is computed once at startup and never updates when inputs change. You need `@reactive.calc` to recompute the filtered data whenever the slider or checkboxes change. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] Use `@reactive.effect` to store the filtered data in a variable.
+  &gt; Not quite. `@reactive.effect` is for side effects (e.g., updating a UI element) and does not return or cache a value. `@reactive.calc` is designed exactly for this — it returns a cached value that multiple outputs can share. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+</div>
+<p>The app below already has a second output (<code>average_tip</code>) added to the UI. The filter logic is currently duplicated in both render functions. Refactor it: add a <code>@reactive.calc</code> called <code>filtered_data()</code> and call it from both outputs.</p>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+
+import pandas as pd
+import seaborn as sns
+from shiny import App, reactive, render, ui
+
+tips = sns.load_dataset("tips")
+
+# UI
+app_ui = ui.page_fillable(
+    ui.panel_title("Restaurant tipping"),
+    ui.layout_sidebar(
+        ui.sidebar(
+            ui.input_slider(
+                id="slider",
+                label="Bill amount",
+                min=tips.total_bill.min(),
+                max=tips.total_bill.max(),
+                value=[tips.total_bill.min(), tips.total_bill.max()],
+            ),
+            ui.input_checkbox_group(
+                id="checkbox_group",
+                label="Food service",
+                choices={"Lunch": "Lunch", "Dinner": "Dinner"},
+                selected=["Lunch", "Dinner"],
+            ),
+            ui.input_action_button("action_button", "Reset filter"),
+        ),
+        ui.layout_columns(
+            ui.value_box("Total tippers", ui.output_text("total_tippers")),
+            ui.value_box("Avg tip ($)", ui.output_text("average_tip")),
+            fill=False,
+        ),
+    ),
+)
+
+# Server
+def server(input, output, session):
+
+    # TODO 1: Add a @reactive.calc function called filtered_data() here.
+    #         Move the filter logic from the render functions into it
+    #         and return the filtered DataFrame.
+
+    @render.text
+    def total_tippers():
+        # TODO 2: Replace the five lines below with one call to filtered_data()
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 &amp; idx2]
+        return tips_filtered.shape[0]
+
+    @render.text
+    def average_tip():
+        # TODO 3: Replace the five lines below with one call to filtered_data()
+        idx1 = tips.total_bill.between(
+            left=input.slider()[0],
+            right=input.slider()[1],
+            inclusive="both",
+        )
+        idx2 = tips.time.isin(input.checkbox_group())
+        tips_filtered = tips[idx1 &amp; idx2]
+        return round(tips_filtered.tip.mean(), 2)
+
+# Create app
+app = App(app_ui, server)</code></pre>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Hints — refactoring to <code>@reactive.calc</code>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-23" class="callout-23-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Did you create a <code>@reactive.calc</code> decorated function called <code>filtered_data()</code>?</strong></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Step 1: Add <code>filtered_data()</code>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Insert a <code>@reactive.calc</code> decorated function inside <code>server</code>, above the two render functions. It should contain the filtering logic and <code>return</code> the filtered DataFrame.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Exact code
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Add this block inside <code>server</code>, <strong>before</strong> the render functions:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>    <span class="at">@reactive.calc</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> filtered_data():</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        idx1 <span class="op">=</span> tips.total_bill.between(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>            left<span class="op">=</span><span class="bu">input</span>.slider()[<span class="dv">0</span>],</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>            right<span class="op">=</span><span class="bu">input</span>.slider()[<span class="dv">1</span>],</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>            inclusive<span class="op">=</span><span class="st">"both"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        idx2 <span class="op">=</span> tips.time.isin(<span class="bu">input</span>.checkbox_group())</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tips[idx1 <span class="op">&amp;</span> idx2]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+<li><p><strong>Did you replace the duplicate filter code in each render function with a call to <code>filtered_data()</code>?</strong></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Step 2: Simplify <code>total_tippers()</code>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Replace the five filter lines with a single call <code>filtered_data()</code> (note the parentheses), then return <code>.shape[0]</code> on the result.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Exact code
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Replace the body of <code>total_tippers()</code> with one line:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>    <span class="at">@render.text</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> total_tippers():</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> filtered_data().shape[<span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+<li><p><strong>Are both render functions now calling the same calc instead of filtering independently?</strong></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Step 3: Simplify <code>average_tip()</code>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Same pattern: call <code>filtered_data()</code> and return the mean tip rounded to two decimal places.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Exact code
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Replace the body of <code>average_tip()</code> with one line:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>    <span class="at">@render.text</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> average_tip():</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">round</span>(filtered_data().tip.mean(), <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></li>
+</ol>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>What’s next?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You now know how to extract shared logic into <code>@reactive.calc</code>. Section F will test whether you understand <strong>when and why</strong> to use it — and when you don’t need it. You have the how; Section F focuses on the why.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="sec-why-calc" class="level2">
+<h2 class="anchored" data-anchor-id="sec-why-calc">F. Why <code>reactive.calc</code>?</h2>
+<p>To wrap up, let’s make sure you understand <strong>why</strong> the <code>@reactive.calc</code> pattern exists and when to reach for it. Answer these four questions about caching, app structure, and when to use <code>@reactive.calc</code>:</p>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### In the context of reactive computation, what does "caching" mean?
+
+- [x] Storing a computed result and reusing it when inputs have not changed, instead of recomputing.
+  &gt; Correct! A cached reactive value only reruns when its dependencies actually change — otherwise it returns the stored result. See: [slides `03-reactivity`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), slides 3-11.
+- [ ] Saving the app's output to a file on disk so it loads faster next session.
+  &gt; Not quite. That describes persistence or serialization. Reactive caching is in-memory and session-scoped — it lives only while the app is running.
+- [ ] Preventing a reactive expression from ever re-running, permanently freezing its value.
+  &gt; Not quite. Caching reuses a value only while inputs are unchanged — it does recompute when dependencies update. Freezing permanently is a different concept (`isolate`).
+- [ ] Delaying computation until the user clicks a submit button.
+  &gt; Not quite. That describes an action button or `bind_event` pattern. Caching is about avoiding redundant recalculation, not deferring it.
+
+### Where in the app structure should you place a `@reactive.calc` function?
+
+- [x] Inside the server function, before the render functions that will call it.
+  &gt; Correct! `@reactive.calc` lives in the server (step 3 from Section A), alongside your render functions. It must be defined before any render function that calls it, just like any other function in Python. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] In the UI, as a special placeholder like `ui.output_*()`.
+  &gt; Not quite. `@reactive.calc` is pure server-side logic — it has no UI representation. Only render functions produce output that appears on the page.
+- [ ] At the top of the file, before the imports (like a global setup).
+  &gt; Not quite. `@reactive.calc` must be defined inside the server function. If you define it outside server, it runs once at startup and never updates reactively when inputs change.
+- [ ] After all the render functions, as a helper.
+  &gt; Not quite. While Python technically allows you to call a function defined later (if the call happens inside another function), best practice places `@reactive.calc` before the render functions that depend on it. This makes the data flow clear.
+
+### What does `@reactive.calc` cache?
+
+- [x] The return value of the decorated function, recomputed only when its reactive dependencies change.
+  &gt; Correct! `@reactive.calc` is lazy and cached — it only re-runs when one of the `input.*()` values it reads has changed. All outputs that call it get the cached result without triggering a recomputation. See: [slides `03-reactivity`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), slides 15-18.
+- [ ] The HTML output that gets sent to the browser.
+  &gt; Not quite. Render decorators (`@render.text`, `@render_altair`, etc.) are responsible for producing output for the browser. `@reactive.calc` caches an intermediate Python value (like a filtered DataFrame) that render functions can use. See: [slides `03-reactivity`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), slides 15-18.
+- [ ] The reactive dependency graph, so Shiny knows which outputs to invalidate.
+  &gt; Not quite. Shiny's runtime tracks the dependency graph internally — that is separate from `@reactive.calc`. What `@reactive.calc` caches is the *return value* of your function, so multiple outputs can read it without triggering a recomputation. See: [slides `03-reactivity`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), slides 15-18.
+- [ ] Nothing — it re-runs every time any input changes.
+  &gt; Not quite. That would defeat the purpose! `@reactive.calc` tracks which specific inputs the function reads and only invalidates when *those* inputs change. Other unrelated inputs changing will not trigger a recomputation. See: [slides `03-reactivity`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), slides 15-18.
+
+### When should you introduce a `@reactive.calc`?
+
+- [x] When two or more outputs need the same computed value derived from inputs.
+  &gt; Correct! The moment you find yourself copying the same input-reading and filtering logic into multiple render functions, that is the signal to extract it into a `@reactive.calc`. One calc, many consumers. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] For every render function, as a best practice.
+  &gt; Not quite. If only one output uses a particular computation, there is no benefit to wrapping it in `@reactive.calc`. The render function itself already re-runs when its dependencies change. Add `@reactive.calc` when you need to share a value across outputs. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] Only when performance is a problem.
+  &gt; Not quite. Performance (caching) is a benefit, but the primary reason is code organization — centralizing shared logic so you change it in one place. Even for fast computations, `@reactive.calc` makes your code cleaner and less error-prone. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+- [ ] Never — use global variables instead.
+  &gt; Not quite. Global variables are computed once at startup and never update reactively. `@reactive.calc` re-runs when its dependencies change, which is essential for any value derived from user inputs. See: [slides `04-dashboard-core`](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/04-dashboard-core.html), slides 15-25.
+</div>
+<hr>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<p>The core connection pattern in Shiny for Python:</p>
+<ol type="1">
+<li><strong>UI layer:</strong> Place input widgets (<code>ui.input_*</code>) and output placeholders (<code>ui.output_*</code> or <code>output_widget</code>) in the page layout.</li>
+<li><strong>Server layer:</strong> Write render functions decorated with <code>@render.*</code> whose <strong>function names match</strong> the output placeholder ids.</li>
+<li><strong>Read inputs:</strong> Inside render functions, call <code>input.id()</code> to read the current value of an input widget.</li>
+<li><strong>Share computed values:</strong> When multiple outputs need the same data, use <code>@reactive.calc</code> to compute it once and cache it.</li>
+</ol>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A[/input_slider/] --&gt; C{{filtered_data}}
+    B[/input_checkbox_group/] --&gt; C
+    C --&gt; D([total_tippers])
+    C --&gt; E([average_tip])
+    C --&gt; F([avg_bill])
+
+    style A fill:#FFF3E0,stroke:#FF9800
+    style B fill:#FFF3E0,stroke:#FF9800
+    style C fill:#F3E5F5,stroke:#9C27B0
+    style D fill:#E3F2FD,stroke:#2196F3
+    style E fill:#E3F2FD,stroke:#2196F3
+    style F fill:#E3F2FD,stroke:#2196F3
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Next up:</strong> <a href="02-tables.qmd">Review 2 — Tables &amp; Charts Together</a> covers DataGrid as a reactive source, selection → chart highlighting, and filter cascades.</p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/UBC-MDS\.github\.io\/DSCI_532_vis-2_book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book">UBC DSCI 532: Data Visualization 2</a></p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.js" defer="true"></script>
+</body></html>
