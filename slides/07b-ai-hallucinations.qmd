@@ -157,7 +157,7 @@ If you’d like, paste the array again in a code block and I’ll count it for y
 ```{python}
 #| echo: false
 
-#{{< include /slides/talk/plot1.py >}}
+{{< include /code/slides/plot1.py >}}
 ```
 
 ## LLMs are jagged
@@ -165,7 +165,7 @@ If you’d like, paste the array again in a code block and I’ll count it for y
 ```{python}
 #| echo: false
 
-#{{< include /slides/talk/plot2.py >}}
+{{< include /code/slides/plot2.py >}}
 ```
 
 ## Codeing: Hard task it can do well
