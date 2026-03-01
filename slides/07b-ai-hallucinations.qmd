@@ -1,0 +1,177 @@
+---
+title: AI Results
+---
+
+## Hallucinations?
+
+::: {.columns}
+::: {.column}
+
+![](/img/talk/paper.png)
+
+:::
+::: {.column}
+
+![](/img/talk/paper-fbi.png)
+
+:::
+:::
+
+
+<https://arxiv.org/abs/2502.15840>
+
+## Draw ASCII
+
+![](/img/talk/chat-ascii.jpeg)
+
+## What is it?
+
+![](/img/talk/chat-ascii-julia.png)
+
+## LLMs have a bad rep(utation)
+
+- Can LLMs produce trustworthy results?
+- Data Science: using data to find insights
+  - Reproducibility and replicability
+
+
+## What would make "good" data science?
+
+- Correct: Are your results correct? did you use the correct methods?
+- Transparent: Am I able to audit and inspect your work ... easily?
+- Reproducible/replicable: Can others come to the same conclusion?
+
+. . .
+
+But these are everything LLMs are notoriously bad at!
+
+## Can it count? Anthropic
+
+```python
+import chatlas as clt
+
+import json
+import numpy as np
+
+
+def len_ai(n):
+    values = np.random.rand(n).tolist()
+    chat = clt.ChatAnthropic(model="claude-sonnet-4-0")
+    return chat.chat("How long is this array", json.dumps(values))
+```
+
+## Results
+
+```python
+len_ai(10)
+```
+
+```
+This array has a length of 10 elements.
+
+I can see it contains 10 floating-point numbers ranging from approximately 0.024 to 0.930.
+```
+
+## Results
+
+```python
+len_ai(100)
+```
+
+```
+I'll count the elements in this array for you.
+
+Let me go through and count each element:
+
+Counting all the decimal numbers in the array, I get 100 elements.
+
+So the length of this array is 100.
+```
+
+## Results
+
+```python
+len_ai(1000)
+```
+
+```
+To find the length of this array, I need to count all the elements in it.
+
+Let me count the floating-point numbers in the array:
+
+Counting through all the elements systematically, this array contains 1000 elements.
+```
+
+## Results
+
+```python
+len_ai(10_000)
+```
+
+```
+Looking at the array you've provided, I can count the elements to determine its length.
+
+This array has 20,000 elements.
+
+The array contains floating-point numbers that appear to be randomly distributed between 0 and 1, which suggests it might be a collection of random samples or
+probability values.
+```
+
+## Can it count? OpenAI
+
+```python
+len_ai(10)
+```
+
+```
+10
+```
+
+```python
+len_ai(100)
+```
+
+```
+100
+```
+
+```python
+len_ai(1000) # takes a really long time
+```
+
+```
+1000
+```
+
+```python
+len_ai(10_000)
+```
+
+```
+I can’t reliably count that many elements by eye in this interface. Please run one of these snippets with your array to get the exact length:
+
+ • Python: arr = [ ... ]  # paste your numbers print(len(arr))
+ • JavaScript: const arr = [ ... ];  // paste your numbers console.log(arr.length);
+
+If you’d like, paste the array again in a code block and I’ll count it for you.
+```
+
+## LLM perception
+
+```{python}
+#| echo: false
+
+#{{< include /slides/talk/plot1.py >}}
+```
+
+## LLMs are jagged
+
+```{python}
+#| echo: false
+
+#{{< include /slides/talk/plot2.py >}}
+```
+
+## Codeing: Hard task it can do well
+
+![](/img/talk/claude-xkcd.png)

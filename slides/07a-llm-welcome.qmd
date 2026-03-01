@@ -1,0 +1,65 @@
+---
+title: Welcome to LLMs
+---
+
+
+## Install + Setup
+
+Take a look at the course website and go through the setup instructions:
+<https://ubc-mds.github.io/DSCI_532_vis-2_book/>
+
+Url is at the bottom of all the slides.
+
+1. Clone this repo
+2. Install your R + Python packages
+3. Download at least one of the Ollama models.
+   Feel free to pick any other one.
+4. (Optional) use the `.env.template` file to provide your API key into `.env`
+
+:::{.callout-note}
+If you pay for Claude, OpenAI, etc access with their web/desktop application,
+this is a separate purchase for the API key.
+Depending on your usage, you may even find that paying for the API key could be cheaper!
+:::
+
+## Lesson Reference {footer=false}
+
+![](/img/youtube-joe-llm.png)
+
+<https://www.youtube.com/watch?v=owDd1CJ17uQ>
+
+## Also check the documentation
+
+- Chatlas: <https://posit-dev.github.io/chatlas/>
+- Ellmer: <https://ellmer.tidyverse.org/index.html>
+- Ragnar: <https://ragnar.tidyverse.org/articles/ragnar.html>
+- mcptools: <https://posit-dev.github.io/mcptools/>
+
+## Poll: Experience with LLMs
+
+:::{.incremental}
+
+1. Used an LLM before (ChatGPT/Claude/Ollama desktop/web application)?
+2. Used it for a homework assignment?
+3. Tasks outside of school work?
+
+4. Skeptical about LLMs/AI (1-2 out of 5)? Why?
+5. Neutral about LLMs/AI (3 out of 5)? Why?
+6. Enthusiastic about LLMs/AI (4-5 out of 5)? Why?
+
+:::
+
+## Today
+
+- Today, we will treat LLMs as black boxes
+- Practical introduction
+- Get some hands on practice to demystify using them
+
+## Goal
+
+Quick Start course on LLMs. You will leave having used a Chat API.
+
+## Security
+
+- **DO NOT** send proprietary code or data to any LLM, unless you are sure IT policies allow it
+- Local models (e.g., Ollama) typically perform worse than frontier models

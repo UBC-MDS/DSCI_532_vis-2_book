@@ -47,6 +47,12 @@ website:
         contents:
           - 040-styling.qmd
           # - 040-advanced-geoviz.qmd
+      - section: "Lecture 5"
+        contents:
+          - 050-01-llm-welcome.qmd
+          - 050-02-hallucinations.qmd
+          - 050-03-conversation.qmd
+
 format:
   html:
     theme:

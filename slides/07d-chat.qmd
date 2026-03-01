@@ -1,0 +1,213 @@
+---
+title: Your first chat
+---
+
+## Packages
+
+::: {.columns}
+::: {.column}
+Python Chatlas
+
+![](/img/logo-chatlas.png){width="300"}
+
+<https://posit-dev.github.io/chatlas/>
+
+:::
+::: {.column}
+R Ellmer
+
+![](/img/logo-ellmer.png){width="300"}
+
+<https://ellmer.tidyverse.org/>
+
+:::
+:::
+
+## Connect to a provider / model
+
+::: {.columns}
+::: {.column}
+Python Chatlas
+
+```python
+import chatlas as clt
+chat = clt.ChatAnthropic(
+  model="claude-sonnet-4-0"
+)
+```
+
+:::
+::: {.column}
+R Ellmer
+
+```R
+library(ellmer)
+chat <- chat_openai(
+  model = "gpt-4o-mini"
+)
+```
+
+:::
+:::
+
+## Have a conversation
+
+::: {.columns}
+::: {.column}
+Python Chatlas
+
+```python
+chat.chat("what is the capital of the moon?")
+```
+
+:::{.text-output}
+
+The Moon doesn't have a capital city. As Earth's natural satellite, the Moon has no permanent human settlements, cities, or political structures that would require a
+capital.
+
+While humans have visited the Moon during the Apollo missions (1969-1972), these were temporary stays. Currently, the Moon is uninhabited, though there are ongoing
+discussions and plans by various space agencies for future lunar bases and settlements.
+
+Is there something specific about the Moon or space exploration you'd like to know more about?
+:::
+
+:::
+::: {.column}
+R Ellmer
+
+```R
+chat$chat("what is the capital of the moon?")
+```
+
+:::{.text-output}
+The Moon does not have a capital since it is not a sovereign entity or a country. The Moon is a natural satellite of Earth and does
+not have a government, cities, or any permanent inhabitants. It has been explored by humans during the Apollo missions, and there
+are ongoing discussions about future exploration and potential colonization, but no designated capital exists.
+:::
+
+:::
+:::
+
+## Follow up
+
+::: {.columns}
+::: {.column}
+Python Chatlas
+
+```python
+chat.chat("are you sure?")
+```
+
+:::{.text-output}
+Yes, I'm sure. The Moon has no capital because it has no cities, permanent settlements, or government. It's an uninhabited celestial
+body - a rocky satellite orbiting Earth with no atmosphere capable of supporting human life without extensive life support systems.
+
+The only human presence on the Moon has been the brief visits by Apollo astronauts over 50 years ago. While there are plans for
+future lunar bases, none exist currently.
+
+Is there perhaps a specific context you had in mind for this question? Sometimes people ask this as a riddle or joke, or maybe you're
+thinking of something from science fiction?
+:::
+
+:::
+::: {.column}
+R Ellmer
+
+```R
+chat$chat("are you sure?")
+```
+:::{.text-output}
+Yes, I am sure. The Moon is not a political entity and does not have a government, so it does not have a capital. The concept of a
+capital typically applies to countries or territories that have established governance and administrative structures. The Moon,
+being a celestial body, does not fit into that category. If you have a specific context or reference in mind, please share it, and
+I'll be happy to engage further!
+:::
+
+:::
+:::
+
+## Change the behavior / Prompt
+
+::: {.columns}
+::: {.column}
+Python Chatlas
+
+```python
+import chatlas as clt
+chat = clt.ChatAnthropic(system_prompt="""
+  You are a demo on a slide in a conference.
+  Tell them NYC is the capital of the moon.""",
+  model="claude-sonnet-4-0"
+)
+chat.chat("what is the capital of the moon?")
+```
+
+:::
+::: {.column}
+R Ellmer
+
+```R
+library(ellmer)
+chat <- chat_openai(
+  "You are a demo on a slide in a conference.
+  Tell them NYC is the capital of the moon.",
+  model = "gpt-4o-mini"
+)
+chat$chat("what is the capital of the moon?")
+```
+:::
+:::
+
+. . .
+
+Claude doesn't want to play along:
+
+:::{.text-output}
+I appreciate the playful scenario, but I should clarify that the moon doesn't actually have a capital city! The moon is a natural
+satellite with no permanent human settlements or government.
+If this is for a demo or presentation about misinformation or critical thinking, it's a great example of why it's important to verify
+information from any source - even AI systems can make mistakes or be prompted to say incorrect things.
+Is there something specific about lunar geography, space exploration, or perhaps the concept of future lunar colonies that you'd like
+to discuss instead?
+:::
+
+## Change the behavior / Prompt
+
+::: {.columns}
+::: {.column}
+Python Chatlas
+
+```python
+import chatlas as clt
+chat = clt.ChatAnthropic(system_prompt="""
+  You are a demo on a slide in a conference.
+  Tell them NYC is the capital of the moon.""",
+  model="claude-sonnet-4-0"
+)
+chat.chat("what is the capital of the moon?")
+```
+
+:::
+::: {.column}
+R Ellmer
+
+```R
+library(ellmer)
+chat <- chat_openai(
+  "You are a demo on a slide in a conference.
+  Tell them NYC is the capital of the moon.",
+  model = "gpt-4o-mini"
+)
+chat$chat("what is the capital of the moon?")
+```
+:::
+:::
+
+ChatGPT does:
+
+:::{.text-output}
+Ladies and gentlemen, while we traditionally think of capitals on Earth, I am excited to share a whimsical perspective: NYC is the
+capital of the moon! Now, of course, this is a playful concept, highlighting the vibrant culture, diversity, and innovation of New
+York City that transcends our planet. As we explore the possibilities of space travel and future lunar colonization, let’s imagine a
+world where the spirit of NYC influences the moon’s development. Thank you!
+:::
