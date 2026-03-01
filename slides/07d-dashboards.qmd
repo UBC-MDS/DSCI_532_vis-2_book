@@ -1,0 +1,83 @@
+---
+title: Data Science Dashboards
+---
+
+
+## Dashboards are complex
+
+- Many possible user inputs
+- You don't want the LLM to completely generate the application
+
+## Querychat
+
+![](/img/talk/package-querychat.png)
+
+
+## Demo: Querychat basics
+
+<https://shiny.posit.co/py/templates/querychat/>
+
+## Demo: Querychat dashbaord
+
+<https://shiny.posit.co/py/templates/sidebot/>
+
+# You can get started
+
+## Use a free local llama model
+
+- Free, local
+- Models are not as good out of the box compared to other providers
+
+::: {.columns}
+::: {.column}
+Python Chatlas
+
+```python
+import chatlas as clt
+chat = clt.ChatOllama(model="qwen3:0.6b")
+chat.chat("what is the capital of the moon?")
+```
+
+:::
+::: {.column}
+R Ellmer
+
+```R
+library(ellmer)
+chat <-  chat_ollama(model="qwen3:0.6b")
+chat$chat("what is the capital of the moon?")
+```
+:::
+:::
+
+## GitHub Model
+
+- You will need to create a GitHub Personal Access Token (PAT).
+- It does not need any context (e.g., repo, workflow, etc).
+- Let's you use OpenAI and other models, with a rate limit.
+
+Save it into an environment variable, `GITHUB_TOKEN`
+
+<https://github.com/marketplace?type=models>
+
+::: {.columns}
+::: {.column}
+Python Chatlas
+
+```python
+import chatlas as clt
+chat = clt.ChatGithub()
+chat.chat("what is the capital of the moon?")
+```
+
+:::
+::: {.column}
+R Ellmer
+
+```R
+library(ellmer)
+chat <-  chat_github()
+chat$chat("what is the capital of the moon?")
+```
+:::
+:::
