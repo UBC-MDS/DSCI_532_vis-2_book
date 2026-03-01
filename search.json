@@ -2751,7 +2751,7 @@
     "href": "050-06-env.html",
     "title": "Environment Variables",
     "section": "",
-    "text": "There are a few ways for you to read in an environment variable. For individual projects, the convension is to use a .env (R/Python) or .Renviron (R) file. These files are typically ignored in the .gitignore\nFor global environment variables, you can use your ~/.zshrc or ~/.bashrc file, but the below packages will override these variables.",
+    "text": "There are a few ways for you to read in an environment variable. For individual projects, the convension is to use a .env (R/Python) or .Renviron (R) file. These files are typically ignored in the .gitignore\nFor this course/repository, you can use the .env.template file and rename it to .env to run the code examples.\nFor global environment variables, you can use your ~/.zshrc or ~/.bashrc file, but the below packages will override these variables.",
     "crumbs": [
       "Setup",
       "Lecture 5",

@@ -368,17 +368,22 @@ Important
 <p>DO <strong>NOT</strong> commit your environment variable files into the repository. Espeically if you have a password or API key in them.</p>
 </div>
 </div>
+<p>For this course/repository, you can use the <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/.env.template"><code>.env.template</code> file</a> and rename it to <code>.env</code> to run the code examples.</p>
+<pre data-code-line-numbers=""><code>GITHUB_TOKEN=""
+OPENAI_API_KEY=""
+ANTHROPIC_API_KEY=""
+</code></pre>
 <p>For global environment variables, you can use your <code>~/.zshrc</code> or <code>~/.bashrc</code> file, but the below packages will override these variables.</p>
 <section id="python" class="level2">
 <h2 class="anchored" data-anchor-id="python">Python</h2>
 <p><a href="https://github.com/theskumar/python-dotenv" class="uri">https://github.com/theskumar/python-dotenv</a></p>
 <pre data-code-line-numbers=""><code>pip install python-dotenv</code></pre>
 <p>Create a <code>.env</code> file with <code>KEY=VALUE</code> pairs</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>load_dotenv()  <span class="co"># reads variables from a .env file and sets them in os.environ</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>load_dotenv()  <span class="co"># reads variables from a .env file and sets them in os.environ</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You then use it with <code>os.environ['YOUR_KEY']</code></p>
 </section>
 <section id="r" class="level2">
