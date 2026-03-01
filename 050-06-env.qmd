@@ -12,6 +12,12 @@ DO **NOT** commit your environment variable files into the repository.
 Espeically if you have a password or API key in them.
 :::
 
+For this course/repository, you can use the [`.env.template` file](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/.env.template) and rename it to `.env` to run the code examples.
+
+```
+{{< include /.env.template >}}
+```
+
 For global environment variables, you can use your `~/.zshrc` or `~/.bashrc` file,
 but the below packages will override these variables.
 
