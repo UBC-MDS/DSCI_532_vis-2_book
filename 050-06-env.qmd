@@ -1,0 +1,43 @@
+---
+title: Environment Variables
+---
+
+There are a few ways for you to read in an environment variable.
+For individual projects,
+the convension is to use a `.env` (R/Python) or `.Renviron` (R) file.
+These files are typically ignored in the `.gitignore`
+
+:::{.callout-important}
+DO **NOT** commit your environment variable files into the repository.
+Espeically if you have a password or API key in them.
+:::
+
+For global environment variables, you can use your `~/.zshrc` or `~/.bashrc` file,
+but the below packages will override these variables.
+
+## Python
+
+<https://github.com/theskumar/python-dotenv>
+
+```
+pip install python-dotenv
+```
+
+Create a `.env` file with `KEY=VALUE` pairs
+
+```python
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()  # reads variables from a .env file and sets them in os.environ
+```
+
+You then use it with `os.environ['YOUR_KEY']`
+
+## R
+
+CRAN also has a `dotenv` package: <https://cran.r-project.org/web/packages/dotenv/index.html>
+
+You can also use the `.Renviron` file that will be read when R loads up
+(<https://docs.posit.co/ide/user/ide/guide/environments/r/managing-r.html>).

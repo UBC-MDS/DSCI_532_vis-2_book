@@ -54,6 +54,7 @@ website:
           - 050-03-conversation.qmd
           - 050-04-chat.qmd
           - 050-05-dashboards.qmd
+          - 050-06-env.qmd
 
 format:
   html:
