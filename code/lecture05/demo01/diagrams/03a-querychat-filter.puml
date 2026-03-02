@@ -1,0 +1,57 @@
+@startuml
+title querychat: Filter Flow (update_dashboard)
+
+actor User
+participant "Shiny UI\n(Browser)" as UI
+participant "Shiny Server\n(Python)" as Server
+participant "querychat" as QC
+participant "DuckDB" as DB
+participant "LLM API" as LLM
+
+== App startup ==
+Server -> QC : QueryChat(df, "titanic", ...)
+QC -> DB : CREATE TABLE titanic\n(data loaded into DuckDB)
+QC --> Server : qc_vals\n(.df()  .sql  .title())
+
+== User: "Show only survivors" ==
+User -> UI : types message in chat sidebar
+UI -> Server : on_user_submit()
+Server -> QC : stream_response_async()
+
+QC -> LLM : system_prompt + chat_history\n+ "Show only survivors"
+
+note right of LLM
+  System prompt includes:
+  • table schema
+  • data_description
+  • extra_instructions
+  • 3 tool definitions
+
+  NO data rows
+end note
+
+LLM --> QC : **tool_call:**\nquerychat_update_dashboard(\n  query = "SELECT * FROM titanic\n           WHERE survived = 1",\n  title = "Survivors only"\n)
+
+QC -> DB : validate + execute SQL
+DB --> QC : ✅ valid
+
+QC --> LLM : "Dashboard updated.\nUse query tool to review\nresults, if needed."
+
+note over QC #FFEEEE
+  LLM gets ONLY this string.
+  No rows, no counts, no stats.
+end note
+
+== Shiny reactive chain ==
+QC -> Server : state.sql set\n→ qc_vals.sql invalidated
+Server -> DB : qc_vals.df() re-runs SQL
+DB --> Server : filtered DataFrame
+Server --> UI : re-render table + title
+
+LLM --> QC : text reply (if any)
+QC --> Server : stream chunks
+Server --> UI : append to chat sidebar
+
+UI --> User : updated table\n+ "Survivors only" title
+
+@enduml

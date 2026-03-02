@@ -1,0 +1,9 @@
+chatlas
+python-dotenv
+numpy
+shiny
+tiktoken
+querychat
+seaborn
+altair
+shinywidgets

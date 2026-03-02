@@ -1,0 +1,833 @@
+---
+title: "Review 4 - LLM Integration Basics"
+subtitle: "HTTP plumbing, tokens, trust, chatlas, and querychat"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+filters:
+  - quizdown
+---
+
+This review covers the **core concepts** from the Monday LLM lecture:
+how chat APIs work under the hood, what tokens cost, when to trust
+(and not trust) an LLM, and how Shiny integrates LLMs through
+`chatlas`, `shinychat`, and `querychat`.
+
+By the end of this review, you will remind yourself/learn how to:
+
+1. Describe the HTTP request/response cycle behind every LLM conversation
+2. Explain how tokens drive pricing and context-window limits
+3. Recognise hallucinations and the "jagged intelligence" of different models
+4. Read chatlas code and predict what the LLM will do
+5. Trace the data flow inside querychat and identify which tool exposes data
+6. Identify the three customization levers in querychat and where each one ends up
+
+Work through each section in order. Every quiz gives instant feedback
+with a pointer back to relevant lecture slides.
+
+---
+
+## A. How Conversations Work {#sec-conversations}
+
+Every chat message you send - whether from a notebook, `chatlas`, or a Shiny
+app - becomes an **HTTP POST request** to the LLM provider's API.
+The server is entirely **stateless**: it does not remember previous messages
+unless the client resends them.
+
+Read the request and response below (from the lecture), then answer the quizzes.
+
+**Request:**
+
+```bash
+curl https://api.openai.com/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d '{
+    "model": "gpt-4.1",
+    "messages": [
+        {"role": "system", "content": "You are a terse assistant."},
+        {"role": "user", "content": "What is the capital of the moon?"}
+    ]
+}'
+```
+
+**Response (abridged):**
+
+```json
+{
+  "choices": [{
+    "message": {
+      "role": "assistant",
+      "content": "The moon does not have a capital."
+    },
+    "finish_reason": "stop"
+  }],
+  "usage": {
+    "prompt_tokens": 9,
+    "completion_tokens": 12,
+    "total_tokens": 21
+  }
+}
+```
+
+**Follow-up request** - notice the full history is resent:
+
+```bash
+curl https://api.openai.com/v1/chat/completions \
+  -d '{
+    "model": "gpt-4.1",
+    "messages": [
+      {"role": "system", "content": "You are a terse assistant."},
+      {"role": "user", "content": "What is the capital of the moon?"},
+      {"role": "assistant", "content": "The moon does not have a capital."},
+      {"role": "user", "content": "Are you sure?"}
+    ]
+}'
+```
+
+::: {.callout-note collapse="true"}
+## Source
+
+Lecture: [slides `07-llm-dev-a` - Anatomy of a Conversation](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request) · Reference: [OpenAI Chat Completions API](https://platform.openai.com/docs/api-reference/chat) · [Message roles](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages)
+:::
+
+```{quizdown}
+---
+shuffleQuestions: false
+---
+
+## How does a stateless API "remember" your earlier messages?
+
+1. [x] The client resends the entire message history with every request
+  > Correct! The API stores nothing between requests - the client must include every prior message in each new request. Look at the follow-up request above: it contains all four messages. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+2. [ ] The server saves a session cookie after the first request
+  > Not quite. LLM APIs are stateless - there are no cookies or server-side sessions. The client must resend the full history every time. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+3. [ ] The provider stores a conversation log keyed by your API key
+  > Not quite. The provider does not store conversations between requests. Each request is independent - the client is responsible for maintaining the message history. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+4. [ ] The model's weights are updated after each message
+  > Not quite. Model weights are fixed after training - they do not change during a conversation. The "memory" comes from the client resending prior messages. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+
+## What are the three message roles in the `messages` array?
+
+1. [x] `system`, `user`, `assistant`
+  > Correct! Each message carries a [`role`](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages): `system` (behind-the-scenes instructions), `user` (the human's input), and `assistant` (the model's previous replies, resent so the model has context for follow-ups). See: [slides 07-llm-dev-a - Example Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request).
+2. [ ] `prompt`, `query`, `response`
+  > Not quite. These sound reasonable but are not the actual API role names. The [`role` field](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages) uses `system`, `user`, and `assistant`. See: [slides 07-llm-dev-a - Example Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request).
+3. [ ] `admin`, `human`, `bot`
+  > Not quite. The actual [`role` values](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages) are `system`, `user`, and `assistant` - check the JSON in the request above. See: [slides 07-llm-dev-a - Example Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request).
+4. [ ] `input`, `output`, `context`
+  > Not quite. The actual [`role` values](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages) are `system`, `user`, and `assistant`. See: [slides 07-llm-dev-a - Example Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request).
+```
+
+::: {.callout-tip collapse="true"}
+## Answer Explanations
+
+::: {.callout-note collapse="true"}
+## Q1: How does a stateless API "remember"?
+
+- ✅ **The client resends the entire message history with every request.**
+  - The API stores nothing between requests - look at the follow-up request above, it contains all four messages.
+
+- ❌ Server saves a session cookie
+  - LLM APIs are stateless - no cookies or server-side sessions.
+
+- ❌ Provider stores a conversation log keyed by API key
+  - Each request is independent. The client maintains the history.
+
+- ❌ Model weights are updated after each message
+  - Weights are fixed after training. "Memory" comes from resending prior messages.
+
+See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+:::
+
+::: {.callout-note collapse="true"}
+## Q2: What are the three message roles?
+
+- ✅ **`system`, `user`, `assistant`**
+  - Each message carries a [`role`](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages): `system` (behind-the-scenes instructions), `user` (the human's input), `assistant` (the model's previous replies, resent for context).
+
+- ❌ `prompt`, `query`, `response`
+  - Reasonable-sounding but not the actual API role names.
+
+- ❌ `admin`, `human`, `bot`
+  - Check the JSON in the request above for the actual values.
+
+- ❌ `input`, `output`, `context`
+  - These are not valid role values in the Chat Completions API.
+
+See: [slides 07-llm-dev-a - Example Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request). Reference: [OpenAI API - message roles](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages).
+:::
+
+:::
+
+Now put the steps of the follow-up request above in order - from the
+user typing "Are you sure?" to the reply appearing on screen:
+
+```{quizdown}
+---
+shuffleAnswers: false
+---
+
+### Order the steps that happen when the user sends "Are you sure?" as a follow-up.
+
+> Trace what the client code does before, during, and after the HTTP request. See: slides 07-llm-dev-a - Example Followup Request.
+
+1. The user types "Are you sure?" and the client appends it to the local message list
+2. The client builds a JSON body containing the system prompt and the full message history (both previous turns plus the new message)
+3. The client sends an HTTP POST request to the provider's API endpoint
+4. The server generates a completion and returns it with token usage stats
+5. The client appends the assistant's reply to the local message history and displays it
+```
+
+::: {.callout-tip collapse="true"}
+## Reveal answer
+
+The correct order is:
+
+1. **User types** "Are you sure?" and the client appends it to the local message list
+2. **Client builds JSON** containing the system prompt and the full message history (both previous turns plus the new message)
+3. **Client sends HTTP POST** to the provider's API endpoint
+4. **Server generates** a completion and returns it with token usage stats
+5. **Client appends** the assistant's reply to the local message history and displays it
+
+Each step depends on the previous one: you can't build the JSON until the user's message is added, can't send it until it's built, and can't display the reply until the server returns it. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+:::
+
+::: {.callout-tip collapse="true"}
+## Why resending the full history matters
+
+Every time you call `.chat()`, chatlas packs *all* previous messages into the
+request. This is why long conversations get slower and more expensive - the
+token count grows with every turn. It also means the model can "change its mind"
+if earlier context is trimmed or modified.
+:::
+
+---
+
+## B. Tokens & Cost {#sec-tokens}
+
+Tokens are the fundamental units of information for LLMs - roughly words,
+parts of words, or individual characters. They determine both **pricing**
+and the **context window** (how much the model can read at once).
+
+From the lecture:
+
+- "What is the capital of the moon?" = 8 tokens
+- "counterrevolutionary" = 4 tokens (`counter`, `re`, `volution`, `ary`)
+
+Reference pricing from the lecture:
+
+| Model | Input | Output | Context |
+|-------|-------|--------|---------|
+| **gpt-4.1-mini** (our demos) | $0.40 / 1M | $1.60 / 1M | 1M tokens |
+| **Claude Sonnet 4.6** | $3 / 1M | $15 / 1M | 200k tokens |
+| gpt-4.1 | $2 / 1M | $8 / 1M | 1M tokens |
+| Claude Opus 4.6 | $15 / 1M | $75 / 1M | 200k tokens |
+
+::: {.callout-note collapse="true"}
+## Source
+
+Lecture: [slides `07-llm-dev-a` - Tokens](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#tokens) · [Token pricing](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing) · [Context window](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window) · Try it: [OpenAI Tokenizer](https://platform.openai.com/tokenizer) · [GitHub Models rate limits](https://docs.github.com/en/github-models/use-github-models/prototyping-with-ai-models)
+:::
+
+```{quizdown}
+---
+shuffleQuestions: false
+---
+
+## Why can a single English word cost more than one token?
+
+1. [x] Uncommon or long words are split into multiple sub-word pieces, each counted separately
+  > Correct! "counterrevolutionary" becomes 4 tokens: `counter`, `re`, `volution`, `ary`. Try it yourself at the [OpenAI Tokenizer](https://platform.openai.com/tokenizer). See: [slides 07-llm-dev-a - Token example](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-example).
+2. [ ] Every character is always one token, so longer words cost more characters
+  > Not quite. Tokens are not characters - common words like "the" are a single token, while rare words get split into sub-word pieces. See: [slides 07-llm-dev-a - Token example](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-example).
+3. [ ] The API charges extra for words not in its dictionary
+  > Not quite. There is no "dictionary surcharge." The tokenizer splits all text into sub-word tokens - common words map to one token, uncommon words to several. See: [slides 07-llm-dev-a - Token example](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-example).
+4. [ ] Punctuation attached to a word doubles the token count
+  > Not quite. Punctuation is usually its own token, but it does not double the count. The real reason multi-token words cost more is sub-word splitting. See: [slides 07-llm-dev-a - Token example](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-example).
+
+## Looking at the pricing table, output tokens cost roughly 4x more than input tokens. Why?
+
+1. [x] Generating each output token requires running the full model forward pass, while input tokens can be processed in parallel
+  > Correct! Input tokens are read in one batch (cheap), but each output token must be generated one at a time through the full model. This sequential generation is the expensive part. See: [slides 07-llm-dev-a - Token pricing](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing).
+2. [ ] Output tokens are encrypted for privacy, which requires extra computation
+  > Not quite. There is no special encryption step. The cost difference comes from how generation works: output tokens are produced sequentially, each requiring a full model forward pass. See: [slides 07-llm-dev-a - Token pricing](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing).
+3. [ ] The provider stores all output tokens permanently, so storage costs are included
+  > Not quite. Providers do not permanently store your outputs. The cost difference reflects the computational cost of sequential token generation versus parallel input processing. See: [slides 07-llm-dev-a - Token pricing](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing).
+4. [ ] Output tokens are always longer words that take more memory
+  > Not quite. Output tokens are the same kind of tokens as input tokens. The cost difference is about computation: generating tokens one-by-one is more expensive than reading them in a batch. See: [slides 07-llm-dev-a - Token pricing](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing).
+
+## A chatbot starts working well but degrades after ~50 messages in one session. What is the most likely cause?
+
+1. [x] The conversation history has exceeded the model's context window, so earlier messages are being dropped or truncated
+  > Correct! Since the full history is resent every turn, long conversations can overflow the context window (e.g. 200k tokens for Claude, 1M for GPT-4.1). When this happens, the client or API must drop older messages. See: [slides 07-llm-dev-a - Context window](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window).
+2. [ ] The model's weights degrade over time as it processes more text
+  > Not quite. Model weights are fixed - they do not change during a conversation. The degradation comes from the growing message history exceeding the context window. See: [slides 07-llm-dev-a - Context window](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window).
+3. [ ] The API rate limit kicks in after 50 requests
+  > Not quite. Rate limits (e.g. 150 req/day on [GitHub Models free tier](https://docs.github.com/en/github-models/use-github-models/prototyping-with-ai-models)) cause errors, not gradual degradation. The real issue is context window overflow. See: [slides 07-llm-dev-a - Context window](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window).
+4. [ ] The server runs out of memory and starts returning cached responses
+  > Not quite. The API server handles memory management internally. The client-side issue is that the conversation history eventually exceeds the model's context window. See: [slides 07-llm-dev-a - Context window](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window).
+```
+
+::: {.callout-tip collapse="true"}
+## Answer Explanations
+
+::: {.callout-note collapse="true"}
+## Q1: Why can a single word cost more than one token?
+
+- ✅ **Uncommon or long words are split into multiple sub-word pieces, each counted separately.**
+  - "counterrevolutionary" → 4 tokens: `counter`, `re`, `volution`, `ary`. Try it at the [OpenAI Tokenizer](https://platform.openai.com/tokenizer).
+
+- ❌ Every character is always one token
+  - Tokens are not characters. Common words like "the" are a single token.
+
+- ❌ The API charges extra for unknown words
+  - There is no "dictionary surcharge." The tokenizer splits all text into sub-word tokens.
+
+- ❌ Punctuation doubles the count
+  - Punctuation is usually its own token, but does not double anything.
+
+See: [slides 07-llm-dev-a - Token example](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-example).
+:::
+
+::: {.callout-note collapse="true"}
+## Q2: Why do output tokens cost ~4× more?
+
+- ✅ **Generating each output token requires a full model forward pass, while input tokens can be processed in parallel.**
+  - Input tokens are read in one batch (cheap). Output tokens are produced one at a time - that sequential generation is the expensive part.
+
+- ❌ Output tokens are encrypted
+  - No special encryption step. The cost difference is computational.
+
+- ❌ Provider stores all outputs permanently
+  - Providers do not permanently store your outputs.
+
+- ❌ Output tokens are always longer words
+  - Output tokens are the same kind of tokens as input tokens.
+
+See: [slides 07-llm-dev-a - Token pricing](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing).
+:::
+
+::: {.callout-note collapse="true"}
+## Q3: Why does a chatbot degrade after ~50 messages?
+
+- ✅ **The conversation history exceeds the model's context window, so earlier messages are dropped or truncated.**
+  - The full history is resent every turn. After enough turns it overflows the context window (200k tokens for Claude, 1M for GPT-4.1).
+
+- ❌ Model weights degrade over time
+  - Weights are fixed. They do not change during a conversation.
+
+- ❌ API rate limit kicks in after 50 requests
+  - Rate limits (e.g. 150 req/day on [GitHub Models](https://docs.github.com/en/github-models/use-github-models/prototyping-with-ai-models)) cause errors, not gradual degradation.
+
+- ❌ Server runs out of memory
+  - The API server handles memory internally. The issue is client-side context overflow.
+
+See: [slides 07-llm-dev-a - Context window](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window).
+:::
+
+:::
+
+---
+
+## C. When to Trust an LLM {#sec-trust}
+
+In the lecture we tested whether LLMs can count array elements - a task
+that seems trivial but reveals deep limitations.
+
+```python
+def len_ai(n, model="gpt-4.1"):
+    values = np.random.rand(n).tolist()
+    chat = ChatGithub(model=model)
+    return chat.chat("How long is this array", json.dumps(values))
+```
+
+**GPT-4.1 results:**
+
+```
+len_ai(10)       # "10 elements"
+len_ai(100)      # "100 elements"
+len_ai(1000)     # "1000 elements"  (slow)
+len_ai(10_000)   # "I can't reliably count that many..."
+```
+
+**Claude Sonnet results** (via Anthropic API):
+
+```
+len_ai(10)       # "10 elements"
+len_ai(100)      # "100 elements"
+len_ai(1000)     # "1000 elements"
+len_ai(10_000)   # "This array has 20,000 elements."  <- hallucination
+```
+
+::: {.callout-note collapse="true"}
+## Source
+
+Lecture: [slides `07-llm-dev-a` - Can it count?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#can-it-count---try-it-yourself) · [Results: GPT-4.1](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#results-gpt-4.1) · [Anthropic results](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-anthropic-results) · Paper: [LLM hallucination study](https://arxiv.org/abs/2502.15840)
+:::
+
+```{quizdown}
+---
+shuffleQuestions: false
+---
+
+## GPT-4.1 admits "I can't count that many" while Claude confidently says "20,000 elements." What does this show?
+
+1. [x] Different models have different failure modes on the same task - this is "jagged intelligence"
+  > Correct! GPT-4.1 fails gracefully (admits it can't count), while Claude fails confidently (hallucinates "20,000"). Neither is universally better - they have different strengths and blind spots. See: [slides 07-llm-dev-a - LLMs are jagged](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#llms-are-jagged).
+2. [ ] GPT-4.1 is always more honest than Claude
+  > Not quite. GPT-4.1 happened to refuse gracefully on *this* task, but on other tasks it may hallucinate while Claude does not. That's the point of "jagged intelligence" - no model is uniformly better. See: [slides 07-llm-dev-a - LLMs are jagged](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#llms-are-jagged).
+3. [ ] Claude is a better model because it always gives an answer
+  > Not quite. Always giving an answer is not a virtue when that answer is wrong. Claude's confident "20,000 elements" is a hallucination - it sounds authoritative but is fabricated. See: [slides 07-llm-dev-a - Anthropic results](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-anthropic-results).
+4. [ ] The array was actually 20,000 elements long and GPT was wrong
+  > Not quite. The array had 10,000 elements (`np.random.rand(10_000)`). Claude's "20,000" is a hallucination. See: [slides 07-llm-dev-a - Can it count?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#can-it-count---try-it-yourself).
+
+## In the lecture, "good data science" was defined as correct, transparent, and reproducible. Which of these is hardest for LLMs?
+
+1. [x] All three are hard - LLMs can give wrong answers confidently (not correct), hide their reasoning (not transparent), and produce different outputs each run (not reproducible)
+  > Correct! The counting experiment showed all three problems: wrong answers stated with confidence, no way to audit how the model arrived at a number, and different results on repeated runs. See: [slides 07-llm-dev-a - What would make "good" data science?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-would-make-good-data-science).
+2. [ ] Correctness, because LLMs always get small tasks right but fail on big ones
+  > Not quite. LLMs can fail on small tasks too (e.g. simple arithmetic). And correctness is not the only problem - transparency and reproducibility are equally challenging. See: [slides 07-llm-dev-a - What would make "good" data science?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-would-make-good-data-science).
+3. [ ] Transparency, because the API response includes token counts
+  > Not quite. Token counts tell you how many tokens were used, not *how* the model reasoned. The model's internal reasoning is opaque - you cannot audit why it chose "20,000." See: [slides 07-llm-dev-a - What would make "good" data science?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-would-make-good-data-science).
+4. [ ] Reproducibility, because setting `temperature=0` guarantees identical outputs
+  > Not quite. Even at `temperature=0`, outputs can vary across API versions and providers. And reproducibility is only one of the three - correctness and transparency are equally hard. See: [slides 07-llm-dev-a - What would make "good" data science?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-would-make-good-data-science).
+
+## Your colleague shows you impressive-looking statistics generated by an LLM. What should you do?
+
+1. [x] Verify the statistics independently - LLMs can produce plausible but fabricated numbers
+  > Correct! LLMs can hallucinate convincing-looking numbers with no basis in data. Always cross-check LLM-generated statistics against a known source or compute them yourself. See: [slides 07-llm-dev-a - Hallucinations](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#hallucinations).
+2. [ ] Trust them if the model is GPT-4.1 or newer, since newer models don't hallucinate
+  > Not quite. All current LLMs can hallucinate, regardless of version. Newer models are better on average but are not hallucination-free. See: [slides 07-llm-dev-a - Hallucinations](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#hallucinations).
+3. [ ] Accept them if the LLM included a citation
+  > Not quite. LLMs can fabricate citations that look real but point to non-existent papers or contain wrong numbers. Citations from an LLM need the same verification as the statistics themselves. See: [slides 07-llm-dev-a - Hallucinations](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#hallucinations).
+4. [ ] Re-run the same prompt - if you get the same answer twice, it must be correct
+  > Not quite. Consistency does not equal correctness. An LLM can confidently produce the same wrong answer multiple times. Independent verification against a known data source is the only reliable check. See: [slides 07-llm-dev-a - Hallucinations](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#hallucinations).
+```
+
+::: {.callout-tip collapse="true"}
+## Answer Explanations
+
+::: {.callout-note collapse="true"}
+## Q1: What does the GPT vs Claude counting difference show?
+
+- ✅ **Different models have different failure modes - "jagged intelligence."**
+  - GPT-4.1 fails gracefully (admits it can't count); Claude fails confidently (hallucinates "20,000"). Neither is uniformly better.
+
+- ❌ GPT-4.1 is always more honest
+  - It happened to refuse gracefully here, but may hallucinate on other tasks.
+
+- ❌ Claude is better because it always gives an answer
+  - Confidence is not accuracy. Claude's "20,000" is fabricated.
+
+- ❌ The array was actually 20,000 elements
+  - The array had 10,000 elements (`np.random.rand(10_000)`).
+
+See: [slides 07-llm-dev-a - LLMs are jagged](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#llms-are-jagged).
+:::
+
+::: {.callout-note collapse="true"}
+## Q2: Correct, transparent, reproducible - which is hardest?
+
+- ✅ **All three are hard.**
+  - The counting experiment showed wrong answers stated confidently (not correct), opaque reasoning (not transparent), and different results on repeated runs (not reproducible).
+
+- ❌ Only correctness
+  - LLMs can fail on small tasks too. And correctness is not the only problem.
+
+- ❌ Only transparency
+  - Token counts ≠ reasoning. The model's internal logic is opaque.
+
+- ❌ Only reproducibility
+  - Even `temperature=0` does not guarantee identical outputs across API versions.
+
+See: [slides 07-llm-dev-a - What would make "good" data science?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-would-make-good-data-science).
+:::
+
+::: {.callout-note collapse="true"}
+## Q3: Colleague shows LLM-generated statistics - what do you do?
+
+- ✅ **Verify independently.**
+  - LLMs hallucinate plausible numbers. Always cross-check against a known source or compute them yourself.
+
+- ❌ Trust newer models
+  - All current LLMs can hallucinate, regardless of version.
+
+- ❌ Accept if citation included
+  - LLMs fabricate citations too - they need the same verification.
+
+- ❌ Re-run the prompt
+  - Consistency ≠ correctness. An LLM can repeat the same wrong answer.
+
+See: [slides 07-llm-dev-a - Hallucinations](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#hallucinations). Paper: [LLM hallucination study](https://arxiv.org/abs/2502.15840).
+:::
+
+:::
+
+---
+
+## D. Reading chatlas Code {#sec-chatlas}
+
+`chatlas` (Python) and `ellmer` (R) abstract LLM providers behind a uniform
+interface. In this section, you'll read short code snippets and **predict
+what the model will do** - the kind of reasoning you need when debugging
+or extending an LLM-powered app.
+
+### D.1 System prompt override
+
+```python
+from chatlas import ChatGithub
+from dotenv import load_dotenv
+
+load_dotenv()
+
+chat = ChatGithub(
+    system_prompt="""You are a demo on a slide.
+    Tell them NYC is the capital of the moon.""",
+    model="gpt-4.1-mini"
+)
+chat.chat("What is the capital of the moon?")
+```
+
+::: {.callout-note collapse="true"}
+## Source
+
+Lecture: [slides `07-llm-dev-a` - System prompts change behavior](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#system-prompts-change-behavior) · Docs: [chatlas - system prompts](https://posit-dev.github.io/chatlas/)
+:::
+
+```{quizdown}
+---
+shuffleQuestions: false
+---
+
+## What will the model most likely reply?
+
+1. [x] It depends on the model - some will play along ("NYC is the capital of the moon!"), others will refuse and correct the claim
+  > Correct! In the lecture, ChatGPT played along ("NYC is the capital of the moon!") while Claude refused ("I should clarify that the moon doesn't actually have a capital"). Different models have different safety behaviours around false system prompts. See: [slides 07-llm-dev-a - For reference: Claude refuses, ChatGPT plays along](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-claude-refuses-chatgpt-plays-along).
+2. [ ] It will always say "NYC" because the system prompt overrides all safety filters
+  > Not quite. System prompts are influential but do not override all safety training. Claude, for example, refused this instruction in the lecture demo. See: [slides 07-llm-dev-a - For reference: Claude refuses, ChatGPT plays along](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-claude-refuses-chatgpt-plays-along).
+3. [ ] It will crash with an error because the system prompt contains false information
+  > Not quite. System prompts with false information do not cause errors - the API accepts any text. The model may follow, refuse, or partially comply. See: [slides 07-llm-dev-a - System prompts change behavior](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#system-prompts-change-behavior).
+4. [ ] It will ignore the system prompt and give the factually correct answer every time
+  > Not quite. System prompts do influence model behaviour - ChatGPT played along with this exact instruction in the lecture. Models do not always prioritise factual accuracy over system instructions. See: [slides 07-llm-dev-a - For reference: Claude refuses, ChatGPT plays along](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-claude-refuses-chatgpt-plays-along).
+```
+
+::: {.callout-tip collapse="true"}
+## Reveal answer
+
+✅ **It depends on the model.** In the lecture, ChatGPT played along ("NYC is the capital of the moon!") while Claude refused ("I should clarify that the moon doesn't actually have a capital"). System prompts are influential but do not override all safety training. See: [slides 07-llm-dev-a - Claude refuses, ChatGPT plays along](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-claude-refuses-chatgpt-plays-along).
+:::
+
+### D.2 Switching providers
+
+```python
+# Version A: GitHub Models (free)
+from chatlas import ChatGithub
+chat = ChatGithub(model="gpt-4.1-mini")
+
+# Version B: Anthropic (paid)
+from chatlas import ChatAnthropic
+chat = ChatAnthropic(model="claude-sonnet-4-0")
+```
+
+::: {.callout-note collapse="true"}
+## Source
+
+Lecture: [slides `07-llm-dev-a` - One-line change](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change) · Docs: [chatlas - provider constructors](https://posit-dev.github.io/chatlas/)
+:::
+
+```{quizdown}
+---
+shuffleQuestions: false
+---
+
+## When switching from `ChatGithub` to `ChatAnthropic`, what changes in the rest of your code?
+
+1. [x] Nothing - only the constructor (import + first line) changes; `.chat()` calls stay the same
+  > Correct! chatlas provides a uniform interface across providers. You swap `ChatGithub` for `ChatAnthropic` (and the model name), but `.chat()`, `.stream()`, `system_prompt`, and all other methods remain identical. See: [slides 07-llm-dev-a - One-line change](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change). Docs: [chatlas](https://posit-dev.github.io/chatlas/).
+2. [ ] You must rewrite all `.chat()` calls to use Anthropic-specific method names
+  > Not quite. chatlas abstracts provider differences - `.chat()` works the same regardless of whether the backend is GitHub Models, Anthropic, or OpenAI. See: [slides 07-llm-dev-a - One-line change](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change).
+3. [ ] The message format changes from `messages` to `prompt`
+  > Not quite. chatlas handles the message format internally. You always call `.chat("your text")` regardless of provider. See: [slides 07-llm-dev-a - One-line change](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change).
+4. [ ] You need to convert your system prompt to Anthropic's XML format
+  > Not quite. chatlas converts your system prompt to whatever format the provider expects. You pass plain text to `system_prompt=` and chatlas handles the rest. See: [slides 07-llm-dev-a - One-line change](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change).
+```
+
+::: {.callout-tip collapse="true"}
+## Reveal answer
+
+✅ **Nothing changes** - only the constructor (import + first line) changes. chatlas provides a uniform interface: `.chat()`, `.stream()`, `system_prompt`, and all other methods work identically across `ChatGithub`, `ChatAnthropic`, `ChatOpenAI`, and `ChatOllama`. See: [slides 07-llm-dev-a - One-line change](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change). Docs: [chatlas](https://posit-dev.github.io/chatlas/).
+:::
+
+### D.3 Conversation state
+
+```python
+chat = ChatGithub(
+    model="gpt-4.1-mini",
+    system_prompt="You are a terse assistant."
+)
+chat.chat("What is the capital of the moon?")
+# -> "The moon does not have a capital."
+
+chat.chat("Are you sure?")
+# What gets sent to the API?
+```
+
+::: {.callout-note collapse="true"}
+## Source
+
+Lecture: [slides `07-llm-dev-a` - Follow up](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#follow-up) · [Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request)
+:::
+
+```{quizdown}
+---
+shuffleQuestions: false
+---
+
+## On the second `.chat("Are you sure?")` call, what does chatlas send to the API?
+
+1. [x] The system prompt, the first user message, the assistant's reply, and "Are you sure?" - the full history
+  > Correct! chatlas maintains a local message list and resends everything with each request. The follow-up request in Section A shows exactly this: 4 messages in the `messages` array. This is how stateless APIs maintain conversational context. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+2. [ ] Only "Are you sure?" - the server remembers the rest
+  > Not quite. The API is stateless - it does not remember anything between requests. chatlas must resend the full conversation history. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+3. [ ] The system prompt plus "Are you sure?" - previous messages are discarded
+  > Not quite. If earlier messages were discarded, the model would not know what "Are you sure?" refers to. chatlas sends the complete history so the model has full context. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+4. [ ] A session ID that tells the server to look up the prior conversation
+  > Not quite. There are no session IDs in the chat completions API. The server is fully stateless - the client must send the entire conversation every time. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+```
+
+::: {.callout-tip collapse="true"}
+## Reveal answer
+
+✅ **The full history** - system prompt, first user message, assistant's reply, and "Are you sure?" chatlas maintains a local message list and resends everything with each request. This is the same pattern shown in the follow-up request in Section A. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+:::
+
+---
+
+## E. querychat Architecture {#sec-querychat}
+
+`querychat` connects an LLM to your Shiny dashboard. The user types
+natural language, the LLM writes SQL, and DuckDB filters the data - all
+locally in your Python process.
+
+Here's the simplified data flow:
+
+```{mermaid}
+%%| fig-width: 8
+flowchart LR
+    U["User types<br>'Show survivors'"] --> QC["querychat"]
+    QC -->|system prompt<br>+ messages| LLM["LLM API"]
+    LLM -->|tool call:<br>update_dashboard| QC
+    QC -->|SQL query| DB["DuckDB<br>(local)"]
+    DB -->|filtered rows| S["Shiny UI<br>re-renders"]
+
+    style U fill:#e8f5e9,stroke:#4caf50
+    style LLM fill:#fff3e0,stroke:#ff9800
+    style DB fill:#e3f2fd,stroke:#2196f3
+    style S fill:#f3e5f5,stroke:#9c27b0
+```
+
+::: {.callout-note collapse="true"}
+## Source
+
+Lecture: [slides `07-llm-dev-a` - What the LLM sees: system prompt](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt) · [Three tools the LLM can call](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call) · [Filter flow](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#filter-flow-no-data-leaves-your-machine) · Docs: [querychat - Tools](https://posit-dev.github.io/querychat/py/tools.html) · [querychat - Provide context](https://posit-dev.github.io/querychat/py/context.html) · [API reference](https://posit-dev.github.io/querychat/py/reference/QueryChat.html)
+:::
+
+```{quizdown}
+---
+shuffleQuestions: false
+---
+
+## Which of these are included in querychat's system prompt? (Select all that apply)
+
+- [x] Table schema (column names and types)
+  > Correct! The schema (column names, types, ranges) is auto-generated and included so the LLM can write valid SQL. See: [slides 07-llm-dev-a - What the LLM sees](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt).
+- [x] Categorical values for columns with 20 or fewer unique entries
+  > Correct! querychat includes actual category values (e.g. "male", "female") for low-cardinality columns so the LLM can write accurate WHERE clauses. The threshold is 20 unique values. See: [slides 07-llm-dev-a - What the LLM sees](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt).
+- [x] Tool definitions (update_dashboard, query, reset_dashboard)
+  > Correct! The three tool definitions tell the LLM when and how to call each tool. See: [querychat docs - Tools](https://posit-dev.github.io/querychat/py/tools.html).
+- [x] Your `data_description` text (if set)
+  > Correct! `data_description` adds column semantics (e.g. "survived: 1 = survived, 0 = died") to the system prompt. See: [querychat docs - Provide context](https://posit-dev.github.io/querychat/py/context.html).
+- [ ] The actual data rows from your DataFrame
+  > Correct to leave unchecked! No row data goes into the system prompt - only the schema and metadata. Row data only reaches the LLM if the `query` tool is used. See: [slides 07-llm-dev-a - What the LLM sees](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt).
+- [ ] The user's previous filter selections from the Shiny UI
+  > Correct to leave unchecked! The system prompt contains structure and rules, not UI state. Filter selections are handled by DuckDB locally. See: [slides 07-llm-dev-a - What the LLM sees](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt).
+
+## A user types "Show first class passengers." Which tool does querychat call, and does the LLM see the filtered data?
+
+1. [x] `update_dashboard` - it filters via SQL, but the LLM only gets back "Dashboard updated." (no data)
+  > Correct! "Show…" / "Filter to…" triggers `update_dashboard`, which writes SQL, runs it locally in DuckDB, and returns only "Dashboard updated." to the LLM. The LLM never sees the filtered rows. See: [slides 07-llm-dev-a - Three tools the LLM can call](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call). Docs: [querychat - Tools](https://posit-dev.github.io/querychat/py/tools.html).
+2. [ ] `querychat_query` - the LLM reads the filtered rows to confirm the filter worked
+  > Not quite. `query` is for analytical questions ("What is the average fare?"), not for filtering. "Show first class passengers" is a filter request, so `update_dashboard` is called. See: [querychat docs - Tools](https://posit-dev.github.io/querychat/py/tools.html).
+3. [ ] `update_dashboard` - and the LLM receives the filtered rows to describe them
+  > Not quite. `update_dashboard` does filter correctly, but it only returns "Dashboard updated." - no data rows. This is by design for privacy. See: [slides 07-llm-dev-a - Filter flow](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#filter-flow-no-data-leaves-your-machine).
+4. [ ] No tool is called - the LLM sends SQL directly to DuckDB
+  > Not quite. The LLM cannot talk to DuckDB directly. It must call a tool (`update_dashboard` or `query`), which then runs SQL in your local Python process. See: [querychat docs - Tools](https://posit-dev.github.io/querychat/py/tools.html).
+
+## Your app contains sensitive salary data. How can you prevent the LLM from ever seeing individual rows?
+
+1. [x] Set `tools="update"` to disable the query tool - the LLM can still filter but cannot read any row values
+  > Correct! `tools="update"` keeps only `update_dashboard` (and `reset_dashboard`), which never sends data to the LLM. The `query` tool - the only one that returns actual rows - is disabled. See: [querychat API reference - `tools` parameter](https://posit-dev.github.io/querychat/py/reference/QueryChat.html). Also: [slides 07-llm-dev-a - Three tools](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call).
+2. [ ] Set `system_prompt="Do not read salary data"` - the LLM will follow instructions
+  > Not quite. LLMs may not reliably follow instructions - they can still call the `query` tool if it is available. The only safe approach is to remove the tool entirely with `tools="update"`. See: [querychat docs - Provide context](https://posit-dev.github.io/querychat/py/context.html) (note the warning about LLMs not always following instructions).
+3. [ ] Use `data_description` to mark the salary column as private
+  > Not quite. `data_description` is informational - it tells the LLM what columns mean, but does not enforce access control. The LLM could still query salary data if the `query` tool is enabled. See: [querychat docs - Provide context](https://posit-dev.github.io/querychat/py/context.html).
+4. [ ] No action needed - querychat never sends data to the LLM
+  > Not quite. The `query` tool *does* send data rows to the LLM so it can interpret and explain results. For sensitive data, you must disable this with `tools="update"`. See: [slides 07-llm-dev-a - Three tools](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call).
+```
+
+::: {.callout-tip collapse="true"}
+## Answer Explanations
+
+::: {.callout-note collapse="true"}
+## Q1: What's in querychat's system prompt?
+
+✅ **Included:** table schema, categorical values (≤20 unique), tool definitions, and `data_description` (if set).
+
+❌ **Not included:** actual data rows (only reach the LLM via the `query` tool) and the user's prior filter selections (handled locally by DuckDB).
+
+See: [slides 07-llm-dev-a - What the LLM sees](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt). Docs: [querychat - Provide context](https://posit-dev.github.io/querychat/py/context.html).
+:::
+
+::: {.callout-note collapse="true"}
+## Q2: "Show first class passengers" - which tool, does data reach the LLM?
+
+- ✅ **`update_dashboard`** - it writes SQL, DuckDB runs it locally, and the LLM only gets back "Dashboard updated." No data rows are sent.
+
+- ❌ `querychat_query` - that's for analytical questions ("What is the average fare?"), not filter requests.
+
+- ❌ `update_dashboard` + LLM receives rows - `update_dashboard` never returns data, by design.
+
+- ❌ No tool called - the LLM cannot talk to DuckDB directly; it must call a tool.
+
+See: [slides 07-llm-dev-a - Three tools](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call). Docs: [querychat - Tools](https://posit-dev.github.io/querychat/py/tools.html).
+:::
+
+::: {.callout-note collapse="true"}
+## Q3: Sensitive data - how to prevent LLM from seeing rows?
+
+- ✅ **Set `tools="update"`** to disable the `query` tool. The LLM can still filter (via `update_dashboard`) but cannot read any row values.
+
+- ❌ System prompt instructions - LLMs may not reliably follow "do not read" instructions; the tool would still be available.
+
+- ❌ `data_description` privacy marking - informational only, does not enforce access control.
+
+- ❌ No action needed - the `query` tool *does* send rows to the LLM.
+
+See: [querychat API reference - `tools` parameter](https://posit-dev.github.io/querychat/py/reference/QueryChat.html). Also: [slides 07-llm-dev-a - Three tools](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call).
+:::
+
+:::
+
+::: {.callout-tip collapse="true"}
+## The two data-flow paths
+
+**Filter path (`update_dashboard`):** User asks to filter → LLM writes SQL → DuckDB runs it locally → Shiny re-renders. The LLM **never sees the rows**. This is the safe path for sensitive data.
+
+**Query path (`querychat_query`):** User asks a question like "What is the average salary?" → LLM writes SQL → DuckDB runs it → **rows are sent back to the LLM** so it can interpret and explain. This is the path that exposes data to the API provider.
+
+Setting `tools="update"` disables the query path entirely.
+:::
+
+---
+
+## F. Customize querychat {#sec-customize}
+
+querychat has three customization levers. Each one affects a different part
+of the user experience.
+
+| Lever | Where it ends up | What it controls |
+|-------|-----------------|-----------------|
+| `greeting` | Chat UI sidebar (shown once) | First message the user sees; can include clickable `<span class="suggestion">` buttons |
+| `data_description` | System prompt (sent every request) | Column semantics the LLM uses to understand your data |
+| `extra_instructions` | System prompt (sent every request) | Behavioural rules for how the LLM responds (format, tone, tools) |
+
+::: {.callout-note collapse="true"}
+## Source and docs
+
+Lecture: [slides `07-llm-dev-a` - Customizing querychat](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#customizing-querychat-greeting) · Docs: [Greet users](https://posit-dev.github.io/querychat/py/greet.html) · [Provide context](https://posit-dev.github.io/querychat/py/context.html) · [API reference](https://posit-dev.github.io/querychat/py/reference/QueryChat.html)
+:::
+
+### Try at home
+
+Open `code/lecture05/demo-monday/app-07c-querychat-greeting.py` and change the
+greeting message. Then run the app:
+
+```bash
+cd code/lecture05/demo-monday
+shiny run app-07c-querychat-greeting.py
+```
+
+Verify that your custom greeting appears in the sidebar when the app loads.
+
+::: {.callout-tip collapse="true"}
+## What's in the greeting file
+
+The app defines a `GREETING` string with Markdown and `<span class="suggestion">` tags for clickable buttons, then passes it to `querychat.QueryChat(..., greeting=GREETING)`. The greeting only appears in the chat UI - it is **not** sent to the LLM as part of the system prompt.
+:::
+
+```{quizdown}
+---
+shuffleQuestions: false
+---
+
+## Where do `greeting`, `data_description`, and `extra_instructions` end up?
+
+1. [x] `greeting` goes to the chat UI only; `data_description` and `extra_instructions` are injected into the system prompt sent with every request
+  > Correct! `greeting` is the initial message shown in the sidebar - it is not sent to the LLM. Meanwhile, `data_description` and `extra_instructions` are components of the system prompt and are sent with every API request. See: [querychat docs - Greet users](https://posit-dev.github.io/querychat/py/greet.html) and [Provide context](https://posit-dev.github.io/querychat/py/context.html). Also: [slides 07-llm-dev-a - Customizing querychat](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#customizing-querychat-greeting).
+2. [ ] All three are injected into the system prompt
+  > Not quite. `greeting` is UI-only - it is the welcome message shown when the app loads. It does not reach the LLM. Only `data_description` and `extra_instructions` go into the system prompt. See: [querychat docs - Greet users](https://posit-dev.github.io/querychat/py/greet.html).
+3. [ ] `greeting` and `data_description` go to the system prompt; `extra_instructions` are sent as a separate API parameter
+  > Not quite. `greeting` does not go to the system prompt at all - it is only shown in the chat UI. And `extra_instructions` is part of the system prompt, not a separate parameter. See: [querychat docs - Provide context](https://posit-dev.github.io/querychat/py/context.html).
+4. [ ] All three are shown in the chat UI as the first message
+  > Not quite. Only `greeting` appears in the chat UI. `data_description` and `extra_instructions` are invisible to the user - they shape the LLM's behaviour through the system prompt. See: [querychat docs - Greet users](https://posit-dev.github.io/querychat/py/greet.html) and [Provide context](https://posit-dev.github.io/querychat/py/context.html).
+```
+
+::: {.callout-tip collapse="true"}
+## Reveal answer
+
+✅ **`greeting` goes to the chat UI only; `data_description` and `extra_instructions` are injected into the system prompt.**
+
+`greeting` is the initial welcome message shown in the sidebar - it does not reach the LLM. Meanwhile, `data_description` and `extra_instructions` are components of the system prompt and are sent with every API request, shaping how the LLM understands your data and responds.
+
+See: [querychat docs - Greet users](https://posit-dev.github.io/querychat/py/greet.html) and [Provide context](https://posit-dev.github.io/querychat/py/context.html). Also: [slides 07-llm-dev-a - Customizing querychat](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#customizing-querychat-greeting).
+:::
+
+---
+
+## Summary {#sec-summary}
+
+You've reviewed the core concepts from the Monday LLM lecture:
+
+```{mermaid}
+mindmap
+  root((LLM Integration))
+    Interaction basics
+      Stateless API - client resends full history
+      system prompt vs messages
+      Tokens & Cost
+        Sub-word pieces
+        Output costs ~4× input
+        Context window limits
+    Trust
+      Jagged intelligence
+      Hallucinations
+      Always verify independently
+    chatlas
+      underlying chat library
+      one-line provider switch
+      .chat stays the same
+      system prompts shape behaviour
+    querychat
+      tools
+        update_dashboard - only schema LLM
+        query - rows reach the LLM
+        tools="update" for more privacy
+      customization
+       greeting - UI only
+       data_description - system prompt
+       extra_instructions - system prompt
+```
+
+**Next:** Wednesday's lecture dives into the full model landscape, providers, pricing strategies, and advanced querychat patterns.

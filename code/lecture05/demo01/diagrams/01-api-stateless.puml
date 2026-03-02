@@ -1,0 +1,46 @@
+@startuml
+skinparam backgroundColor white
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam sequenceArrowThickness 2
+skinparam defaultFontSize 14
+skinparam noteFontSize 12
+skinparam participantPadding 30
+
+title LLM APIs Are Stateless — Every Call Resends Everything
+
+participant "Your Code\n(chatlas)" as Client
+participant "LLM API\n(GitHub Models)" as API
+database "chat object\n(local memory)" as Memory
+
+== Turn 1 ==
+
+Client -> Memory : store user message
+Client -> API : **Request 1**\n[system] You are a terse assistant.\n[user] What is the capital of the moon?
+note right of API : 25 tokens sent
+API --> Client : [assistant] The moon has no capital.
+Client -> Memory : store assistant reply
+
+== Turn 2 ==
+
+Client -> Memory : store user message
+Client -> API : **Request 2**\n[system] You are a terse assistant.\n[user] What is the capital of the moon?\n[assistant] The moon has no capital.\n[user] **Are you sure?**
+note right of API : 52 tokens sent\n(11 new + 41 repeated)
+API --> Client : [assistant] Yes, I am sure.
+Client -> Memory : store assistant reply
+
+== Turn 3 ==
+
+Client -> Memory : store user message
+Client -> API : **Request 3**\n[system] You are a terse assistant.\n[user] What is the capital of the moon?\n[assistant] The moon has no capital.\n[user] Are you sure?\n[assistant] Yes, I am sure.\n[user] **Tell me a fun moon fact.**
+note right of API : 104 tokens sent\n(31 new + 73 repeated)
+API --> Client : [assistant] The moon has moonquakes...
+Client -> Memory : store assistant reply
+
+note over Client, API
+  The API has **no memory** between calls.
+  The chat object rebuilds the full context every time.
+  Cost grows with conversation length!
+end note
+
+@enduml

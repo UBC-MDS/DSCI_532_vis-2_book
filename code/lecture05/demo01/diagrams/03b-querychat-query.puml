@@ -1,0 +1,82 @@
+@startuml
+title querychat: When Data Reaches the LLM
+
+actor User
+participant "Shiny UI" as UI
+participant "Shiny Server" as Server
+participant "querychat" as QC
+participant "DuckDB" as DB
+participant "LLM API" as LLM
+
+== Scenario 1: User asks a question ==
+
+User -> UI : "What is the survival rate?"
+UI -> Server : on_user_submit()
+Server -> QC : stream_response_async()
+QC -> LLM : chat_history + user_message
+
+LLM --> QC : **tool_call:**\nquerychat_query(\n  query = "SELECT AVG(survived)\n           AS rate FROM titanic"\n)
+
+QC -> DB : execute SQL
+DB --> QC : query result
+
+QC --> LLM : **actual row data**\n[{"rate": 0.384}]
+
+note over QC #EEFFEE
+  querychat_query sends
+  real data to the LLM API.
+  This is how the LLM can
+  interpret and explain results.
+end note
+
+LLM --> QC : "The survival rate is 38.4%."
+QC --> Server : stream text
+Server --> UI : chat message
+
+== Scenario 2: extra_instructions trigger parallel calls ==
+
+note over LLM #EEEEFF
+  extra_instructions say:
+  "use querychat_query to
+  calculate row count and
+  survival rate"
+end note
+
+User -> UI : "Show only first class"
+UI -> Server : on_user_submit()
+Server -> QC : stream_response_async()
+QC -> LLM : chat_history + user_message
+
+LLM --> QC : **two tool_calls in one turn:**
+
+note over LLM, QC #FFFFDD
+  1. querychat_update_dashboard(
+       query = "SELECT * FROM titanic
+                WHERE pclass = 1",
+       title = "First class passengers")
+
+  2. querychat_query(
+       query = "SELECT COUNT(*) AS n,
+                AVG(survived) AS rate
+                FROM titanic WHERE pclass = 1")
+end note
+
+QC -> DB : execute update SQL
+DB --> QC : ✅ valid
+QC --> LLM : "Dashboard updated."
+
+QC -> DB : execute query SQL
+DB --> QC : result rows
+QC --> LLM : [{"n": 216, "rate": 0.63}]
+
+== Shiny reactive chain ==
+QC -> Server : state.sql set → reactive invalidation
+Server -> DB : qc_vals.df() re-runs SQL
+DB --> Server : filtered DataFrame
+Server --> UI : re-render table
+
+LLM --> QC : "🎯 Filter: First class only\n📊 Stats: 216 rows | 63%\n💡 Insight: ..."
+QC --> Server : stream text
+Server --> UI : chat message with grounded stats
+
+@enduml

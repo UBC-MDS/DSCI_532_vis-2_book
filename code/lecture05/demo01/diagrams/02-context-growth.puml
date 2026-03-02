@@ -1,0 +1,59 @@
+@startuml
+skinparam backgroundColor white
+skinparam defaultFontSize 14
+skinparam noteFontSize 12
+skinparam sequenceMessageAlign center
+skinparam sequenceArrowThickness 2
+skinparam participantPadding 20
+
+title Context Window Fills Up Over a Conversation
+
+participant "Your Code" as Client
+participant "LLM API" as API
+
+== Request 1: tokens_total = 25 ==
+
+Client -> API
+note right
+  |= Role |= Content |= Tokens |
+  | system | You are a terse assistant. | 5 |
+  | user | What is the capital of the moon? | 20 |
+  |  | **Total sent** | **25** |
+end note
+API --> Client
+
+== Request 2: tokens_total = 52 ==
+
+Client -> API
+note right
+  |= Role |= Content |= Tokens |
+  | system | You are a terse assistant. | 5 |
+  | user | What is the capital of the moon? | 20 |
+  | assistant | The moon has no capital. | 16 |
+  | user | Are you sure? | 11 |
+  |  | **Total sent** | **52** |
+end note
+API --> Client
+
+== Request 3: tokens_total = 104 ==
+
+Client -> API
+note right
+  |= Role |= Content |= Tokens |
+  | system | You are a terse assistant. | 5 |
+  | user | What is the capital of the moon? | 20 |
+  | assistant | The moon has no capital. | 16 |
+  | user | Are you sure? | 11 |
+  | assistant | Yes, I am sure. | 21 |
+  | user | Tell me a fun moon fact. | 31 |
+  |  | **Total sent** | **104** |
+end note
+API --> Client
+
+note over Client, API
+  Each request resends **all** prior turns.
+  Token usage: 25 → 52 → 104 (roughly doubles each turn)
+  Context window (gpt-4.1): 1,047,576 tokens max
+end note
+
+@enduml
