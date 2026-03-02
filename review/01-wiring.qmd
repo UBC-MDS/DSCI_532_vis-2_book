@@ -13,7 +13,7 @@ This review covers the **core reactivity pattern** in Shiny for Python:
 how inputs connect to outputs, why the decorators matter, and how
 `@reactive.calc` lets you share filtered data across multiple outputs.
 
-By the end of review, you will remind yourself/learn how to:
+By the end of this review, you will remind yourself/learn how to:
 
 1. Describe the three-part rule connecting a UI output widget to its server render function
 2. Identify which connection part is absent in a broken app
