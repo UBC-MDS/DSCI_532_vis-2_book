@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Review 4 - LLM Integration Basics – DSCI 532: Data Visualization 2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-c2184ee79b4189700a07fecab5507ffb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdownKatex.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdownHighlight.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown-init.js"></script>
+<link href="../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">DSCI 532: Data Visualization 2</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../setup.html"> 
+<span class="menu-text">Setup</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/tree/main/code"> 
+<span class="menu-text">Code Examples</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/UBC-MDS/DSCI_532_vis-2_book"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Review 4 - LLM Integration Basics</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 1</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../010-intro_dashboards.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction to dashboards</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../010-intro_shiny.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction to Shiny</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../010-first_app.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Your first Shiny application</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../020-reactivity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">What is Reactivity?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../020-dashboard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Build a dashboard</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../020-publish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish your application</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../030-geoviz-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Geospatial visualization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../030-tables-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tables in Shiny</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../040-styling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">More UI pattern examples</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 5</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-01-llm-welcome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome to LLMs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-02-hallucinations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Results</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-03-conversation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Anatomy of a Conversation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-04-chat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Your first chat</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-05-dashboards.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Science Dashboards</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../050-06-env.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Environment Variables</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Review</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../review/01-wiring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Review 1 — Reactivity Basics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul class="collapse">
+  <li><a href="#sec-conversations" id="toc-sec-conversations" class="nav-link active" data-scroll-target="#sec-conversations">A. How Conversations Work</a></li>
+  <li><a href="#sec-tokens" id="toc-sec-tokens" class="nav-link" data-scroll-target="#sec-tokens">B. Tokens &amp; Cost</a></li>
+  <li><a href="#sec-trust" id="toc-sec-trust" class="nav-link" data-scroll-target="#sec-trust">C. When to Trust an LLM</a></li>
+  <li><a href="#sec-chatlas" id="toc-sec-chatlas" class="nav-link" data-scroll-target="#sec-chatlas">D. Reading chatlas Code</a></li>
+  <li><a href="#sec-querychat" id="toc-sec-querychat" class="nav-link" data-scroll-target="#sec-querychat">E. querychat Architecture</a></li>
+  <li><a href="#sec-customize" id="toc-sec-customize" class="nav-link" data-scroll-target="#sec-customize">F. Customize querychat</a></li>
+  <li><a href="#sec-summary" id="toc-sec-summary" class="nav-link" data-scroll-target="#sec-summary">Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Review 4 - LLM Integration Basics</h1>
+<p class="subtitle lead">HTTP plumbing, tokens, trust, chatlas, and querychat</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This review covers the <strong>core concepts</strong> from the Monday LLM lecture: how chat APIs work under the hood, what tokens cost, when to trust (and not trust) an LLM, and how Shiny integrates LLMs through <code>chatlas</code>, <code>shinychat</code>, and <code>querychat</code>.</p>
+<p>By the end of this review, you will remind yourself/learn how to:</p>
+<ol type="1">
+<li>Describe the HTTP request/response cycle behind every LLM conversation</li>
+<li>Explain how tokens drive pricing and context-window limits</li>
+<li>Recognise hallucinations and the “jagged intelligence” of different models</li>
+<li>Read chatlas code and predict what the LLM will do</li>
+<li>Trace the data flow inside querychat and identify which tool exposes data</li>
+<li>Identify the three customization levers in querychat and where each one ends up</li>
+</ol>
+<p>Work through each section in order. Every quiz gives instant feedback with a pointer back to relevant lecture slides.</p>
+<hr>
+<section id="sec-conversations" class="level2">
+<h2 class="anchored" data-anchor-id="sec-conversations">A. How Conversations Work</h2>
+<p>Every chat message you send - whether from a notebook, <code>chatlas</code>, or a Shiny app - becomes an <strong>HTTP POST request</strong> to the LLM provider’s API. The server is entirely <strong>stateless</strong>: it does not remember previous messages unless the client resends them.</p>
+<p>Read the request and response below (from the lecture), then answer the quizzes.</p>
+<p><strong>Request:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers=""><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> https://api.openai.com/v1/chat/completions <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">"Content-Type: application/json"</span> <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">"Authorization: Bearer </span><span class="va">$OPENAI_API_KEY</span><span class="st">"</span> <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">'{</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="st">    "model": "gpt-4.1",</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="st">    "messages": [</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="st">        {"role": "system", "content": "You are a terse assistant."},</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="st">        {"role": "user", "content": "What is the capital of the moon?"}</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="st">    ]</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="st">}'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Response (abridged):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers=""><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"choices"</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"message"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"role"</span><span class="fu">:</span> <span class="st">"assistant"</span><span class="fu">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"content"</span><span class="fu">:</span> <span class="st">"The moon does not have a capital."</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"finish_reason"</span><span class="fu">:</span> <span class="st">"stop"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"usage"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"prompt_tokens"</span><span class="fu">:</span> <span class="dv">9</span><span class="fu">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"completion_tokens"</span><span class="fu">:</span> <span class="dv">12</span><span class="fu">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"total_tokens"</span><span class="fu">:</span> <span class="dv">21</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Follow-up request</strong> - notice the full history is resent:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-code-line-numbers=""><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> https://api.openai.com/v1/chat/completions <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">'{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="st">    "model": "gpt-4.1",</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="st">    "messages": [</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">      {"role": "system", "content": "You are a terse assistant."},</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="st">      {"role": "user", "content": "What is the capital of the moon?"},</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="st">      {"role": "assistant", "content": "The moon does not have a capital."},</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="st">      {"role": "user", "content": "Are you sure?"}</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="st">    ]</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="st">}'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request">slides <code>07-llm-dev-a</code> - Anatomy of a Conversation</a> · Reference: <a href="https://platform.openai.com/docs/api-reference/chat">OpenAI Chat Completions API</a> · <a href="https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages">Message roles</a></p>
+</div>
+</div>
+</div>
+<div class="quizdown">
+---
+shuffleQuestions: false
+---
+
+## How does a stateless API "remember" your earlier messages?
+
+1. [x] The client resends the entire message history with every request
+  &gt; Correct! The API stores nothing between requests - the client must include every prior message in each new request. Look at the follow-up request above: it contains all four messages. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+2. [ ] The server saves a session cookie after the first request
+  &gt; Not quite. LLM APIs are stateless - there are no cookies or server-side sessions. The client must resend the full history every time. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+3. [ ] The provider stores a conversation log keyed by your API key
+  &gt; Not quite. The provider does not store conversations between requests. Each request is independent - the client is responsible for maintaining the message history. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+4. [ ] The model's weights are updated after each message
+  &gt; Not quite. Model weights are fixed after training - they do not change during a conversation. The "memory" comes from the client resending prior messages. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+
+## What are the three message roles in the `messages` array?
+
+1. [x] `system`, `user`, `assistant`
+  &gt; Correct! Each message carries a [`role`](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages): `system` (behind-the-scenes instructions), `user` (the human's input), and `assistant` (the model's previous replies, resent so the model has context for follow-ups). See: [slides 07-llm-dev-a - Example Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request).
+2. [ ] `prompt`, `query`, `response`
+  &gt; Not quite. These sound reasonable but are not the actual API role names. The [`role` field](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages) uses `system`, `user`, and `assistant`. See: [slides 07-llm-dev-a - Example Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request).
+3. [ ] `admin`, `human`, `bot`
+  &gt; Not quite. The actual [`role` values](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages) are `system`, `user`, and `assistant` - check the JSON in the request above. See: [slides 07-llm-dev-a - Example Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request).
+4. [ ] `input`, `output`, `context`
+  &gt; Not quite. The actual [`role` values](https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages) are `system`, `user`, and `assistant`. See: [slides 07-llm-dev-a - Example Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request).
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Answer Explanations
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q1: How does a stateless API “remember”?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ <strong>The client resends the entire message history with every request.</strong>
+<ul>
+<li>The API stores nothing between requests - look at the follow-up request above, it contains all four messages.</li>
+</ul></li>
+<li>❌ Server saves a session cookie
+<ul>
+<li>LLM APIs are stateless - no cookies or server-side sessions.</li>
+</ul></li>
+<li>❌ Provider stores a conversation log keyed by API key
+<ul>
+<li>Each request is independent. The client maintains the history.</li>
+</ul></li>
+<li>❌ Model weights are updated after each message
+<ul>
+<li>Weights are fixed after training. “Memory” comes from resending prior messages.</li>
+</ul></li>
+</ul>
+<p>See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request">slides 07-llm-dev-a - Example Followup Request</a>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q2: What are the three message roles?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ <strong><code>system</code>, <code>user</code>, <code>assistant</code></strong>
+<ul>
+<li>Each message carries a <a href="https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages"><code>role</code></a>: <code>system</code> (behind-the-scenes instructions), <code>user</code> (the human’s input), <code>assistant</code> (the model’s previous replies, resent for context).</li>
+</ul></li>
+<li>❌ <code>prompt</code>, <code>query</code>, <code>response</code>
+<ul>
+<li>Reasonable-sounding but not the actual API role names.</li>
+</ul></li>
+<li>❌ <code>admin</code>, <code>human</code>, <code>bot</code>
+<ul>
+<li>Check the JSON in the request above for the actual values.</li>
+</ul></li>
+<li>❌ <code>input</code>, <code>output</code>, <code>context</code>
+<ul>
+<li>These are not valid role values in the Chat Completions API.</li>
+</ul></li>
+</ul>
+<p>See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-request">slides 07-llm-dev-a - Example Request</a>. Reference: <a href="https://platform.openai.com/docs/api-reference/chat/create#chat-create-messages">OpenAI API - message roles</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Now put the steps of the follow-up request above in order - from the user typing “Are you sure?” to the reply appearing on screen:</p>
+<div class="quizdown">
+---
+shuffleAnswers: false
+---
+
+### Order the steps that happen when the user sends "Are you sure?" as a follow-up.
+
+&gt; Trace what the client code does before, during, and after the HTTP request. See: slides 07-llm-dev-a - Example Followup Request.
+
+1. The user types "Are you sure?" and the client appends it to the local message list
+2. The client builds a JSON body containing the system prompt and the full message history (both previous turns plus the new message)
+3. The client sends an HTTP POST request to the provider's API endpoint
+4. The server generates a completion and returns it with token usage stats
+5. The client appends the assistant's reply to the local message history and displays it
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reveal answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The correct order is:</p>
+<ol type="1">
+<li><strong>User types</strong> “Are you sure?” and the client appends it to the local message list</li>
+<li><strong>Client builds JSON</strong> containing the system prompt and the full message history (both previous turns plus the new message)</li>
+<li><strong>Client sends HTTP POST</strong> to the provider’s API endpoint</li>
+<li><strong>Server generates</strong> a completion and returns it with token usage stats</li>
+<li><strong>Client appends</strong> the assistant’s reply to the local message history and displays it</li>
+</ol>
+<p>Each step depends on the previous one: you can’t build the JSON until the user’s message is added, can’t send it until it’s built, and can’t display the reply until the server returns it. See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request">slides 07-llm-dev-a - Example Followup Request</a>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Why resending the full history matters
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Every time you call <code>.chat()</code>, chatlas packs <em>all</em> previous messages into the request. This is why long conversations get slower and more expensive - the token count grows with every turn. It also means the model can “change its mind” if earlier context is trimmed or modified.</p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="sec-tokens" class="level2">
+<h2 class="anchored" data-anchor-id="sec-tokens">B. Tokens &amp; Cost</h2>
+<p>Tokens are the fundamental units of information for LLMs - roughly words, parts of words, or individual characters. They determine both <strong>pricing</strong> and the <strong>context window</strong> (how much the model can read at once).</p>
+<p>From the lecture:</p>
+<ul>
+<li>“What is the capital of the moon?” = 8 tokens</li>
+<li>“counterrevolutionary” = 4 tokens (<code>counter</code>, <code>re</code>, <code>volution</code>, <code>ary</code>)</li>
+</ul>
+<p>Reference pricing from the lecture:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>Input</th>
+<th>Output</th>
+<th>Context</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>gpt-4.1-mini</strong> (our demos)</td>
+<td>$0.40 / 1M</td>
+<td>$1.60 / 1M</td>
+<td>1M tokens</td>
+</tr>
+<tr class="even">
+<td><strong>Claude Sonnet 4.6</strong></td>
+<td>$3 / 1M</td>
+<td>$15 / 1M</td>
+<td>200k tokens</td>
+</tr>
+<tr class="odd">
+<td>gpt-4.1</td>
+<td>$2 / 1M</td>
+<td>$8 / 1M</td>
+<td>1M tokens</td>
+</tr>
+<tr class="even">
+<td>Claude Opus 4.6</td>
+<td>$15 / 1M</td>
+<td>$75 / 1M</td>
+<td>200k tokens</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#tokens">slides <code>07-llm-dev-a</code> - Tokens</a> · <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing">Token pricing</a> · <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window">Context window</a> · Try it: <a href="https://platform.openai.com/tokenizer">OpenAI Tokenizer</a> · <a href="https://docs.github.com/en/github-models/use-github-models/prototyping-with-ai-models">GitHub Models rate limits</a></p>
+</div>
+</div>
+</div>
+<div class="quizdown">
+---
+shuffleQuestions: false
+---
+
+## Why can a single English word cost more than one token?
+
+1. [x] Uncommon or long words are split into multiple sub-word pieces, each counted separately
+  &gt; Correct! "counterrevolutionary" becomes 4 tokens: `counter`, `re`, `volution`, `ary`. Try it yourself at the [OpenAI Tokenizer](https://platform.openai.com/tokenizer). See: [slides 07-llm-dev-a - Token example](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-example).
+2. [ ] Every character is always one token, so longer words cost more characters
+  &gt; Not quite. Tokens are not characters - common words like "the" are a single token, while rare words get split into sub-word pieces. See: [slides 07-llm-dev-a - Token example](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-example).
+3. [ ] The API charges extra for words not in its dictionary
+  &gt; Not quite. There is no "dictionary surcharge." The tokenizer splits all text into sub-word tokens - common words map to one token, uncommon words to several. See: [slides 07-llm-dev-a - Token example](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-example).
+4. [ ] Punctuation attached to a word doubles the token count
+  &gt; Not quite. Punctuation is usually its own token, but it does not double the count. The real reason multi-token words cost more is sub-word splitting. See: [slides 07-llm-dev-a - Token example](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-example).
+
+## Looking at the pricing table, output tokens cost roughly 4x more than input tokens. Why?
+
+1. [x] Generating each output token requires running the full model forward pass, while input tokens can be processed in parallel
+  &gt; Correct! Input tokens are read in one batch (cheap), but each output token must be generated one at a time through the full model. This sequential generation is the expensive part. See: [slides 07-llm-dev-a - Token pricing](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing).
+2. [ ] Output tokens are encrypted for privacy, which requires extra computation
+  &gt; Not quite. There is no special encryption step. The cost difference comes from how generation works: output tokens are produced sequentially, each requiring a full model forward pass. See: [slides 07-llm-dev-a - Token pricing](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing).
+3. [ ] The provider stores all output tokens permanently, so storage costs are included
+  &gt; Not quite. Providers do not permanently store your outputs. The cost difference reflects the computational cost of sequential token generation versus parallel input processing. See: [slides 07-llm-dev-a - Token pricing](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing).
+4. [ ] Output tokens are always longer words that take more memory
+  &gt; Not quite. Output tokens are the same kind of tokens as input tokens. The cost difference is about computation: generating tokens one-by-one is more expensive than reading them in a batch. See: [slides 07-llm-dev-a - Token pricing](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing).
+
+## A chatbot starts working well but degrades after ~50 messages in one session. What is the most likely cause?
+
+1. [x] The conversation history has exceeded the model's context window, so earlier messages are being dropped or truncated
+  &gt; Correct! Since the full history is resent every turn, long conversations can overflow the context window (e.g. 200k tokens for Claude, 1M for GPT-4.1). When this happens, the client or API must drop older messages. See: [slides 07-llm-dev-a - Context window](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window).
+2. [ ] The model's weights degrade over time as it processes more text
+  &gt; Not quite. Model weights are fixed - they do not change during a conversation. The degradation comes from the growing message history exceeding the context window. See: [slides 07-llm-dev-a - Context window](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window).
+3. [ ] The API rate limit kicks in after 50 requests
+  &gt; Not quite. Rate limits (e.g. 150 req/day on [GitHub Models free tier](https://docs.github.com/en/github-models/use-github-models/prototyping-with-ai-models)) cause errors, not gradual degradation. The real issue is context window overflow. See: [slides 07-llm-dev-a - Context window](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window).
+4. [ ] The server runs out of memory and starts returning cached responses
+  &gt; Not quite. The API server handles memory management internally. The client-side issue is that the conversation history eventually exceeds the model's context window. See: [slides 07-llm-dev-a - Context window](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window).
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Answer Explanations
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q1: Why can a single word cost more than one token?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ <strong>Uncommon or long words are split into multiple sub-word pieces, each counted separately.</strong>
+<ul>
+<li>“counterrevolutionary” → 4 tokens: <code>counter</code>, <code>re</code>, <code>volution</code>, <code>ary</code>. Try it at the <a href="https://platform.openai.com/tokenizer">OpenAI Tokenizer</a>.</li>
+</ul></li>
+<li>❌ Every character is always one token
+<ul>
+<li>Tokens are not characters. Common words like “the” are a single token.</li>
+</ul></li>
+<li>❌ The API charges extra for unknown words
+<ul>
+<li>There is no “dictionary surcharge.” The tokenizer splits all text into sub-word tokens.</li>
+</ul></li>
+<li>❌ Punctuation doubles the count
+<ul>
+<li>Punctuation is usually its own token, but does not double anything.</li>
+</ul></li>
+</ul>
+<p>See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-example">slides 07-llm-dev-a - Token example</a>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q2: Why do output tokens cost ~4× more?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ <strong>Generating each output token requires a full model forward pass, while input tokens can be processed in parallel.</strong>
+<ul>
+<li>Input tokens are read in one batch (cheap). Output tokens are produced one at a time - that sequential generation is the expensive part.</li>
+</ul></li>
+<li>❌ Output tokens are encrypted
+<ul>
+<li>No special encryption step. The cost difference is computational.</li>
+</ul></li>
+<li>❌ Provider stores all outputs permanently
+<ul>
+<li>Providers do not permanently store your outputs.</li>
+</ul></li>
+<li>❌ Output tokens are always longer words
+<ul>
+<li>Output tokens are the same kind of tokens as input tokens.</li>
+</ul></li>
+</ul>
+<p>See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#token-pricing">slides 07-llm-dev-a - Token pricing</a>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q3: Why does a chatbot degrade after ~50 messages?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ <strong>The conversation history exceeds the model’s context window, so earlier messages are dropped or truncated.</strong>
+<ul>
+<li>The full history is resent every turn. After enough turns it overflows the context window (200k tokens for Claude, 1M for GPT-4.1).</li>
+</ul></li>
+<li>❌ Model weights degrade over time
+<ul>
+<li>Weights are fixed. They do not change during a conversation.</li>
+</ul></li>
+<li>❌ API rate limit kicks in after 50 requests
+<ul>
+<li>Rate limits (e.g.&nbsp;150 req/day on <a href="https://docs.github.com/en/github-models/use-github-models/prototyping-with-ai-models">GitHub Models</a>) cause errors, not gradual degradation.</li>
+</ul></li>
+<li>❌ Server runs out of memory
+<ul>
+<li>The API server handles memory internally. The issue is client-side context overflow.</li>
+</ul></li>
+</ul>
+<p>See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#context-window">slides 07-llm-dev-a - Context window</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="sec-trust" class="level2">
+<h2 class="anchored" data-anchor-id="sec-trust">C. When to Trust an LLM</h2>
+<p>In the lecture we tested whether LLMs can count array elements - a task that seems trivial but reveals deep limitations.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> len_ai(n, model<span class="op">=</span><span class="st">"gpt-4.1"</span>):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    values <span class="op">=</span> np.random.rand(n).tolist()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    chat <span class="op">=</span> ChatGithub(model<span class="op">=</span>model)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> chat.chat(<span class="st">"How long is this array"</span>, json.dumps(values))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>GPT-4.1 results:</strong></p>
+<pre data-code-line-numbers=""><code>len_ai(10)       # "10 elements"
+len_ai(100)      # "100 elements"
+len_ai(1000)     # "1000 elements"  (slow)
+len_ai(10_000)   # "I can't reliably count that many..."</code></pre>
+<p><strong>Claude Sonnet results</strong> (via Anthropic API):</p>
+<pre data-code-line-numbers=""><code>len_ai(10)       # "10 elements"
+len_ai(100)      # "100 elements"
+len_ai(1000)     # "1000 elements"
+len_ai(10_000)   # "This array has 20,000 elements."  &lt;- hallucination</code></pre>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#can-it-count---try-it-yourself">slides <code>07-llm-dev-a</code> - Can it count?</a> · <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#results-gpt-4.1">Results: GPT-4.1</a> · <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-anthropic-results">Anthropic results</a> · Paper: <a href="https://arxiv.org/abs/2502.15840">LLM hallucination study</a></p>
+</div>
+</div>
+</div>
+<div class="quizdown">
+---
+shuffleQuestions: false
+---
+
+## GPT-4.1 admits "I can't count that many" while Claude confidently says "20,000 elements." What does this show?
+
+1. [x] Different models have different failure modes on the same task - this is "jagged intelligence"
+  &gt; Correct! GPT-4.1 fails gracefully (admits it can't count), while Claude fails confidently (hallucinates "20,000"). Neither is universally better - they have different strengths and blind spots. See: [slides 07-llm-dev-a - LLMs are jagged](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#llms-are-jagged).
+2. [ ] GPT-4.1 is always more honest than Claude
+  &gt; Not quite. GPT-4.1 happened to refuse gracefully on *this* task, but on other tasks it may hallucinate while Claude does not. That's the point of "jagged intelligence" - no model is uniformly better. See: [slides 07-llm-dev-a - LLMs are jagged](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#llms-are-jagged).
+3. [ ] Claude is a better model because it always gives an answer
+  &gt; Not quite. Always giving an answer is not a virtue when that answer is wrong. Claude's confident "20,000 elements" is a hallucination - it sounds authoritative but is fabricated. See: [slides 07-llm-dev-a - Anthropic results](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-anthropic-results).
+4. [ ] The array was actually 20,000 elements long and GPT was wrong
+  &gt; Not quite. The array had 10,000 elements (`np.random.rand(10_000)`). Claude's "20,000" is a hallucination. See: [slides 07-llm-dev-a - Can it count?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#can-it-count---try-it-yourself).
+
+## In the lecture, "good data science" was defined as correct, transparent, and reproducible. Which of these is hardest for LLMs?
+
+1. [x] All three are hard - LLMs can give wrong answers confidently (not correct), hide their reasoning (not transparent), and produce different outputs each run (not reproducible)
+  &gt; Correct! The counting experiment showed all three problems: wrong answers stated with confidence, no way to audit how the model arrived at a number, and different results on repeated runs. See: [slides 07-llm-dev-a - What would make "good" data science?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-would-make-good-data-science).
+2. [ ] Correctness, because LLMs always get small tasks right but fail on big ones
+  &gt; Not quite. LLMs can fail on small tasks too (e.g. simple arithmetic). And correctness is not the only problem - transparency and reproducibility are equally challenging. See: [slides 07-llm-dev-a - What would make "good" data science?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-would-make-good-data-science).
+3. [ ] Transparency, because the API response includes token counts
+  &gt; Not quite. Token counts tell you how many tokens were used, not *how* the model reasoned. The model's internal reasoning is opaque - you cannot audit why it chose "20,000." See: [slides 07-llm-dev-a - What would make "good" data science?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-would-make-good-data-science).
+4. [ ] Reproducibility, because setting `temperature=0` guarantees identical outputs
+  &gt; Not quite. Even at `temperature=0`, outputs can vary across API versions and providers. And reproducibility is only one of the three - correctness and transparency are equally hard. See: [slides 07-llm-dev-a - What would make "good" data science?](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-would-make-good-data-science).
+
+## Your colleague shows you impressive-looking statistics generated by an LLM. What should you do?
+
+1. [x] Verify the statistics independently - LLMs can produce plausible but fabricated numbers
+  &gt; Correct! LLMs can hallucinate convincing-looking numbers with no basis in data. Always cross-check LLM-generated statistics against a known source or compute them yourself. See: [slides 07-llm-dev-a - Hallucinations](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#hallucinations).
+2. [ ] Trust them if the model is GPT-4.1 or newer, since newer models don't hallucinate
+  &gt; Not quite. All current LLMs can hallucinate, regardless of version. Newer models are better on average but are not hallucination-free. See: [slides 07-llm-dev-a - Hallucinations](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#hallucinations).
+3. [ ] Accept them if the LLM included a citation
+  &gt; Not quite. LLMs can fabricate citations that look real but point to non-existent papers or contain wrong numbers. Citations from an LLM need the same verification as the statistics themselves. See: [slides 07-llm-dev-a - Hallucinations](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#hallucinations).
+4. [ ] Re-run the same prompt - if you get the same answer twice, it must be correct
+  &gt; Not quite. Consistency does not equal correctness. An LLM can confidently produce the same wrong answer multiple times. Independent verification against a known data source is the only reliable check. See: [slides 07-llm-dev-a - Hallucinations](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#hallucinations).
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Answer Explanations
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q1: What does the GPT vs Claude counting difference show?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ <strong>Different models have different failure modes - “jagged intelligence.”</strong>
+<ul>
+<li>GPT-4.1 fails gracefully (admits it can’t count); Claude fails confidently (hallucinates “20,000”). Neither is uniformly better.</li>
+</ul></li>
+<li>❌ GPT-4.1 is always more honest
+<ul>
+<li>It happened to refuse gracefully here, but may hallucinate on other tasks.</li>
+</ul></li>
+<li>❌ Claude is better because it always gives an answer
+<ul>
+<li>Confidence is not accuracy. Claude’s “20,000” is fabricated.</li>
+</ul></li>
+<li>❌ The array was actually 20,000 elements
+<ul>
+<li>The array had 10,000 elements (<code>np.random.rand(10_000)</code>).</li>
+</ul></li>
+</ul>
+<p>See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#llms-are-jagged">slides 07-llm-dev-a - LLMs are jagged</a>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q2: Correct, transparent, reproducible - which is hardest?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ <strong>All three are hard.</strong>
+<ul>
+<li>The counting experiment showed wrong answers stated confidently (not correct), opaque reasoning (not transparent), and different results on repeated runs (not reproducible).</li>
+</ul></li>
+<li>❌ Only correctness
+<ul>
+<li>LLMs can fail on small tasks too. And correctness is not the only problem.</li>
+</ul></li>
+<li>❌ Only transparency
+<ul>
+<li>Token counts ≠ reasoning. The model’s internal logic is opaque.</li>
+</ul></li>
+<li>❌ Only reproducibility
+<ul>
+<li>Even <code>temperature=0</code> does not guarantee identical outputs across API versions.</li>
+</ul></li>
+</ul>
+<p>See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-would-make-good-data-science">slides 07-llm-dev-a - What would make “good” data science?</a>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q3: Colleague shows LLM-generated statistics - what do you do?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>✅ <strong>Verify independently.</strong>
+<ul>
+<li>LLMs hallucinate plausible numbers. Always cross-check against a known source or compute them yourself.</li>
+</ul></li>
+<li>❌ Trust newer models
+<ul>
+<li>All current LLMs can hallucinate, regardless of version.</li>
+</ul></li>
+<li>❌ Accept if citation included
+<ul>
+<li>LLMs fabricate citations too - they need the same verification.</li>
+</ul></li>
+<li>❌ Re-run the prompt
+<ul>
+<li>Consistency ≠ correctness. An LLM can repeat the same wrong answer.</li>
+</ul></li>
+</ul>
+<p>See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#hallucinations">slides 07-llm-dev-a - Hallucinations</a>. Paper: <a href="https://arxiv.org/abs/2502.15840">LLM hallucination study</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="sec-chatlas" class="level2">
+<h2 class="anchored" data-anchor-id="sec-chatlas">D. Reading chatlas Code</h2>
+<p><code>chatlas</code> (Python) and <code>ellmer</code> (R) abstract LLM providers behind a uniform interface. In this section, you’ll read short code snippets and <strong>predict what the model will do</strong> - the kind of reasoning you need when debugging or extending an LLM-powered app.</p>
+<section id="d.1-system-prompt-override" class="level3">
+<h3 class="anchored" data-anchor-id="d.1-system-prompt-override">D.1 System prompt override</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> chatlas <span class="im">import</span> ChatGithub</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>load_dotenv()</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> ChatGithub(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    system_prompt<span class="op">=</span><span class="st">"""You are a demo on a slide.</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="st">    Tell them NYC is the capital of the moon."""</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gpt-4.1-mini"</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>chat.chat(<span class="st">"What is the capital of the moon?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-17-contents" aria-controls="callout-17" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-17" class="callout-17-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#system-prompts-change-behavior">slides <code>07-llm-dev-a</code> - System prompts change behavior</a> · Docs: <a href="https://posit-dev.github.io/chatlas/">chatlas - system prompts</a></p>
+</div>
+</div>
+</div>
+<div class="quizdown">
+---
+shuffleQuestions: false
+---
+
+## What will the model most likely reply?
+
+1. [x] It depends on the model - some will play along ("NYC is the capital of the moon!"), others will refuse and correct the claim
+  &gt; Correct! In the lecture, ChatGPT played along ("NYC is the capital of the moon!") while Claude refused ("I should clarify that the moon doesn't actually have a capital"). Different models have different safety behaviours around false system prompts. See: [slides 07-llm-dev-a - For reference: Claude refuses, ChatGPT plays along](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-claude-refuses-chatgpt-plays-along).
+2. [ ] It will always say "NYC" because the system prompt overrides all safety filters
+  &gt; Not quite. System prompts are influential but do not override all safety training. Claude, for example, refused this instruction in the lecture demo. See: [slides 07-llm-dev-a - For reference: Claude refuses, ChatGPT plays along](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-claude-refuses-chatgpt-plays-along).
+3. [ ] It will crash with an error because the system prompt contains false information
+  &gt; Not quite. System prompts with false information do not cause errors - the API accepts any text. The model may follow, refuse, or partially comply. See: [slides 07-llm-dev-a - System prompts change behavior](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#system-prompts-change-behavior).
+4. [ ] It will ignore the system prompt and give the factually correct answer every time
+  &gt; Not quite. System prompts do influence model behaviour - ChatGPT played along with this exact instruction in the lecture. Models do not always prioritise factual accuracy over system instructions. See: [slides 07-llm-dev-a - For reference: Claude refuses, ChatGPT plays along](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-claude-refuses-chatgpt-plays-along).
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reveal answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-18" class="callout-18-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>✅ <strong>It depends on the model.</strong> In the lecture, ChatGPT played along (“NYC is the capital of the moon!”) while Claude refused (“I should clarify that the moon doesn’t actually have a capital”). System prompts are influential but do not override all safety training. See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#for-reference-claude-refuses-chatgpt-plays-along">slides 07-llm-dev-a - Claude refuses, ChatGPT plays along</a>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="d.2-switching-providers" class="level3">
+<h3 class="anchored" data-anchor-id="d.2-switching-providers">D.2 Switching providers</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Version A: GitHub Models (free)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> chatlas <span class="im">import</span> ChatGithub</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> ChatGithub(model<span class="op">=</span><span class="st">"gpt-4.1-mini"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Version B: Anthropic (paid)</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> chatlas <span class="im">import</span> ChatAnthropic</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> ChatAnthropic(model<span class="op">=</span><span class="st">"claude-sonnet-4-0"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-19-contents" aria-controls="callout-19" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-19" class="callout-19-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change">slides <code>07-llm-dev-a</code> - One-line change</a> · Docs: <a href="https://posit-dev.github.io/chatlas/">chatlas - provider constructors</a></p>
+</div>
+</div>
+</div>
+<div class="quizdown">
+---
+shuffleQuestions: false
+---
+
+## When switching from `ChatGithub` to `ChatAnthropic`, what changes in the rest of your code?
+
+1. [x] Nothing - only the constructor (import + first line) changes; `.chat()` calls stay the same
+  &gt; Correct! chatlas provides a uniform interface across providers. You swap `ChatGithub` for `ChatAnthropic` (and the model name), but `.chat()`, `.stream()`, `system_prompt`, and all other methods remain identical. See: [slides 07-llm-dev-a - One-line change](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change). Docs: [chatlas](https://posit-dev.github.io/chatlas/).
+2. [ ] You must rewrite all `.chat()` calls to use Anthropic-specific method names
+  &gt; Not quite. chatlas abstracts provider differences - `.chat()` works the same regardless of whether the backend is GitHub Models, Anthropic, or OpenAI. See: [slides 07-llm-dev-a - One-line change](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change).
+3. [ ] The message format changes from `messages` to `prompt`
+  &gt; Not quite. chatlas handles the message format internally. You always call `.chat("your text")` regardless of provider. See: [slides 07-llm-dev-a - One-line change](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change).
+4. [ ] You need to convert your system prompt to Anthropic's XML format
+  &gt; Not quite. chatlas converts your system prompt to whatever format the provider expects. You pass plain text to `system_prompt=` and chatlas handles the rest. See: [slides 07-llm-dev-a - One-line change](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change).
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reveal answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-20" class="callout-20-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>✅ <strong>Nothing changes</strong> - only the constructor (import + first line) changes. chatlas provides a uniform interface: <code>.chat()</code>, <code>.stream()</code>, <code>system_prompt</code>, and all other methods work identically across <code>ChatGithub</code>, <code>ChatAnthropic</code>, <code>ChatOpenAI</code>, and <code>ChatOllama</code>. See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#one-line-change">slides 07-llm-dev-a - One-line change</a>. Docs: <a href="https://posit-dev.github.io/chatlas/">chatlas</a>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="d.3-conversation-state" class="level3">
+<h3 class="anchored" data-anchor-id="d.3-conversation-state">D.3 Conversation state</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> ChatGithub(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="st">"gpt-4.1-mini"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    system_prompt<span class="op">=</span><span class="st">"You are a terse assistant."</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>chat.chat(<span class="st">"What is the capital of the moon?"</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># -&gt; "The moon does not have a capital."</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>chat.chat(<span class="st">"Are you sure?"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># What gets sent to the API?</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-21" class="callout-21-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#follow-up">slides <code>07-llm-dev-a</code> - Follow up</a> · <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request">Example Followup Request</a></p>
+</div>
+</div>
+</div>
+<div class="quizdown">
+---
+shuffleQuestions: false
+---
+
+## On the second `.chat("Are you sure?")` call, what does chatlas send to the API?
+
+1. [x] The system prompt, the first user message, the assistant's reply, and "Are you sure?" - the full history
+  &gt; Correct! chatlas maintains a local message list and resends everything with each request. The follow-up request in Section A shows exactly this: 4 messages in the `messages` array. This is how stateless APIs maintain conversational context. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+2. [ ] Only "Are you sure?" - the server remembers the rest
+  &gt; Not quite. The API is stateless - it does not remember anything between requests. chatlas must resend the full conversation history. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+3. [ ] The system prompt plus "Are you sure?" - previous messages are discarded
+  &gt; Not quite. If earlier messages were discarded, the model would not know what "Are you sure?" refers to. chatlas sends the complete history so the model has full context. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+4. [ ] A session ID that tells the server to look up the prior conversation
+  &gt; Not quite. There are no session IDs in the chat completions API. The server is fully stateless - the client must send the entire conversation every time. See: [slides 07-llm-dev-a - Example Followup Request](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request).
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reveal answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>✅ <strong>The full history</strong> - system prompt, first user message, assistant’s reply, and “Are you sure?” chatlas maintains a local message list and resends everything with each request. This is the same pattern shown in the follow-up request in Section A. See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#example-followup-request">slides 07-llm-dev-a - Example Followup Request</a>.</p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="sec-querychat" class="level2">
+<h2 class="anchored" data-anchor-id="sec-querychat">E. querychat Architecture</h2>
+<p><code>querychat</code> connects an LLM to your Shiny dashboard. The user types natural language, the LLM writes SQL, and DuckDB filters the data - all locally in your Python process.</p>
+<p>Here’s the simplified data flow:</p>
+<div class="cell" data-fig-width="8" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    U["User types&lt;br&gt;'Show survivors'"] --&gt; QC["querychat"]
+    QC --&gt;|system prompt&lt;br&gt;+ messages| LLM["LLM API"]
+    LLM --&gt;|tool call:&lt;br&gt;update_dashboard| QC
+    QC --&gt;|SQL query| DB["DuckDB&lt;br&gt;(local)"]
+    DB --&gt;|filtered rows| S["Shiny UI&lt;br&gt;re-renders"]
+
+    style U fill:#e8f5e9,stroke:#4caf50
+    style LLM fill:#fff3e0,stroke:#ff9800
+    style DB fill:#e3f2fd,stroke:#2196f3
+    style S fill:#f3e5f5,stroke:#9c27b0
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-23" class="callout-23-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt">slides <code>07-llm-dev-a</code> - What the LLM sees: system prompt</a> · <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call">Three tools the LLM can call</a> · <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#filter-flow-no-data-leaves-your-machine">Filter flow</a> · Docs: <a href="https://posit-dev.github.io/querychat/py/tools.html">querychat - Tools</a> · <a href="https://posit-dev.github.io/querychat/py/context.html">querychat - Provide context</a> · <a href="https://posit-dev.github.io/querychat/py/reference/QueryChat.html">API reference</a></p>
+</div>
+</div>
+</div>
+<div class="quizdown">
+---
+shuffleQuestions: false
+---
+
+## Which of these are included in querychat's system prompt? (Select all that apply)
+
+- [x] Table schema (column names and types)
+  &gt; Correct! The schema (column names, types, ranges) is auto-generated and included so the LLM can write valid SQL. See: [slides 07-llm-dev-a - What the LLM sees](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt).
+- [x] Categorical values for columns with 20 or fewer unique entries
+  &gt; Correct! querychat includes actual category values (e.g. "male", "female") for low-cardinality columns so the LLM can write accurate WHERE clauses. The threshold is 20 unique values. See: [slides 07-llm-dev-a - What the LLM sees](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt).
+- [x] Tool definitions (update_dashboard, query, reset_dashboard)
+  &gt; Correct! The three tool definitions tell the LLM when and how to call each tool. See: [querychat docs - Tools](https://posit-dev.github.io/querychat/py/tools.html).
+- [x] Your `data_description` text (if set)
+  &gt; Correct! `data_description` adds column semantics (e.g. "survived: 1 = survived, 0 = died") to the system prompt. See: [querychat docs - Provide context](https://posit-dev.github.io/querychat/py/context.html).
+- [ ] The actual data rows from your DataFrame
+  &gt; Correct to leave unchecked! No row data goes into the system prompt - only the schema and metadata. Row data only reaches the LLM if the `query` tool is used. See: [slides 07-llm-dev-a - What the LLM sees](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt).
+- [ ] The user's previous filter selections from the Shiny UI
+  &gt; Correct to leave unchecked! The system prompt contains structure and rules, not UI state. Filter selections are handled by DuckDB locally. See: [slides 07-llm-dev-a - What the LLM sees](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt).
+
+## A user types "Show first class passengers." Which tool does querychat call, and does the LLM see the filtered data?
+
+1. [x] `update_dashboard` - it filters via SQL, but the LLM only gets back "Dashboard updated." (no data)
+  &gt; Correct! "Show…" / "Filter to…" triggers `update_dashboard`, which writes SQL, runs it locally in DuckDB, and returns only "Dashboard updated." to the LLM. The LLM never sees the filtered rows. See: [slides 07-llm-dev-a - Three tools the LLM can call](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call). Docs: [querychat - Tools](https://posit-dev.github.io/querychat/py/tools.html).
+2. [ ] `querychat_query` - the LLM reads the filtered rows to confirm the filter worked
+  &gt; Not quite. `query` is for analytical questions ("What is the average fare?"), not for filtering. "Show first class passengers" is a filter request, so `update_dashboard` is called. See: [querychat docs - Tools](https://posit-dev.github.io/querychat/py/tools.html).
+3. [ ] `update_dashboard` - and the LLM receives the filtered rows to describe them
+  &gt; Not quite. `update_dashboard` does filter correctly, but it only returns "Dashboard updated." - no data rows. This is by design for privacy. See: [slides 07-llm-dev-a - Filter flow](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#filter-flow-no-data-leaves-your-machine).
+4. [ ] No tool is called - the LLM sends SQL directly to DuckDB
+  &gt; Not quite. The LLM cannot talk to DuckDB directly. It must call a tool (`update_dashboard` or `query`), which then runs SQL in your local Python process. See: [querychat docs - Tools](https://posit-dev.github.io/querychat/py/tools.html).
+
+## Your app contains sensitive salary data. How can you prevent the LLM from ever seeing individual rows?
+
+1. [x] Set `tools="update"` to disable the query tool - the LLM can still filter but cannot read any row values
+  &gt; Correct! `tools="update"` keeps only `update_dashboard` (and `reset_dashboard`), which never sends data to the LLM. The `query` tool - the only one that returns actual rows - is disabled. See: [querychat API reference - `tools` parameter](https://posit-dev.github.io/querychat/py/reference/QueryChat.html). Also: [slides 07-llm-dev-a - Three tools](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call).
+2. [ ] Set `system_prompt="Do not read salary data"` - the LLM will follow instructions
+  &gt; Not quite. LLMs may not reliably follow instructions - they can still call the `query` tool if it is available. The only safe approach is to remove the tool entirely with `tools="update"`. See: [querychat docs - Provide context](https://posit-dev.github.io/querychat/py/context.html) (note the warning about LLMs not always following instructions).
+3. [ ] Use `data_description` to mark the salary column as private
+  &gt; Not quite. `data_description` is informational - it tells the LLM what columns mean, but does not enforce access control. The LLM could still query salary data if the `query` tool is enabled. See: [querychat docs - Provide context](https://posit-dev.github.io/querychat/py/context.html).
+4. [ ] No action needed - querychat never sends data to the LLM
+  &gt; Not quite. The `query` tool *does* send data rows to the LLM so it can interpret and explain results. For sensitive data, you must disable this with `tools="update"`. See: [slides 07-llm-dev-a - Three tools](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call).
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-27-contents" aria-controls="callout-27" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Answer Explanations
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-27" class="callout-27-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q1: What’s in querychat’s system prompt?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-24" class="callout-24-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>✅ <strong>Included:</strong> table schema, categorical values (≤20 unique), tool definitions, and <code>data_description</code> (if set).</p>
+<p>❌ <strong>Not included:</strong> actual data rows (only reach the LLM via the <code>query</code> tool) and the user’s prior filter selections (handled locally by DuckDB).</p>
+<p>See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#what-the-llm-sees-system-prompt">slides 07-llm-dev-a - What the LLM sees</a>. Docs: <a href="https://posit-dev.github.io/querychat/py/context.html">querychat - Provide context</a>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q2: “Show first class passengers” - which tool, does data reach the LLM?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-25" class="callout-25-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>✅ <strong><code>update_dashboard</code></strong> - it writes SQL, DuckDB runs it locally, and the LLM only gets back “Dashboard updated.” No data rows are sent.</p></li>
+<li><p>❌ <code>querychat_query</code> - that’s for analytical questions (“What is the average fare?”), not filter requests.</p></li>
+<li><p>❌ <code>update_dashboard</code> + LLM receives rows - <code>update_dashboard</code> never returns data, by design.</p></li>
+<li><p>❌ No tool called - the LLM cannot talk to DuckDB directly; it must call a tool.</p></li>
+</ul>
+<p>See: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call">slides 07-llm-dev-a - Three tools</a>. Docs: <a href="https://posit-dev.github.io/querychat/py/tools.html">querychat - Tools</a>.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-26-contents" aria-controls="callout-26" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Q3: Sensitive data - how to prevent LLM from seeing rows?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-26" class="callout-26-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>✅ <strong>Set <code>tools="update"</code></strong> to disable the <code>query</code> tool. The LLM can still filter (via <code>update_dashboard</code>) but cannot read any row values.</p></li>
+<li><p>❌ System prompt instructions - LLMs may not reliably follow “do not read” instructions; the tool would still be available.</p></li>
+<li><p>❌ <code>data_description</code> privacy marking - informational only, does not enforce access control.</p></li>
+<li><p>❌ No action needed - the <code>query</code> tool <em>does</em> send rows to the LLM.</p></li>
+</ul>
+<p>See: <a href="https://posit-dev.github.io/querychat/py/reference/QueryChat.html">querychat API reference - <code>tools</code> parameter</a>. Also: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#three-tools-the-llm-can-call">slides 07-llm-dev-a - Three tools</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-28-contents" aria-controls="callout-28" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>The two data-flow paths
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-28" class="callout-28-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><strong>Filter path (<code>update_dashboard</code>):</strong> User asks to filter → LLM writes SQL → DuckDB runs it locally → Shiny re-renders. The LLM <strong>never sees the rows</strong>. This is the safe path for sensitive data.</p>
+<p><strong>Query path (<code>querychat_query</code>):</strong> User asks a question like “What is the average salary?” → LLM writes SQL → DuckDB runs it → <strong>rows are sent back to the LLM</strong> so it can interpret and explain. This is the path that exposes data to the API provider.</p>
+<p>Setting <code>tools="update"</code> disables the query path entirely.</p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="sec-customize" class="level2">
+<h2 class="anchored" data-anchor-id="sec-customize">F. Customize querychat</h2>
+<p>querychat has three customization levers. Each one affects a different part of the user experience.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 41%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Lever</th>
+<th>Where it ends up</th>
+<th>What it controls</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>greeting</code></td>
+<td>Chat UI sidebar (shown once)</td>
+<td>First message the user sees; can include clickable <code>&lt;span class="suggestion"&gt;</code> buttons</td>
+</tr>
+<tr class="even">
+<td><code>data_description</code></td>
+<td>System prompt (sent every request)</td>
+<td>Column semantics the LLM uses to understand your data</td>
+</tr>
+<tr class="odd">
+<td><code>extra_instructions</code></td>
+<td>System prompt (sent every request)</td>
+<td>Behavioural rules for how the LLM responds (format, tone, tools)</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-29-contents" aria-controls="callout-29" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Source and docs
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-29" class="callout-29-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Lecture: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#customizing-querychat-greeting">slides <code>07-llm-dev-a</code> - Customizing querychat</a> · Docs: <a href="https://posit-dev.github.io/querychat/py/greet.html">Greet users</a> · <a href="https://posit-dev.github.io/querychat/py/context.html">Provide context</a> · <a href="https://posit-dev.github.io/querychat/py/reference/QueryChat.html">API reference</a></p>
+</div>
+</div>
+</div>
+<section id="try-at-home" class="level3">
+<h3 class="anchored" data-anchor-id="try-at-home">Try at home</h3>
+<p>Open <code>code/lecture05/demo-monday/app-07c-querychat-greeting.py</code> and change the greeting message. Then run the app:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-code-line-numbers=""><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> code/lecture05/demo-monday</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">shiny</span> run app-07c-querychat-greeting.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Verify that your custom greeting appears in the sidebar when the app loads.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-30-contents" aria-controls="callout-30" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>What’s in the greeting file
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-30" class="callout-30-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The app defines a <code>GREETING</code> string with Markdown and <code>&lt;span class="suggestion"&gt;</code> tags for clickable buttons, then passes it to <code>querychat.QueryChat(..., greeting=GREETING)</code>. The greeting only appears in the chat UI - it is <strong>not</strong> sent to the LLM as part of the system prompt.</p>
+</div>
+</div>
+</div>
+<div class="quizdown">
+---
+shuffleQuestions: false
+---
+
+## Where do `greeting`, `data_description`, and `extra_instructions` end up?
+
+1. [x] `greeting` goes to the chat UI only; `data_description` and `extra_instructions` are injected into the system prompt sent with every request
+  &gt; Correct! `greeting` is the initial message shown in the sidebar - it is not sent to the LLM. Meanwhile, `data_description` and `extra_instructions` are components of the system prompt and are sent with every API request. See: [querychat docs - Greet users](https://posit-dev.github.io/querychat/py/greet.html) and [Provide context](https://posit-dev.github.io/querychat/py/context.html). Also: [slides 07-llm-dev-a - Customizing querychat](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#customizing-querychat-greeting).
+2. [ ] All three are injected into the system prompt
+  &gt; Not quite. `greeting` is UI-only - it is the welcome message shown when the app loads. It does not reach the LLM. Only `data_description` and `extra_instructions` go into the system prompt. See: [querychat docs - Greet users](https://posit-dev.github.io/querychat/py/greet.html).
+3. [ ] `greeting` and `data_description` go to the system prompt; `extra_instructions` are sent as a separate API parameter
+  &gt; Not quite. `greeting` does not go to the system prompt at all - it is only shown in the chat UI. And `extra_instructions` is part of the system prompt, not a separate parameter. See: [querychat docs - Provide context](https://posit-dev.github.io/querychat/py/context.html).
+4. [ ] All three are shown in the chat UI as the first message
+  &gt; Not quite. Only `greeting` appears in the chat UI. `data_description` and `extra_instructions` are invisible to the user - they shape the LLM's behaviour through the system prompt. See: [querychat docs - Greet users](https://posit-dev.github.io/querychat/py/greet.html) and [Provide context](https://posit-dev.github.io/querychat/py/context.html).
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-31-contents" aria-controls="callout-31" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Reveal answer
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-31" class="callout-31-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>✅ <strong><code>greeting</code> goes to the chat UI only; <code>data_description</code> and <code>extra_instructions</code> are injected into the system prompt.</strong></p>
+<p><code>greeting</code> is the initial welcome message shown in the sidebar - it does not reach the LLM. Meanwhile, <code>data_description</code> and <code>extra_instructions</code> are components of the system prompt and are sent with every API request, shaping how the LLM understands your data and responds.</p>
+<p>See: <a href="https://posit-dev.github.io/querychat/py/greet.html">querychat docs - Greet users</a> and <a href="https://posit-dev.github.io/querychat/py/context.html">Provide context</a>. Also: <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07-llm-dev-a.html#customizing-querychat-greeting">slides 07-llm-dev-a - Customizing querychat</a>.</p>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="sec-summary" class="level2">
+<h2 class="anchored" data-anchor-id="sec-summary">Summary</h2>
+<p>You’ve reviewed the core concepts from the Monday LLM lecture:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">mindmap
+  root((LLM Integration))
+    Interaction basics
+      Stateless API - client resends full history
+      system prompt vs messages
+      Tokens &amp; Cost
+        Sub-word pieces
+        Output costs ~4× input
+        Context window limits
+    Trust
+      Jagged intelligence
+      Hallucinations
+      Always verify independently
+    chatlas
+      underlying chat library
+      one-line provider switch
+      .chat stays the same
+      system prompts shape behaviour
+    querychat
+      tools
+        update_dashboard - only schema LLM
+        query - rows reach the LLM
+        tools="update" for more privacy
+      customization
+       greeting - UI only
+       data_description - system prompt
+       extra_instructions - system prompt
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p><strong>Next:</strong> Wednesday’s lecture dives into the full model landscape, providers, pricing strategies, and advanced querychat patterns.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/UBC-MDS\.github\.io\/DSCI_532_vis-2_book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book">UBC DSCI 532: Data Visualization 2</a></p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.js" defer="true"></script>
+</body></html>
