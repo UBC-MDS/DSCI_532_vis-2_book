@@ -31,3 +31,8 @@ anthropic
 chatlas
 inspect-ai
 #keplergl
+querychat
+chatlas
+python-dotenv
+numpy
+tiktoken
