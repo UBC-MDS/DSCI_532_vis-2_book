@@ -7,6 +7,7 @@ venv
 .DS_Store
 __pycache__/
 **/*.pyc
+.env
 
 # Local Netlify folder
 .netlify
