@@ -4,15 +4,16 @@ library(shiny)
 library(shinychat)
 library(ellmer)
 library(bslib)
-#library(dotenv)
+library(dotenv)
 library(promises)
 # Load environment variables for API keys
-#load_dot_env("../.env")
+load_dot_env("../../.env")
 
 # Define UI
 ui <- page_fluid(
   tags$head(
-    tags$style(HTML("
+    tags$style(HTML(
+      "
 
       shiny-chat-message[role='assistant']{
         padding: 0.5rem 1rem;
@@ -31,19 +32,20 @@ ui <- page_fluid(
       shiny-chat-message[role='assistant'][data-model='gpt-4o-mini'].colored shiny-markdown-stream p:first-child::before {
         content: 'gpt-4o-mini: ';
       }
-      shiny-chat-message[role='assistant'][data-model='claude-3-5-sonnet-latest'].colored {
+      shiny-chat-message[role='assistant'][data-model='claude-sonnet-4-5-20250929'].colored {
         background-color:rgb(228, 216, 246) !important;
       }
-      shiny-chat-message[role='assistant'][data-model='claude-3-5-sonnet-latest'].colored shiny-markdown-stream p:first-child::before {
-        content: 'claude-3-5-sonnet-latest: ';
+      shiny-chat-message[role='assistant'][data-model='claude-sonnet-4-5-20250929'].colored shiny-markdown-stream p:first-child::before {
+        content: 'claude-sonnet-4-5-20250929: ';
       }
-      shiny-chat-message[role='assistant'][data-model='claude-3-5-haiku-latest'].colored {
+      shiny-chat-message[role='assistant'][data-model='claude-haiku-4-5-20251001'].colored {
         background-color:rgb(218, 230, 250) !important;
       }
-      shiny-chat-message[role='assistant'][data-model='claude-3-5-haiku-latest'].colored shiny-markdown-stream p:first-child::before {
-        content: 'claude-3-5-haiku-latest: ';
+      shiny-chat-message[role='assistant'][data-model='claude-haiku-4-5-20251001'].colored shiny-markdown-stream p:first-child::before {
+        content: 'claude-haiku-4-5-20251001: ';
       }
-    "))
+    "
+    ))
   ),
 
   card(
@@ -52,7 +54,8 @@ ui <- page_fluid(
     ),
 
     # Add JavaScript for handling message coloring
-    tags$script(HTML("
+    tags$script(HTML(
+      "
       // Handle setting model for latest message
       Shiny.addCustomMessageHandler('set_last_message_model', function(data) {
         const lastMessage = document.querySelector('shiny-chat-message[role=\"assistant\"]:last-child');
@@ -79,7 +82,8 @@ ui <- page_fluid(
       $(document).on('change', '#show_details', function() {
         updateMessageColors(this.checked);
       });
-    ")),
+    "
+    )),
 
     # Chat interface
     chat_ui("chat"),
@@ -129,7 +133,7 @@ server <- function(input, output, session) {
     ),
     ellmer::chat_anthropic(
       system_prompt = system_prompt,
-      model = "claude-3-5-sonnet-latest"
+      model = "claude-sonnet-4-5-20250929"
     ),
     ellmer::chat_openai(
       system_prompt = system_prompt,
@@ -137,7 +141,7 @@ server <- function(input, output, session) {
     ),
     ellmer::chat_anthropic(
       system_prompt = system_prompt,
-      model = "claude-3-5-haiku-latest"
+      model = "claude-haiku-4-5-20251001"
     )
   )
 
@@ -190,6 +194,13 @@ server <- function(input, output, session) {
 
   output$messages <- renderText({
     msgs_simplified <- lapply(all_messages(), function(msg) {
+      m <- tryCatch(
+        {
+          msg@json$model
+        },
+        error = function(e) NULL
+      )
+
       res <- list(
         role = msg@role,
         content = msg@contents[[1]]@text,
