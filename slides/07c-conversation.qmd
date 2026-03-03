@@ -172,7 +172,7 @@ Other words may require multiple numbers
 
 ::: {.columns}
 ::: {.column width="60%"}
-![](/img/anthropic-pricing.png)
+![](/img/llm/anthropic-pricing.png)
 :::
 ::: {.column width="40%"}
 Claude Sonnet 4

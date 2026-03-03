@@ -24,7 +24,7 @@ Depending on your usage, you may even find that paying for the API key could be 
 
 ## Lesson Reference {footer=false}
 
-![](/img/youtube-joe-llm.png)
+![](/img/llm/youtube-joe-llm.png)
 
 <https://www.youtube.com/watch?v=owDd1CJ17uQ>
 
