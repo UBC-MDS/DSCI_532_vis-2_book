@@ -1,10 +1,21 @@
-from chatlas import ChatAnthropic
+"""Shiny Express app: weather chatbot with tool calling.
+
+Run: shiny run app-weather-express.py
+"""
+
+from chatlas import ChatGithub
+# from chatlas import ChatAnthropic
+from dotenv import load_dotenv
 from shiny.express import ui
 
-from helper.get_coordinates import get_coordinates
-from helper.get_weather import get_weather
+load_dotenv()
 
-chat_client = ChatAnthropic()
+from get_coordinates import get_coordinates
+from get_weather import get_weather
+
+chat_client = ChatGithub(model="gpt-4.1-mini")
+# chat_client = ChatGithub(model="gpt-4.1")
+# chat_client = ChatAnthropic()
 
 chat_client.register_tool(get_coordinates)
 chat_client.register_tool(get_weather)
@@ -12,7 +23,7 @@ chat_client.register_tool(get_weather)
 chat = ui.Chat(id="chat")
 chat.ui(
     messages=[
-        "Hello! I am a weather bot! Where would you like to get the weather form?"
+        "Hello! I am a weather bot! Where would you like to get the weather for?"
     ]
 )
 
