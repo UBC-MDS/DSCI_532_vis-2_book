@@ -4,9 +4,7 @@ import chatlas as ctl
 import pandas as pd
 from pydantic import BaseModel, Field
 
-pdf = ctl.content_pdf_file(
-    "/Volumes/expansionSD/SynologyDrive/work/ubc/sei-student_surveys/sei_pdfs/2024-25 Winter Term 2 Student Experience of Instruction Report for DSCI_V 310-101 - Reproducible and Trustworthy Workflows _aff009f5-921c-4b02-997e-436ced84885een-US.pdf"
-)
+pdf = ctl.content_pdf_file("code/lecture06/structured/daniel-2024-25-w2-dsci-310.pdf")
 
 
 # Row-oriented data structure
