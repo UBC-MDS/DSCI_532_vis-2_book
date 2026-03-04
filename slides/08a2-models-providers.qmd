@@ -1,0 +1,116 @@
+---
+title: "Models vs Platforms/Providers"
+---
+
+## Models vs Developers vs Providers
+
+::: {.incremental}
+- **Model** — the trained neural network itself (GPT-4.1, Claude Sonnet 4.6, Llama 3.3 70B)
+- **Developer** — the lab that trains and releases the model (OpenAI → GPT-4.1, Anthropic → Claude, Meta → Llama, Alibaba → Qwen)
+- **Provider / platform** — hosts and serves models via API (OpenAI, Anthropic, GitHub Models, Groq, Azure)
+- Developer = provider for proprietary models (OpenAI both trains *and* serves GPT-4.1)
+- Developer ≠ provider for open models (Meta trains Llama → Groq, AWS, Azure *serve* it)
+:::
+
+. . .
+
+In `chatlas`, switching providers means changing one constructor:
+
+```python
+from chatlas import ChatOpenAI, ChatAnthropic, ChatGithub, ChatGroq
+
+chat = ChatGithub(model="gpt-4.1-mini")      # free, 8k input cap
+chat = ChatOpenAI(model="gpt-4.1-mini")      # paid, full 1M context
+chat = ChatAnthropic(model="claude-sonnet-4-6-20250514")  # paid, 200k (1M beta)
+chat = ChatGroq(model="llama-3.3-70b-versatile")          # free, 128k context
+```
+
+::: {.notes}
+Key point: the model is the same GPT-4.1-mini whether you access it through GitHub Models or OpenAI directly. What changes is the limits and pricing the provider imposes. The `Chat*` constructor names refer to the **provider**, not the developer. For Anthropic and OpenAI these happen to be the same company; for GitHub Models they're different.
+:::
+
+
+## Context Window vs Provider Input Limit
+
+::: {.columns}
+::: {.column width="55%"}
+
+**Context window** = total token budget for one API call (input + output).
+
+- **GPT-4.1 family**: 1M context, 32k max output
+- **Claude 4.6 (Sonnet/Opus)**: 200k standard, 1M beta
+- **Llama 3.3 70B**: 128k context
+
+:::
+::: {.column width="45%"}
+
+**But providers can cap it lower:**
+
+- GitHub Models limits GPT-4.1-mini to **8k input** — that's 0.8% of the model's 1M capacity!
+- Same model, same weights, vastly different limits
+
+:::
+:::
+
+. . .
+
+Effective max input ≈ context window − max output tokens.
+A "1M context" model with 32k max output → ~968k usable input.
+
+
+## Provider Limitations (Not Model Limitations) {.smaller}
+
+| Provider | Models | Model Context | Provider Input Limit | Rate Limit | Cost |
+|---|---|---|---|---|---|
+| GitHub Models| gpt-4.1-mini, gpt-4.1 | 1M | **8k tokens** | 150 req/day (mini) | Free |
+| OpenAI (direct) | gpt-4.1-mini, gpt-4.1 | 1M | 1M | Pay-per-use | $0.40/$1.60 (mini) |
+| Anthropic | Sonnet 4.6, Opus 4.6 | 200k (1M beta) | 200k (1M beta) | Pay-per-use | $3/$15 (Sonnet) |
+| Groq (free) | Llama 3.3, Qwen3, gpt-oss | 128k | 128k | 30 req/min | Free tier |
+| Groq (paid) | same + more | 128k | 128k | Higher limits | $0.05–$1.00 |
+| Azure OpenAI | gpt-4.1-mini, gpt-4.1 | 1M | up to 1M | Configurable | ≈ OpenAI |
+
+GitHub Models is a playground: the 8k input cap is a huge difference from the model's 1M context.
+We will hit this limit when sending PDFs or long conversations.
+The 150 req/day cap also means querychat can burn through the budget in a single session.
+
+
+
+## Pricing Deep Dive
+
+Output tokens cost 2-5x more than input tokens. Why? Reading is cheap (and sometimes parallelizable); *generating* is expensive.
+
+| Model | Developer | Provider | Context | Input $/1M | Output $/1M | Free? |
+|---|---|---|---|---|---|---|
+| gpt-4.1-mini | OpenAI | OpenAI | 1M | $0.40 | $1.60 | ❌ |
+| gpt-4.1-mini | OpenAI | GitHub Models | 1M (8k cap) | — | — | ✅ |
+| gpt-4.1 | OpenAI | OpenAI | 1M | $2.00 | $8.00 | ❌ |
+| Sonnet 4.6 | Anthropic | Anthropic | 200k (1M beta) | $3.00 | $15.00 | ❌ |
+| Opus 4.6 | Anthropic | Anthropic | 200k (1M beta) | $5.00 | $25.00 | ❌ |
+| Llama 3.3 70B | Meta | Groq | 128k | $0.59 | $0.79 | free tier |
+| Qwen3 32B | Alibaba | Groq | 131k | $0.29 | $0.59 | free tier |
+
+. . .
+
+**Real example:** extracting data from a PDF with Anthropic Sonnet:
+23k input tokens, 1.5k output tokens = **$0.09**
+More importantly, some other models won't deal with multimodal (binary files) input.
+. . .
+
+
+## iClicker: Model, Developer, or Provider?
+
+```python
+from querychat import QueryChat
+from chatlas import ChatAnthropic
+
+qc = QueryChat(df, "tips",
+    client=ChatAnthropic(model="claude-sonnet-4-6-20250514"))
+```
+
+In this code, `ChatAnthropic(...)` tells chatlas which **\_\_\_\_** to connect to.
+
+A. Model
+B. Developer
+C. Provider / platform
+D. Dataset
+E. System prompt

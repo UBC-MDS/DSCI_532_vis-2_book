@@ -1,4 +1,5 @@
 jupyter
+ipykernel
 shiny
 shinywidgets
 shinylive
@@ -32,7 +33,7 @@ chatlas
 inspect-ai
 #keplergl
 querychat
-chatlas
+duckdb
 python-dotenv
 numpy
 tiktoken
