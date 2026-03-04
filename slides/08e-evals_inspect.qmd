@@ -41,7 +41,7 @@ title: Evals (Testing LLM Output)
 
 ## Task: solver + scorer
 
-```{python}
+```python
 from chatlas import ChatOpenAI
 from inspect_ai import Task, task
 from inspect_ai.dataset import csv_dataset
@@ -61,7 +61,7 @@ def my_eval():
 
 ## Get eval results
 
-```{bash}
+```bash
 inspect eval code/lecture06/evals/evals.py
 ```
 
