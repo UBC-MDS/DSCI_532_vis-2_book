@@ -176,8 +176,32 @@ def get_weather(lat: float, lon: float):
 
 ## Example Weather tool - Weather
 
-```{python}
+```python
 get_weather(40.7127281, -74.0060152)
+```
+
+```json
+{'latitude': 40.710335,
+ 'longitude': -73.99308,
+ 'generationtime_ms': 0.09489059448242188,
+ 'utc_offset_seconds': 0,
+ 'timezone': 'GMT',
+ 'timezone_abbreviation': 'GMT',
+ 'elevation': 32.0,
+ 'current_weather_units': {'time': 'iso8601',
+  'interval': 'seconds',
+  'temperature': '°C',
+  'windspeed': 'km/h',
+  'winddirection': '°',
+  'is_day': '',
+  'weathercode': 'wmo code'},
+ 'current_weather': {'time': '2026-03-04T05:30',
+  'interval': 900,
+  'temperature': 1.1,
+  'windspeed': 2.5,
+  'winddirection': 270,
+  'is_day': 0,
+  'weathercode': 45}}
 ```
 
 ## Example Weather tool - Register
