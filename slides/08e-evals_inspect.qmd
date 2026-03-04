@@ -62,7 +62,7 @@ def my_eval():
 ## Get eval results
 
 ```{bash}
-inspect eval code/evals.py
+inspect eval code/lecture06/evals/evals.py
 ```
 
 ```bash
