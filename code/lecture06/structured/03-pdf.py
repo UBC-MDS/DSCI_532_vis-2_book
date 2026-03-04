@@ -2,7 +2,10 @@ from typing import List
 
 import chatlas as ctl
 import pandas as pd
+from dotenv import load_dotenv
 from pydantic import BaseModel, Field
+
+load_dotenv()
 
 pdf = ctl.content_pdf_file("code/lecture06/structured/daniel-2024-25-w2-dsci-310.pdf")
 
@@ -32,7 +35,8 @@ class LikertScaleResults(BaseModel):
     results: List[LikertScaleRow] = Field(description="List of survey question results")
 
 
-chat = ctl.ChatOpenAI(
+chat = ctl.ChatAnthropic(
+    model="claude-sonnet-4-6",
     system_prompt="""
     You will be given a PDF of student feedback results from a course.
     There are mutliple questions the students are asked and the likert data is summarized across multiple tables.
@@ -40,10 +44,11 @@ chat = ctl.ChatOpenAI(
     """
 )
 
-dat = chat.extract_data(
+# extract_data() is deprecated, use chat_structured() — returns a Pydantic model
+dat = chat.chat_structured(
     pdf,
     data_model=LikertScaleResults,
 )
 
-results = pd.DataFrame(dat["results"])
+results = pd.DataFrame([r.model_dump() for r in dat.results])
 results
