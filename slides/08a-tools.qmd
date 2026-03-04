@@ -14,11 +14,11 @@ Reference: <https://jcheng5.github.io/llm-quickstart/quickstart.html#/how-it-wor
 
 ## How it does NOT work
 
-![](/img/toolcalling-no.png)
+![](/img/llm/toolcalling-no.png)
 
 ## How it DOES work
 
-![](/img/toolcalling-yes.png)
+![](/img/llm/toolcalling-yes.png)
 
 ## A tool is a function
 
