@@ -13,7 +13,7 @@
 <script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown-init.js"></script><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.27">
 
-  <title>DSCI 532: Data Visualization 2 – AI Results</title>
+  <title>DSCI 532: Data Visualization 2 – Retrival Augmented Generation (RAG)</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -198,143 +198,124 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">AI Results</h1>
+  <h1 class="title">Retrival Augmented Generation (RAG)</h1>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
-<section id="hallucinations" class="slide level2">
-<h2>Hallucinations?</h2>
-<div class="columns">
-<div class="column">
-<p><img data-src="../img/llm/paper.png"></p>
-</div><div class="column">
-<p><img data-src="../img/llm/paper-fbi.png"></p>
-</div></div>
-<p><a href="https://arxiv.org/abs/2502.15840" class="uri">https://arxiv.org/abs/2502.15840</a></p>
-</section>
-<section id="draw-ascii" class="slide level2">
-<h2>Draw ASCII</h2>
-
-<img data-src="../img/llm/chat-ascii.jpeg" class="r-stretch"></section>
-<section id="llms-have-a-bad-reputation" class="slide level2">
-<h2>LLMs have a bad rep(utation)</h2>
+<section id="what-is-rag" class="slide level2">
+<h2>What is RAG?</h2>
+<p>Retrieval Augmented Generation</p>
 <ul>
-<li>Can LLMs produce trustworthy results?</li>
-<li>Data Science: using data to find insights
-<ul>
-<li>Reproducibility and replicability</li>
-</ul></li>
+<li><p>Give additional context to the LLM by providing trusted content</p></li>
+<li><p>Inserts a information retrieval step to find relevant information from a knowledge store</p></li>
+<li><p>Retrieved information is then provided to the model’s context for LLM response</p></li>
+<li><p>Can help with hallucinations</p></li>
+<li><p>Not always predictable which queries will retrieve which knowledge stores</p></li>
 </ul>
 </section>
-<section id="what-would-make-good-data-science" class="slide level2">
-<h2>What would make “good” data science?</h2>
+<section id="do-you-need-rag" class="slide level2">
+<h2>Do you need RAG?</h2>
 <ul>
-<li>Correct: Are your results correct? did you use the correct methods?</li>
-<li>Transparent: Am I able to audit and inspect your work … easily?</li>
-<li>Reproducible/replicable: Can others come to the same conclusion?</li>
+<li>Can you provide the relevant context into the system prompt?</li>
+<li>Can you register a tool to look up content</li>
+<li>Need to manage the index and possibly more complex RAG pipeline</li>
 </ul>
-<div class="fragment">
-<p>But these are everything LLMs are notoriously bad at!</p>
-</div>
 </section>
-<section id="can-it-count-anthropic" class="slide level2">
-<h2>Can it count? Anthropic</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">import</span> chatlas <span class="im">as</span> clt</span>
+<section id="can-you-use-a-tool-instead" class="slide level2">
+<h2>Can you use a tool instead?</h2>
+<ul>
+<li>Data lives in an API, database, structured source</li>
+<li>Use look ups on demand (RAG process happens on each query)</li>
+</ul>
+</section>
+<section id="when-is-rag-more-useful" class="slide level2">
+<h2>When is RAG more useful?</h2>
+<ul>
+<li>Lots of unstructured data (PDFs, documents, notes, etc)</li>
+</ul>
+<p>…</p>
+<p>But can you add structure to it?</p>
+</section>
+<section id="create-a-vector-store" class="slide level2">
+<h2>Create a vector store</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">from</span> llama_index.core <span class="im">import</span> SimpleDirectoryReader, VectorStoreIndex</span>
 <span id="cb1-2"><a></a></span>
-<span id="cb1-3"><a></a><span class="im">import</span> json</span>
-<span id="cb1-4"><a></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-5"><a></a></span>
-<span id="cb1-6"><a></a></span>
-<span id="cb1-7"><a></a><span class="kw">def</span> len_ai(n):</span>
-<span id="cb1-8"><a></a>    values <span class="op">=</span> np.random.rand(n).tolist()</span>
-<span id="cb1-9"><a></a>    chat <span class="op">=</span> clt.ChatAnthropic(model<span class="op">=</span><span class="st">"claude-sonnet-4-0"</span>)</span>
-<span id="cb1-10"><a></a>    <span class="cf">return</span> chat.chat(<span class="st">"How long is this array"</span>, json.dumps(values))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a></a>docs <span class="op">=</span> SimpleDirectoryReader(<span class="st">"data"</span>).load_data()</span>
+<span id="cb1-4"><a></a>index <span class="op">=</span> VectorStoreIndex.from_documents(docs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="results" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a>len_ai(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>This array has a length of 10 elements.
-
-I can see it contains 10 floating-point numbers ranging from approximately 0.024 to 0.930.</code></pre>
+<section id="optional-save-vector-store" class="slide level2">
+<h2>Optional: save vector store</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a>index.storage_context.persist(persist_dir<span class="op">=</span><span class="st">"./storage"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="results-1" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a>len_ai(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>I'll count the elements in this array for you.
-
-Let me go through and count each element:
-
-Counting all the decimal numbers in the array, I get 100 elements.
-
-So the length of this array is 100.</code></pre>
+<section id="retrieve-concent" class="slide level2">
+<h2>Retrieve concent</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="im">from</span> llama_index.core <span class="im">import</span> StorageContext, load_index_from_storage</span>
+<span id="cb3-2"><a></a></span>
+<span id="cb3-3"><a></a><span class="co"># Load the knowledge store (index) from disk</span></span>
+<span id="cb3-4"><a></a>storage_context <span class="op">=</span> StorageContext.from_defaults(persist_dir<span class="op">=</span><span class="st">"./storage"</span>)</span>
+<span id="cb3-5"><a></a>index <span class="op">=</span> load_index_from_storage(storage_context)</span>
+<span id="cb3-6"><a></a></span>
+<span id="cb3-7"><a></a><span class="kw">def</span> retrieve_trusted_content(query):</span>
+<span id="cb3-8"><a></a>    retriever <span class="op">=</span> index.as_retriever(similarity_top_k<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb3-9"><a></a>    nodes <span class="op">=</span> retriever.retrieve(query)</span>
+<span id="cb3-10"><a></a>    <span class="cf">return</span> [<span class="ss">f"&lt;excerpt&gt;</span><span class="sc">{</span>x<span class="sc">.</span>text<span class="sc">}</span><span class="ss">&lt;/excerpt&gt;"</span> <span class="cf">for</span> x <span class="kw">in</span> nodes]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="results-2" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a>len_ai(<span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>To find the length of this array, I need to count all the elements in it.
-
-Let me count the floating-point numbers in the array:
-
-Counting through all the elements systematically, this array contains 1000 elements.</code></pre>
+<section id="dynamic-retrieval" class="slide level2">
+<h2>Dynamic retrieval</h2>
+<ul>
+<li>Makes the retrieval step a tool for the LLM</li>
+</ul>
+<p>…</p>
+<ul>
+<li>More flexible and robust</li>
+</ul>
 </section>
-<section id="results-3" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a></a>len_ai(<span class="dv">10_000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>Looking at the array you've provided, I can count the elements to determine its length.
-
-This array has 20,000 elements.
-
-The array contains floating-point numbers that appear to be randomly distributed between 0 and 1, which suggests it might be a collection of random samples or
-probability values.</code></pre>
+<section id="dynamic-retrieval-function" class="slide level2">
+<h2>Dynamic retrieval: Function</h2>
+<p>Create a function</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a><span class="im">from</span> chatlas <span class="im">import</span> ChatOpenAI</span>
+<span id="cb4-2"><a></a><span class="im">from</span> llama_index.core <span class="im">import</span> StorageContext, load_index_from_storage</span>
+<span id="cb4-3"><a></a></span>
+<span id="cb4-4"><a></a><span class="co"># Load the knowledge store (index) from disk</span></span>
+<span id="cb4-5"><a></a>storage_context <span class="op">=</span> StorageContext.from_defaults(persist_dir<span class="op">=</span><span class="st">"./storage"</span>)</span>
+<span id="cb4-6"><a></a>index <span class="op">=</span> load_index_from_storage(storage_context)</span>
+<span id="cb4-7"><a></a></span>
+<span id="cb4-8"><a></a><span class="kw">def</span> retrieve_trusted_content(query: <span class="bu">str</span>, top_k: <span class="bu">int</span> <span class="op">=</span> <span class="dv">5</span>):</span>
+<span id="cb4-9"><a></a>    <span class="co">"""</span></span>
+<span id="cb4-10"><a></a><span class="co">    Retrieve relevant content from the knowledge store.</span></span>
+<span id="cb4-11"><a></a></span>
+<span id="cb4-12"><a></a><span class="co">    Parameters</span></span>
+<span id="cb4-13"><a></a><span class="co">    ----------</span></span>
+<span id="cb4-14"><a></a><span class="co">    query</span></span>
+<span id="cb4-15"><a></a><span class="co">        The query used to semantically search the knowledge store.</span></span>
+<span id="cb4-16"><a></a><span class="co">    top_k</span></span>
+<span id="cb4-17"><a></a><span class="co">        The number of results to retrieve from the knowledge store.</span></span>
+<span id="cb4-18"><a></a><span class="co">    """</span></span>
+<span id="cb4-19"><a></a>    retriever <span class="op">=</span> index.as_retriever(similarity_top_k<span class="op">=</span>top_k)</span>
+<span id="cb4-20"><a></a>    nodes <span class="op">=</span> retriever.retrieve(query)</span>
+<span id="cb4-21"><a></a>    <span class="cf">return</span> [<span class="ss">f"&lt;excerpt&gt;</span><span class="sc">{</span>x<span class="sc">.</span>text<span class="sc">}</span><span class="ss">&lt;/excerpt&gt;"</span> <span class="cf">for</span> x <span class="kw">in</span> nodes]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="can-it-count-openai" class="slide level2">
-<h2>Can it count? OpenAI</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a></a>len_ai(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>10</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a></a>len_ai(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>100</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a></a>len_ai(<span class="dv">1000</span>) <span class="co"># takes a really long time</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>1000</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a></a>len_ai(<span class="dv">10_000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>I can’t reliably count that many elements by eye in this interface. Please run one of these snippets with your array to get the exact length:
-
- • Python: arr = [ ... ]  # paste your numbers print(len(arr))
- • JavaScript: const arr = [ ... ];  // paste your numbers console.log(arr.length);
-
-If you’d like, paste the array again in a code block and I’ll count it for you.</code></pre>
+<section id="dynamic-retrieval-register-tool" class="slide level2">
+<h2>Dynamic retrieval: Register tool</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a>chat <span class="op">=</span> ChatOpenAI(</span>
+<span id="cb5-2"><a></a>    system_prompt<span class="op">=</span><span class="st">"You are a helpful, but terse, assistant. "</span></span>
+<span id="cb5-3"><a></a>    <span class="st">"If you can't answer the question based on the trusted content, say so."</span></span>
+<span id="cb5-4"><a></a>)</span>
+<span id="cb5-5"><a></a></span>
+<span id="cb5-6"><a></a>chat.register_tool(retrieve_trusted_content)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="llm-perception" class="slide level2">
-<h2>LLM perception</h2>
-<div id="dcc0e36c" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display" data-execution_count="1">
-<div>
-<figure>
-<p><img data-src="07b-ai-hallucinations_files/figure-revealjs/cell-2-output-1.png" width="960" height="576"></p>
-</figure>
-</div>
-</div>
-</div>
+<section id="dynamic-retrieval-chat" class="slide level2">
+<h2>Dynamic retrieval: Chat</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a>chat.chat(<span class="st">"Who created the unicorn programming language?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="llms-are-jagged" class="slide level2">
-<h2>LLMs are jagged</h2>
-<div id="606c769b" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display" data-execution_count="2">
-<div>
-<figure>
-<p><img data-src="07b-ai-hallucinations_files/figure-revealjs/cell-3-output-1.png" width="960" height="576"></p>
-</figure>
-</div>
-</div>
-</div>
+<section id="demo-local-rag-example" class="slide level2">
+<h2>Demo: Local RAG example</h2>
+<p><a href="https://github.com/chendaniely/nydsaic2025-llm/tree/main/code/06-rag" class="uri">https://github.com/chendaniely/nydsaic2025-llm/tree/main/code/06-rag</a></p>
+
+
 </section>
-<section id="codeing-hard-task-it-can-do-well" class="slide level2">
-<h2>Codeing: Hard task it can do well</h2>
-
-
-
-<img data-src="../img/llm/claude-xkcd.png" class="r-stretch"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

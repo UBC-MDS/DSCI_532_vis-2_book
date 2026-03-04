@@ -1,0 +1,70 @@
+---
+title: Evals (Testing LLM Output)
+---
+
+
+
+## chatlas + inspect-ai
+
+::: {.columns}
+::: {.column}
+![](/img/llm/logo-chatlas.png){width="300"}
+
+<https://posit-dev.github.io/chatlas/>
+
+:::
+::: {.column}
+![](/img/llm/logo-aisi.png){width="300"}
+
+<https://inspect.aisi.org.uk//>
+
+`pip install inspct-ai`
+:::
+:::
+
+## Inspect AI
+
+- Framework for evaluating and monitoring LLMs
+- You will need to create a **task**
+
+## Create a task
+
+1. dataset: test case input and target responses
+2. solver: chat instance using InspectAI evaluation framework
+3. scorer: grade responses
+
+## Task: dataset
+
+```
+{{< include /code/lecture06/evals/my_eval_dataset.csv >}}
+```
+
+## Task: solver + scorer
+
+```python
+from chatlas import ChatOpenAI
+from inspect_ai import Task, task
+from inspect_ai.dataset import csv_dataset
+from inspect_ai.scorer import model_graded_qa
+
+chat = ChatOpenAI()
+
+
+@task
+def my_eval():
+    return Task(
+        dataset=csv_dataset("code/lecture06/evals/my_eval_dataset.csv"),
+        solver=chat.to_solver(),
+        scorer=model_graded_qa(model="openai/gpt-4o-mini"),
+    )
+```
+
+## Get eval results
+
+```bash
+inspect eval code/lecture06/evals/evals.py
+```
+
+```bash
+inspect view
+```

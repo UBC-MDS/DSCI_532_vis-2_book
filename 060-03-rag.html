@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Environment Variables – DSCI 532: Data Visualization 2</title>
+<title>Retrival Augmented Generation (RAG) – DSCI 532: Data Visualization 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -108,6 +108,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+ 
+  <style>
+  .slide-deck {
+      border: 3px solid #dee2e6;
+  }
+  </style>
+  
 
 
 <link rel="stylesheet" href="styles.css">
@@ -156,7 +163,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./050-01-llm-welcome.html">Lecture 5</a></li><li class="breadcrumb-item"><a href="./050-06-env.html">Environment Variables</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./060-01-tools.html">Lecture 6</a></li><li class="breadcrumb-item"><a href="./060-03-rag.html">Retrival Augmented Generation (RAG)</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -315,7 +322,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./050-06-env.html" class="sidebar-item-text sidebar-link active">
+  <a href="./050-06-env.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Environment Variables</span></a>
   </div>
 </li>
@@ -344,7 +351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./060-03-rag.html" class="sidebar-item-text sidebar-link">
+  <a href="./060-03-rag.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Retrival Augmented Generation (RAG)</span></a>
   </div>
 </li>
@@ -389,17 +396,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#python" id="toc-python" class="nav-link active" data-scroll-target="#python">Python</a></li>
-  <li><a href="#r" id="toc-r" class="nav-link" data-scroll-target="#r">R</a></li>
+  <li><a href="#what-is-rag" id="toc-what-is-rag" class="nav-link active" data-scroll-target="#what-is-rag">What is RAG?</a></li>
+  <li><a href="#do-you-need-rag" id="toc-do-you-need-rag" class="nav-link" data-scroll-target="#do-you-need-rag">Do you need RAG?</a></li>
+  <li><a href="#can-you-use-a-tool-instead" id="toc-can-you-use-a-tool-instead" class="nav-link" data-scroll-target="#can-you-use-a-tool-instead">Can you use a tool instead?</a></li>
+  <li><a href="#when-is-rag-more-useful" id="toc-when-is-rag-more-useful" class="nav-link" data-scroll-target="#when-is-rag-more-useful">When is RAG more useful?</a></li>
+  <li><a href="#create-a-vector-store" id="toc-create-a-vector-store" class="nav-link" data-scroll-target="#create-a-vector-store">Create a vector store</a></li>
+  <li><a href="#optional-save-vector-store" id="toc-optional-save-vector-store" class="nav-link" data-scroll-target="#optional-save-vector-store">Optional: save vector store</a></li>
+  <li><a href="#retrieve-concent" id="toc-retrieve-concent" class="nav-link" data-scroll-target="#retrieve-concent">Retrieve concent</a></li>
+  <li><a href="#dynamic-retrieval" id="toc-dynamic-retrieval" class="nav-link" data-scroll-target="#dynamic-retrieval">Dynamic retrieval</a></li>
+  <li><a href="#dynamic-retrieval-function" id="toc-dynamic-retrieval-function" class="nav-link" data-scroll-target="#dynamic-retrieval-function">Dynamic retrieval: Function</a></li>
+  <li><a href="#dynamic-retrieval-register-tool" id="toc-dynamic-retrieval-register-tool" class="nav-link" data-scroll-target="#dynamic-retrieval-register-tool">Dynamic retrieval: Register tool</a></li>
+  <li><a href="#dynamic-retrieval-chat" id="toc-dynamic-retrieval-chat" class="nav-link" data-scroll-target="#dynamic-retrieval-chat">Dynamic retrieval: Chat</a></li>
+  <li><a href="#demo-local-rag-example" id="toc-demo-local-rag-example" class="nav-link" data-scroll-target="#demo-local-rag-example">Demo: Local RAG example</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./050-01-llm-welcome.html">Lecture 5</a></li><li class="breadcrumb-item"><a href="./050-06-env.html">Environment Variables</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./060-01-tools.html">Lecture 6</a></li><li class="breadcrumb-item"><a href="./060-03-rag.html">Retrival Augmented Generation (RAG)</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Environment Variables</h1>
+<h1 class="title">Retrival Augmented Generation (RAG)</h1>
 </div>
 
 
@@ -416,42 +433,122 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>There are a few ways for you to read in an environment variable. For individual projects, the convension is to use a <code>.env</code> (R/Python) or <code>.Renviron</code> (R) file. These files are typically ignored in the <code>.gitignore</code></p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<div class="column-page-inset-right">
+    <p><a href="slides/08c-rag.html" target="_blank">View slides in full screen</a></p>
+       <div class="ratio ratio-16x9">
+      <iframe class="slide-deck" src="slides/08c-rag.html" height="500px" width="100%"></iframe>
+    </div>
+  
 </div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>DO <strong>NOT</strong> commit your environment variable files into the repository. Espeically if you have a password or API key in them.</p>
-</div>
-</div>
-<p>For this course/repository, you can use the <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/.env.template"><code>.env.template</code> file</a> and rename it to <code>.env</code> to run the code examples.</p>
-<pre data-code-line-numbers=""><code>GITHUB_TOKEN=""
-OPENAI_API_KEY=""
-ANTHROPIC_API_KEY=""
-</code></pre>
-<p>For global environment variables, you can use your <code>~/.zshrc</code> or <code>~/.bashrc</code> file, but the below packages will override these variables.</p>
-<section id="python" class="level2">
-<h2 class="anchored" data-anchor-id="python">Python</h2>
-<p><a href="https://github.com/theskumar/python-dotenv" class="uri">https://github.com/theskumar/python-dotenv</a></p>
-<pre data-code-line-numbers=""><code>pip install python-dotenv</code></pre>
-<p>Create a <code>.env</code> file with <code>KEY=VALUE</code> pairs</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dotenv <span class="im">import</span> load_dotenv</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>load_dotenv()  <span class="co"># reads variables from a .env file and sets them in os.environ</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You then use it with <code>os.environ['YOUR_KEY']</code></p>
+<section id="what-is-rag" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-rag">What is RAG?</h2>
+<p>Retrieval Augmented Generation</p>
+<ul>
+<li><p>Give additional context to the LLM by providing trusted content</p></li>
+<li><p>Inserts a information retrieval step to find relevant information from a knowledge store</p></li>
+<li><p>Retrieved information is then provided to the model’s context for LLM response</p></li>
+<li><p>Can help with hallucinations</p></li>
+<li><p>Not always predictable which queries will retrieve which knowledge stores</p></li>
+</ul>
 </section>
-<section id="r" class="level2">
-<h2 class="anchored" data-anchor-id="r">R</h2>
-<p>CRAN also has a <code>dotenv</code> package: <a href="https://cran.r-project.org/web/packages/dotenv/index.html" class="uri">https://cran.r-project.org/web/packages/dotenv/index.html</a></p>
-<p>You can also use the <code>.Renviron</code> file that will be read when R loads up (<a href="https://docs.posit.co/ide/user/ide/guide/environments/r/managing-r.html" class="uri">https://docs.posit.co/ide/user/ide/guide/environments/r/managing-r.html</a>).</p>
+<section id="do-you-need-rag" class="level2">
+<h2 class="anchored" data-anchor-id="do-you-need-rag">Do you need RAG?</h2>
+<ul>
+<li>Can you provide the relevant context into the system prompt?</li>
+<li>Can you register a tool to look up content</li>
+<li>Need to manage the index and possibly more complex RAG pipeline</li>
+</ul>
+</section>
+<section id="can-you-use-a-tool-instead" class="level2">
+<h2 class="anchored" data-anchor-id="can-you-use-a-tool-instead">Can you use a tool instead?</h2>
+<ul>
+<li>Data lives in an API, database, structured source</li>
+<li>Use look ups on demand (RAG process happens on each query)</li>
+</ul>
+</section>
+<section id="when-is-rag-more-useful" class="level2">
+<h2 class="anchored" data-anchor-id="when-is-rag-more-useful">When is RAG more useful?</h2>
+<ul>
+<li>Lots of unstructured data (PDFs, documents, notes, etc)</li>
+</ul>
+<p>…</p>
+<p>But can you add structure to it?</p>
+</section>
+<section id="create-a-vector-store" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-vector-store">Create a vector store</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> llama_index.core <span class="im">import</span> SimpleDirectoryReader, VectorStoreIndex</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>docs <span class="op">=</span> SimpleDirectoryReader(<span class="st">"data"</span>).load_data()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>index <span class="op">=</span> VectorStoreIndex.from_documents(docs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="optional-save-vector-store" class="level2">
+<h2 class="anchored" data-anchor-id="optional-save-vector-store">Optional: save vector store</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>index.storage_context.persist(persist_dir<span class="op">=</span><span class="st">"./storage"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="retrieve-concent" class="level2">
+<h2 class="anchored" data-anchor-id="retrieve-concent">Retrieve concent</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> llama_index.core <span class="im">import</span> StorageContext, load_index_from_storage</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the knowledge store (index) from disk</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>storage_context <span class="op">=</span> StorageContext.from_defaults(persist_dir<span class="op">=</span><span class="st">"./storage"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>index <span class="op">=</span> load_index_from_storage(storage_context)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> retrieve_trusted_content(query):</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    retriever <span class="op">=</span> index.as_retriever(similarity_top_k<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    nodes <span class="op">=</span> retriever.retrieve(query)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [<span class="ss">f"&lt;excerpt&gt;</span><span class="sc">{</span>x<span class="sc">.</span>text<span class="sc">}</span><span class="ss">&lt;/excerpt&gt;"</span> <span class="cf">for</span> x <span class="kw">in</span> nodes]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="dynamic-retrieval" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-retrieval">Dynamic retrieval</h2>
+<ul>
+<li>Makes the retrieval step a tool for the LLM</li>
+</ul>
+<p>…</p>
+<ul>
+<li>More flexible and robust</li>
+</ul>
+</section>
+<section id="dynamic-retrieval-function" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-retrieval-function">Dynamic retrieval: Function</h2>
+<p>Create a function</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> chatlas <span class="im">import</span> ChatOpenAI</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> llama_index.core <span class="im">import</span> StorageContext, load_index_from_storage</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the knowledge store (index) from disk</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>storage_context <span class="op">=</span> StorageContext.from_defaults(persist_dir<span class="op">=</span><span class="st">"./storage"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>index <span class="op">=</span> load_index_from_storage(storage_context)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> retrieve_trusted_content(query: <span class="bu">str</span>, top_k: <span class="bu">int</span> <span class="op">=</span> <span class="dv">5</span>):</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Retrieve relevant content from the knowledge store.</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">    ----------</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">    query</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">        The query used to semantically search the knowledge store.</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">    top_k</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">        The number of results to retrieve from the knowledge store.</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    retriever <span class="op">=</span> index.as_retriever(similarity_top_k<span class="op">=</span>top_k)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    nodes <span class="op">=</span> retriever.retrieve(query)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [<span class="ss">f"&lt;excerpt&gt;</span><span class="sc">{</span>x<span class="sc">.</span>text<span class="sc">}</span><span class="ss">&lt;/excerpt&gt;"</span> <span class="cf">for</span> x <span class="kw">in</span> nodes]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="dynamic-retrieval-register-tool" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-retrieval-register-tool">Dynamic retrieval: Register tool</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>chat <span class="op">=</span> ChatOpenAI(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    system_prompt<span class="op">=</span><span class="st">"You are a helpful, but terse, assistant. "</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"If you can't answer the question based on the trusted content, say so."</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>chat.register_tool(retrieve_trusted_content)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="dynamic-retrieval-chat" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-retrieval-chat">Dynamic retrieval: Chat</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>chat.chat(<span class="st">"Who created the unicorn programming language?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="demo-local-rag-example" class="level2">
+<h2 class="anchored" data-anchor-id="demo-local-rag-example">Demo: Local RAG example</h2>
+<p><a href="https://github.com/chendaniely/nydsaic2025-llm/tree/main/code/06-rag" class="uri">https://github.com/chendaniely/nydsaic2025-llm/tree/main/code/06-rag</a></p>
 
 
 </section>

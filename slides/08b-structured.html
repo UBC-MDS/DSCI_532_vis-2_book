@@ -13,7 +13,7 @@
 <script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown-init.js"></script><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.27">
 
-  <title>DSCI 532: Data Visualization 2 – AI Results</title>
+  <title>DSCI 532: Data Visualization 2 – Structured Data</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -198,143 +198,113 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">AI Results</h1>
+  <h1 class="title">Structured Data</h1>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
-<section id="hallucinations" class="slide level2">
-<h2>Hallucinations?</h2>
-<div class="columns">
-<div class="column">
-<p><img data-src="../img/llm/paper.png"></p>
-</div><div class="column">
-<p><img data-src="../img/llm/paper-fbi.png"></p>
-</div></div>
-<p><a href="https://arxiv.org/abs/2502.15840" class="uri">https://arxiv.org/abs/2502.15840</a></p>
+<section id="find-structure-in-data" class="slide level2 scrollable">
+<h2>Find structure in data</h2>
+<p>From the <a href="https://posit-dev.github.io/chatlas/get-started/structured-data.html">chatlas docs</a>:</p>
+<ol type="1">
+<li>Article summaries: Extract key points from lengthy reports or articles to create concise summaries for decision-makers.</li>
+<li>Entity recognition: Identify and extract entities such as names, dates, and locations from unstructured text to create structured datasets.</li>
+<li>Sentiment analysis: Extract sentiment scores and associated entities from customer reviews or social media posts to gain insights into public opinion.</li>
+<li>Classification: Classify text into predefined categories, such as spam detection or topic classification.</li>
+<li>Image/PDF input: Extract data from images or PDFs, such as tables or forms, to automate data entry processes.</li>
+</ol>
 </section>
-<section id="draw-ascii" class="slide level2">
-<h2>Draw ASCII</h2>
-
-<img data-src="../img/llm/chat-ascii.jpeg" class="r-stretch"></section>
-<section id="llms-have-a-bad-reputation" class="slide level2">
-<h2>LLMs have a bad rep(utation)</h2>
+<section id="components" class="slide level2">
+<h2>Components</h2>
 <ul>
-<li>Can LLMs produce trustworthy results?</li>
-<li>Data Science: using data to find insights
+<li><code>chatlas</code>: <code>Chat.extract_data()</code> method</li>
+<li><code>pydantic</code>: data model from <code>BaseModel</code>, with optional <code>Field</code> descriptions</li>
+</ul>
+</section>
+<section id="simple-example" class="slide level2">
+<h2>Simple example</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">import</span> chatlas <span class="im">as</span> ctl</span>
+<span id="cb1-2"><a></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel</span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a><span class="kw">class</span> Person(BaseModel):</span>
+<span id="cb1-5"><a></a>    name: <span class="bu">str</span></span>
+<span id="cb1-6"><a></a>    age: <span class="bu">int</span></span>
+<span id="cb1-7"><a></a></span>
+<span id="cb1-8"><a></a>chat <span class="op">=</span> ctl.ChatOpenAI()</span>
+<span id="cb1-9"><a></a>chat.extract_data(</span>
+<span id="cb1-10"><a></a>  <span class="st">"My name is Susan and I'm 13 years old"</span>,</span>
+<span id="cb1-11"><a></a>  data_model<span class="op">=</span>Person,</span>
+<span id="cb1-12"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>output:</p>
+<pre><code>{"name": "Susan", "age": 13}</code></pre>
+</section>
+<section id="add-descriptions" class="slide level2">
+<h2>Add descriptions</h2>
 <ul>
-<li>Reproducibility and replicability</li>
+<li><code>Field()</code>: add a description to the model</li>
+<li>Type hint with None: to allow optional</li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="im">import</span> chatlas <span class="im">as</span> ctl</span>
+<span id="cb3-2"><a></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel, Field</span>
+<span id="cb3-3"><a></a></span>
+<span id="cb3-4"><a></a></span>
+<span id="cb3-5"><a></a><span class="kw">class</span> Person(BaseModel):</span>
+<span id="cb3-6"><a></a>    <span class="co">"""A person"""</span></span>
+<span id="cb3-7"><a></a></span>
+<span id="cb3-8"><a></a>    name: <span class="bu">str</span> <span class="op">=</span> Field(description<span class="op">=</span><span class="st">"Name"</span>)</span>
+<span id="cb3-9"><a></a>    age: <span class="bu">int</span> <span class="op">=</span> Field(description<span class="op">=</span><span class="st">"Age, in years"</span>)</span>
+<span id="cb3-10"><a></a>    hobbies: <span class="bu">list</span>[<span class="bu">str</span>] <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> Field(</span>
+<span id="cb3-11"><a></a>        description<span class="op">=</span><span class="st">"List of hobbies. Should be exclusive and brief."</span></span>
+<span id="cb3-12"><a></a>    )</span>
+<span id="cb3-13"><a></a></span>
+<span id="cb3-14"><a></a>chat <span class="op">=</span> ctl.ChatAnthropic() <span class="co"># changed to Anthropic</span></span>
+<span id="cb3-15"><a></a>chat.extract_data(</span>
+<span id="cb3-16"><a></a>  <span class="st">"My name is Susan and I'm 13 years old"</span>,</span>
+<span id="cb3-17"><a></a>  data_model<span class="op">=</span>Person,</span>
+<span id="cb3-18"><a></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="article-summary" class="slide level2">
+<h2>Article summary</h2>
+<p>Demo Chatlas docs: <a href="https://posit-dev.github.io/chatlas/structured-data/article-summary.html" class="uri">https://posit-dev.github.io/chatlas/structured-data/article-summary.html</a></p>
+</section>
+<section id="entity-recognition" class="slide level2">
+<h2>Entity recognition</h2>
+<ul>
+<li>If you want a pandas dataframe as an output
+<ul>
+<li>Tou need to create the row-wise spec of data</li>
+<li>Then create a list of your row data</li>
 </ul></li>
 </ul>
+<p>Demo Chatlas docs: <a href="https://posit-dev.github.io/chatlas/structured-data/entity-recognition.html" class="uri">https://posit-dev.github.io/chatlas/structured-data/entity-recognition.html</a></p>
 </section>
-<section id="what-would-make-good-data-science" class="slide level2">
-<h2>What would make “good” data science?</h2>
+<section id="sentiment-analysis" class="slide level2">
+<h2>Sentiment analysis</h2>
+<p>Demo Chatlas docs: <a href="https://posit-dev.github.io/chatlas/structured-data/sentiment-analysis.html" class="uri">https://posit-dev.github.io/chatlas/structured-data/sentiment-analysis.html</a></p>
+</section>
+<section id="classification" class="slide level2">
+<h2>Classification</h2>
+<p>Demo Chatlas Docs: <a href="https://posit-dev.github.io/chatlas/structured-data/classification.html" class="uri">https://posit-dev.github.io/chatlas/structured-data/classification.html</a></p>
+</section>
+<section id="multi-modal-input" class="slide level2">
+<h2>Multi-modal input</h2>
 <ul>
-<li>Correct: Are your results correct? did you use the correct methods?</li>
-<li>Transparent: Am I able to audit and inspect your work … easily?</li>
-<li>Reproducible/replicable: Can others come to the same conclusion?</li>
+<li>Images</li>
+<li>PDFs</li>
 </ul>
-<div class="fragment">
-<p>But these are everything LLMs are notoriously bad at!</p>
-</div>
+<p>Demo Chatlas Docs: <a href="https://posit-dev.github.io/chatlas/structured-data/multi-modal.html" class="uri">https://posit-dev.github.io/chatlas/structured-data/multi-modal.html</a></p>
 </section>
-<section id="can-it-count-anthropic" class="slide level2">
-<h2>Can it count? Anthropic</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">import</span> chatlas <span class="im">as</span> clt</span>
-<span id="cb1-2"><a></a></span>
-<span id="cb1-3"><a></a><span class="im">import</span> json</span>
-<span id="cb1-4"><a></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-5"><a></a></span>
-<span id="cb1-6"><a></a></span>
-<span id="cb1-7"><a></a><span class="kw">def</span> len_ai(n):</span>
-<span id="cb1-8"><a></a>    values <span class="op">=</span> np.random.rand(n).tolist()</span>
-<span id="cb1-9"><a></a>    chat <span class="op">=</span> clt.ChatAnthropic(model<span class="op">=</span><span class="st">"claude-sonnet-4-0"</span>)</span>
-<span id="cb1-10"><a></a>    <span class="cf">return</span> chat.chat(<span class="st">"How long is this array"</span>, json.dumps(values))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="multi-modal-input-images" class="slide level2">
+<h2>Multi-modal input: Images</h2>
+<p>Demo: <a href="https://github.com/chendaniely/nydsaic2025-llm/blob/main/code/04-structured/02-image.py" class="uri">https://github.com/chendaniely/nydsaic2025-llm/blob/main/code/04-structured/02-image.py</a></p>
 </section>
-<section id="results" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a>len_ai(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>This array has a length of 10 elements.
+<section id="multi-modal-input-pdf" class="slide level2">
+<h2>Multi-modal input: PDF</h2>
+<p>Demo: <a href="https://github.com/chendaniely/nydsaic2025-llm/blob/main/code/04-structured/03-pdf.py" class="uri">https://github.com/chendaniely/nydsaic2025-llm/blob/main/code/04-structured/03-pdf.py</a></p>
 
-I can see it contains 10 floating-point numbers ranging from approximately 0.024 to 0.930.</code></pre>
+
 </section>
-<section id="results-1" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a>len_ai(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>I'll count the elements in this array for you.
-
-Let me go through and count each element:
-
-Counting all the decimal numbers in the array, I get 100 elements.
-
-So the length of this array is 100.</code></pre>
-</section>
-<section id="results-2" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a>len_ai(<span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>To find the length of this array, I need to count all the elements in it.
-
-Let me count the floating-point numbers in the array:
-
-Counting through all the elements systematically, this array contains 1000 elements.</code></pre>
-</section>
-<section id="results-3" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a></a>len_ai(<span class="dv">10_000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>Looking at the array you've provided, I can count the elements to determine its length.
-
-This array has 20,000 elements.
-
-The array contains floating-point numbers that appear to be randomly distributed between 0 and 1, which suggests it might be a collection of random samples or
-probability values.</code></pre>
-</section>
-<section id="can-it-count-openai" class="slide level2">
-<h2>Can it count? OpenAI</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a></a>len_ai(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>10</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a></a>len_ai(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>100</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a></a>len_ai(<span class="dv">1000</span>) <span class="co"># takes a really long time</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>1000</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a></a>len_ai(<span class="dv">10_000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>I can’t reliably count that many elements by eye in this interface. Please run one of these snippets with your array to get the exact length:
-
- • Python: arr = [ ... ]  # paste your numbers print(len(arr))
- • JavaScript: const arr = [ ... ];  // paste your numbers console.log(arr.length);
-
-If you’d like, paste the array again in a code block and I’ll count it for you.</code></pre>
-</section>
-<section id="llm-perception" class="slide level2">
-<h2>LLM perception</h2>
-<div id="dcc0e36c" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display" data-execution_count="1">
-<div>
-<figure>
-<p><img data-src="07b-ai-hallucinations_files/figure-revealjs/cell-2-output-1.png" width="960" height="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="llms-are-jagged" class="slide level2">
-<h2>LLMs are jagged</h2>
-<div id="606c769b" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display" data-execution_count="2">
-<div>
-<figure>
-<p><img data-src="07b-ai-hallucinations_files/figure-revealjs/cell-3-output-1.png" width="960" height="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="codeing-hard-task-it-can-do-well" class="slide level2">
-<h2>Codeing: Hard task it can do well</h2>
-
-
-
-<img data-src="../img/llm/claude-xkcd.png" class="r-stretch"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

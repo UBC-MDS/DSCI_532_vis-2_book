@@ -1,0 +1,234 @@
+---
+title: Tool Calling
+---
+
+
+## What is Tool Calling?
+
+- Allows LLMs to interact with other systems
+- Supported by most of the newest LLMs, but not all
+
+- Sounds complicated? Scary? It's not too bad, actually...
+
+Reference: <https://jcheng5.github.io/llm-quickstart/quickstart.html#/how-it-works>
+
+## How it does NOT work
+
+![](/img/llm/toolcalling-no.png)
+
+## How it DOES work
+
+![](/img/llm/toolcalling-yes.png)
+
+## A tool is a function
+
+- A tool call is a function that the LLM can use
+- It can either infer what the function does by the function name, docstring, and/or parameter names
+- You can also provide it the context you want
+
+
+## Register tools (Agents)
+
+
+::: {.columns}
+::: {.column}
+Python Chatlas
+
+```python
+import chatlas as clt
+
+# doc strings and type hints provide tool context
+def capital_finder(location: str) -> str:
+  """Sets the capital of the moon as NYC"""
+  if location.lower() == "moon":
+    return "NYC"
+
+chat = clt.ChatAnthropic()
+chat.register_tool(capital_finder)
+chat.chat("what is the capital of the moon?")
+```
+
+:::{.text-output}
+```
+I'll use the capital_finder function to get information about the capital of the moon.
+
+
+ # 🔧 tool request (toolu_01NFACspp5dLPMeTN7FNfvyB)
+ capital_finder(location=moon)
+
+
+
+ # ✅ tool result (toolu_01NFACspp5dLPMeTN7FNfvyB)
+ NYC
+
+According to the capital_finder function, the capital of the moon is NYC (New York City).
+
+Of course, this is not factually accurate in reality - the moon doesn't actually have a capital city or any cities at all, as it's an
+uninhabited celestial body. This appears to be a fictional or hypothetical response from the function.
+```
+:::
+
+:::
+::: {.column}
+R Ellmer
+
+```R
+library(ellmer)
+chat <- chat_openai()
+
+#' Sets the capital of the moon as NYC
+capital_finder <- function(location) {
+  if (location == "moon") {
+    return("NYC")
+  }
+}
+capital_finder <- ellmer::tool(
+  capital_finder,
+  description = "Sets the capital of moon as NYC",
+  arguments = list(
+    location = type_string("location to look up")
+  )
+)
+
+chat$register_tool(capital_finder)
+chat$chat("what is the capital of the moon?")
+```
+
+:::{.text-output}
+```
+◯ [tool call] capital_finder(location = "moon")
+● #> NYC
+The capital of the Moon is NYC.
+```
+:::
+
+:::
+:::
+
+## Example: Weather Tool
+
+To ask the LLM about the weather in the current location we need to write a function that does a few things:
+
+1. Geocode a location to a latitude and longitude (this can also be an API)
+2. Use the latitude and longitude in an API that can look up the weather
+
+## Example Weather tool - Geocode
+
+```{python}
+import requests
+from typing import Dict
+
+
+def get_coordinates(location: str) -> Dict[str, float]:
+    base_url: str = "https://nominatim.openstreetmap.org/search"
+    params = {
+        "q": location,
+        "format": "json",
+        "limit": 1,  # only return the top result
+        "addressdetails": 1,  # include detailed address info
+    }
+
+    headers = {"User-Agent": "example_weather/1.0 (daniel.chen@posit.co)"}
+    response = requests.get(
+        base_url,
+        params=params,
+        headers=headers,
+    )
+
+    data = response.json()
+
+    lat = float(data[0]["lat"])
+    lon = float(data[0]["lon"])
+
+    return {"lat": lat, "lon": lon}
+
+```
+
+## Example Weather tool - Geocode
+
+```{python}
+get_coordinates("New York City")
+```
+
+## Example Weather tool - Weather
+
+```{python}
+import requests
+
+
+def get_weather(lat: float, lon: float):
+    base_url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": lat,
+        "longitude": lon,
+        "current_weather": True,
+    }
+
+    response = requests.get(
+        base_url,
+        params=params,
+    )
+
+    data = response.json()
+
+    return {k: v for k, v in data.items()}
+```
+
+## Example Weather tool - Weather
+
+```python
+get_weather(40.7127281, -74.0060152)
+```
+
+```json
+{'latitude': 40.710335,
+ 'longitude': -73.99308,
+ 'generationtime_ms': 0.09489059448242188,
+ 'utc_offset_seconds': 0,
+ 'timezone': 'GMT',
+ 'timezone_abbreviation': 'GMT',
+ 'elevation': 32.0,
+ 'current_weather_units': {'time': 'iso8601',
+  'interval': 'seconds',
+  'temperature': '°C',
+  'windspeed': 'km/h',
+  'winddirection': '°',
+  'is_day': '',
+  'weathercode': 'wmo code'},
+ 'current_weather': {'time': '2026-03-04T05:30',
+  'interval': 900,
+  'temperature': 1.1,
+  'windspeed': 2.5,
+  'winddirection': 270,
+  'is_day': 0,
+  'weathercode': 45}}
+```
+
+## Example Weather tool - Register
+
+```python
+from chatlas import ChatAnthropic
+
+chat = ChatAnthropic()
+
+chat.register_tool(get_coordinates)
+chat.register_tool(get_weather)
+```
+
+## Demo: Weather R
+
+```r
+{{< include /code/lecture06/tools/ellmer-weather.R >}}
+```
+
+## Demo: Weather Python
+
+```python
+{{< include /code/lecture06/tools/chatlas-weather.py >}}
+```
+
+## Demo: Shiny Application
+
+```python
+{{< include /code/lecture06/tools/app-express.py >}}
+```

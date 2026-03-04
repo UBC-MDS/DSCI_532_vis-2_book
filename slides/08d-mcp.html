@@ -13,7 +13,7 @@
 <script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown-init.js"></script><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.27">
 
-  <title>DSCI 532: Data Visualization 2 – AI Results</title>
+  <title>DSCI 532: Data Visualization 2 – Model Context Protocol (MCP)</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -31,72 +31,6 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-    /* CSS for syntax highlighting */
-    html { -webkit-text-size-adjust: 100%; }
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      { color: #003b4f; background-color: #f1f3f5; }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span { color: #003b4f; } /* Normal */
-    code span.al { color: #ad0000; } /* Alert */
-    code span.an { color: #5e5e5e; } /* Annotation */
-    code span.at { color: #657422; } /* Attribute */
-    code span.bn { color: #ad0000; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #20794d; } /* Char */
-    code span.cn { color: #8f5902; } /* Constant */
-    code span.co { color: #5e5e5e; } /* Comment */
-    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-    code span.dt { color: #ad0000; } /* DataType */
-    code span.dv { color: #ad0000; } /* DecVal */
-    code span.er { color: #ad0000; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #ad0000; } /* Float */
-    code span.fu { color: #4758ab; } /* Function */
-    code span.im { color: #00769e; } /* Import */
-    code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
-    code span.op { color: #5e5e5e; } /* Operator */
-    code span.ot { color: #003b4f; } /* Other */
-    code span.pp { color: #ad0000; } /* Preprocessor */
-    code span.sc { color: #5e5e5e; } /* SpecialChar */
-    code span.ss { color: #20794d; } /* SpecialString */
-    code span.st { color: #20794d; } /* String */
-    code span.va { color: #111111; } /* Variable */
-    code span.vs { color: #20794d; } /* VerbatimString */
-    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
   <link rel="stylesheet" href="../styles.css">
@@ -198,147 +132,64 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">AI Results</h1>
+  <h1 class="title">Model Context Protocol (MCP)</h1>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
-<section id="hallucinations" class="slide level2">
-<h2>Hallucinations?</h2>
-<div class="columns">
-<div class="column">
-<p><img data-src="../img/llm/paper.png"></p>
-</div><div class="column">
-<p><img data-src="../img/llm/paper-fbi.png"></p>
-</div></div>
-<p><a href="https://arxiv.org/abs/2502.15840" class="uri">https://arxiv.org/abs/2502.15840</a></p>
-</section>
-<section id="draw-ascii" class="slide level2">
-<h2>Draw ASCII</h2>
-
-<img data-src="../img/llm/chat-ascii.jpeg" class="r-stretch"></section>
-<section id="llms-have-a-bad-reputation" class="slide level2">
-<h2>LLMs have a bad rep(utation)</h2>
+<section id="what-is-model-context-protocol-mcp" class="slide level2">
+<h2>What is Model Context Protocol (MCP)?</h2>
 <ul>
-<li>Can LLMs produce trustworthy results?</li>
-<li>Data Science: using data to find insights
-<ul>
-<li>Reproducibility and replicability</li>
-</ul></li>
+<li>An open standard for connecting LLMs to external tools and data</li>
+<li>Defines how a model can <strong>discover</strong>, <strong>call</strong>, and <strong>interact</strong> with tools</li>
+<li>Makes tool use interoperable across different apps and providers</li>
 </ul>
 </section>
-<section id="what-would-make-good-data-science" class="slide level2">
-<h2>What would make “good” data science?</h2>
+<section id="why-mcp" class="slide level2">
+<h2>Why MCP?</h2>
 <ul>
-<li>Correct: Are your results correct? did you use the correct methods?</li>
-<li>Transparent: Am I able to audit and inspect your work … easily?</li>
-<li>Reproducible/replicable: Can others come to the same conclusion?</li>
+<li>Without MCP: each app or provider defines its own tool API format</li>
+<li>With MCP: one protocol → tools can work with any LLM that supports MCP</li>
+<li>Reduces friction for developers (no custom glue code for every integration)</li>
 </ul>
-<div class="fragment">
-<p>But these are everything LLMs are notoriously bad at!</p>
-</div>
 </section>
-<section id="can-it-count-anthropic" class="slide level2">
-<h2>Can it count? Anthropic</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">import</span> chatlas <span class="im">as</span> clt</span>
-<span id="cb1-2"><a></a></span>
-<span id="cb1-3"><a></a><span class="im">import</span> json</span>
-<span id="cb1-4"><a></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-5"><a></a></span>
-<span id="cb1-6"><a></a></span>
-<span id="cb1-7"><a></a><span class="kw">def</span> len_ai(n):</span>
-<span id="cb1-8"><a></a>    values <span class="op">=</span> np.random.rand(n).tolist()</span>
-<span id="cb1-9"><a></a>    chat <span class="op">=</span> clt.ChatAnthropic(model<span class="op">=</span><span class="st">"claude-sonnet-4-0"</span>)</span>
-<span id="cb1-10"><a></a>    <span class="cf">return</span> chat.chat(<span class="st">"How long is this array"</span>, json.dumps(values))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="mcp-vs-rag" class="slide level2">
+<h2>MCP vs RAG</h2>
+<ul>
+<li><strong>RAG</strong>: retrieval pipeline (vector DB, search, unstructured docs)</li>
+<li><strong>MCP</strong>: standard way to connect to <em>any tool</em> (databases, APIs, search engines, etc.)</li>
+<li>Together: RAG retrieval itself could be exposed as a tool via MCP</li>
+</ul>
 </section>
-<section id="results" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a>len_ai(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>This array has a length of 10 elements.
-
-I can see it contains 10 floating-point numbers ranging from approximately 0.024 to 0.930.</code></pre>
+<section id="benefits-of-mcp" class="slide level2">
+<h2>Benefits of MCP</h2>
+<ul>
+<li>Portable: one tool, many LLM hosts</li>
+<li>Extensible: supports structured inputs/outputs</li>
+<li>Secure: standardizes permissions and auditing</li>
+<li>Future-proof: ecosystem of reusable MCP tools</li>
+</ul>
 </section>
-<section id="results-1" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a>len_ai(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>I'll count the elements in this array for you.
-
-Let me go through and count each element:
-
-Counting all the decimal numbers in the array, I get 100 elements.
-
-So the length of this array is 100.</code></pre>
+<section id="example-mcp-use-case" class="slide level2">
+<h2>Example MCP Use Case</h2>
+<ul>
+<li>LLM is asked: <em>“What’s the latest issue assigned to me in GitHub?”</em></li>
+<li>Model calls the <strong>GitHub MCP tool</strong></li>
+<li>Tool fetches trusted data via API</li>
+<li>Model responds with the result — no custom integration required</li>
+</ul>
 </section>
-<section id="results-2" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a>len_ai(<span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>To find the length of this array, I need to count all the elements in it.
+<section id="demo-run-python" class="slide level2">
+<h2>Demo: Run python</h2>
+<p><a href="https://github.com/chendaniely/nydsaic2025-llm/tree/main/code/07-mcp" class="uri">https://github.com/chendaniely/nydsaic2025-llm/tree/main/code/07-mcp</a></p>
 
-Let me count the floating-point numbers in the array:
 
-Counting through all the elements systematically, this array contains 1000 elements.</code></pre>
 </section>
-<section id="results-3" class="slide level2">
-<h2>Results</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a></a>len_ai(<span class="dv">10_000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>Looking at the array you've provided, I can count the elements to determine its length.
-
-This array has 20,000 elements.
-
-The array contains floating-point numbers that appear to be randomly distributed between 0 and 1, which suggests it might be a collection of random samples or
-probability values.</code></pre>
-</section>
-<section id="can-it-count-openai" class="slide level2">
-<h2>Can it count? OpenAI</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a></a>len_ai(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>10</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a></a>len_ai(<span class="dv">100</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>100</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a></a>len_ai(<span class="dv">1000</span>) <span class="co"># takes a really long time</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>1000</code></pre>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a></a>len_ai(<span class="dv">10_000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<pre><code>I can’t reliably count that many elements by eye in this interface. Please run one of these snippets with your array to get the exact length:
-
- • Python: arr = [ ... ]  # paste your numbers print(len(arr))
- • JavaScript: const arr = [ ... ];  // paste your numbers console.log(arr.length);
-
-If you’d like, paste the array again in a code block and I’ll count it for you.</code></pre>
-</section>
-<section id="llm-perception" class="slide level2">
-<h2>LLM perception</h2>
-<div id="dcc0e36c" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display" data-execution_count="1">
-<div>
-<figure>
-<p><img data-src="07b-ai-hallucinations_files/figure-revealjs/cell-2-output-1.png" width="960" height="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="llms-are-jagged" class="slide level2">
-<h2>LLMs are jagged</h2>
-<div id="606c769b" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display" data-execution_count="2">
-<div>
-<figure>
-<p><img data-src="07b-ai-hallucinations_files/figure-revealjs/cell-3-output-1.png" width="960" height="576"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="codeing-hard-task-it-can-do-well" class="slide level2">
-<h2>Codeing: Hard task it can do well</h2>
-
-
-
-<img data-src="../img/llm/claude-xkcd.png" class="r-stretch"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>DSCI 532: Data Visualization 2 <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book" class="uri">https://github.com/UBC-MDS/DSCI_532_vis-2_book</a></p>
+<p>The New York Data Science &amp; AI Conference. 2025. <a href="https://github.com/chendaniely/nydsaic2025-llm" class="uri">https://github.com/chendaniely/nydsaic2025-llm</a></p>
 </div>
 </div></div>
 
@@ -371,7 +222,7 @@ If you’d like, paste the array again in a code block and I’ll count it for y
 'autoAnimateUnmatched': true,
 'jumpToSlide': true,
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
-'smaller': false,
+'smaller': true,
  
         // Display controls in the bottom right corner
         controls: false,
