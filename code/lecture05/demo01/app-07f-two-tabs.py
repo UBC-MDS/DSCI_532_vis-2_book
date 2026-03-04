@@ -60,21 +60,28 @@ app_ui = ui.page_navbar(
             fillable=True,
         ),
     ),
-
     # ── Tab 2: Traditional Dashboard ─────────────────────────────────────────
     ui.nav_panel(
         "Traditional",
         ui.layout_column_wrap(
             ui.input_select(
-                "pclass", "Class",
-                choices={"All": "All classes", "1": "First", "2": "Second", "3": "Third"},
+                "pclass",
+                "Class",
+                choices={
+                    "All": "All classes",
+                    "1": "First",
+                    "2": "Second",
+                    "3": "Third",
+                },
             ),
             ui.input_select(
-                "sex", "Sex",
+                "sex",
+                "Sex",
                 choices={"All": "All", "male": "Male", "female": "Female"},
             ),
             ui.input_select(
-                "survived", "Survived",
+                "survived",
+                "Survived",
                 choices={"All": "All", "1": "Yes", "0": "No"},
             ),
             ui.input_slider("age", "Age range", min=0, max=80, value=[0, 80]),
@@ -107,7 +114,6 @@ app_ui = ui.page_navbar(
             width=1 / 2,
         ),
     ),
-
     title="Titanic: Two Interfaces",
     fillable=True,
 )
@@ -150,11 +156,21 @@ def server(input, output, session):
                 passengers=("survived", "count"),
                 survivors=("survived", "sum"),
             )
-            .assign(survival_rate=lambda d: (d["survivors"] / d["passengers"] * 100).round(1))
+            .assign(
+                survival_rate=lambda d: (d["survivors"] / d["passengers"] * 100).round(
+                    1
+                )
+            )
             .reset_index()
-            .rename(columns={"pclass": "Class", "sex": "Sex",
-                              "passengers": "Passengers", "survivors": "Survivors",
-                              "survival_rate": "Survival Rate (%)"})
+            .rename(
+                columns={
+                    "pclass": "Class",
+                    "sex": "Sex",
+                    "passengers": "Passengers",
+                    "survivors": "Survivors",
+                    "survival_rate": "Survival Rate (%)",
+                }
+            )
         )
 
     @render.data_frame
@@ -175,11 +191,17 @@ def server(input, output, session):
             alt.Chart(df)
             .mark_bar()
             .encode(
-                x=alt.X("pclass_label:N", title="Class", sort=["First", "Second", "Third"]),
+                x=alt.X(
+                    "pclass_label:N", title="Class", sort=["First", "Second", "Third"]
+                ),
                 y=alt.Y("count():Q", title="Passengers"),
-                color=alt.Color("survived_label:N", title="Status",
-                                scale=alt.Scale(domain=["Survived", "Died"],
-                                                range=["#2ecc71", "#e74c3c"])),
+                color=alt.Color(
+                    "survived_label:N",
+                    title="Status",
+                    scale=alt.Scale(
+                        domain=["Survived", "Died"], range=["#2ecc71", "#e74c3c"]
+                    ),
+                ),
                 xOffset="survived_label:N",
                 tooltip=["pclass_label", "survived_label", "count()"],
             )
@@ -197,9 +219,13 @@ def server(input, output, session):
             .encode(
                 x=alt.X("age:Q", bin=alt.Bin(maxbins=20), title="Age"),
                 y=alt.Y("count():Q", title="Passengers", stack=None),
-                color=alt.Color("survived_label:N", title="Status",
-                                scale=alt.Scale(domain=["Survived", "Died"],
-                                                range=["#2ecc71", "#e74c3c"])),
+                color=alt.Color(
+                    "survived_label:N",
+                    title="Status",
+                    scale=alt.Scale(
+                        domain=["Survived", "Died"], range=["#2ecc71", "#e74c3c"]
+                    ),
+                ),
                 tooltip=["survived_label", "count()"],
             )
             .properties(height=280)
