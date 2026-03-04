@@ -36,7 +36,7 @@ title: Evals (Testing LLM Output)
 ## Task: dataset
 
 ```
-{{< include code/my_eval_dataset.csv >}}
+{{< include /code/lecture06/evals/my_eval_dataset.csv >}}
 ```
 
 ## Task: solver + scorer
@@ -53,7 +53,7 @@ chat = ChatOpenAI()
 @task
 def my_eval():
     return Task(
-        dataset=csv_dataset("code/my_eval_dataset.csv"),
+        dataset=csv_dataset("code/lecture06/evals/my_eval_dataset.csv"),
         solver=chat.to_solver(),
         scorer=model_graded_qa(model="openai/gpt-4o-mini"),
     )
