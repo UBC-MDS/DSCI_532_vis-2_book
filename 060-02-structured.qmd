@@ -1,0 +1,12 @@
+---
+title: Structured output
+---
+
+
+:::{.column-page-inset-right}
+
+{{< revealjs file="slides/08b-structured.html" height="500px" class="ratio ratio-16x9" >}}
+
+:::
+
+{{< include slides/08b-structured.qmd >}}

@@ -1,0 +1,12 @@
+---
+title: Tools
+---
+
+
+:::{.column-page-inset-right}
+
+{{< revealjs file="slides/08a-tools.html" height="500px" class="ratio ratio-16x9" >}}
+
+:::
+
+{{< include slides/08a-tools.qmd >}}

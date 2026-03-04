@@ -8,13 +8,13 @@ title: Evals (Testing LLM Output)
 
 ::: {.columns}
 ::: {.column}
-![](/img/logo-chatlas.png){width="300"}
+![](/img/llm/logo-chatlas.png){width="300"}
 
 <https://posit-dev.github.io/chatlas/>
 
 :::
 ::: {.column}
-![](/img/logo-aisi.png){width="300"}
+![](/img/llm/logo-aisi.png){width="300"}
 
 <https://inspect.aisi.org.uk//>
 

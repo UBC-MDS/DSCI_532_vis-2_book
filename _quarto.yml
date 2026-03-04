@@ -56,6 +56,14 @@ website:
           - 050-04-chat.qmd
           - 050-05-dashboards.qmd
           - 050-06-env.qmd
+      - section: "Lecture 6"
+        contents:
+          - 060-01-tools.qmd
+          - 060-02-structured.qmd
+          - 060-03-rag.qmd
+          - 060-04-mcp.qmd
+          - 060-05-evals.qmd
+
       - section: "Review"
         contents:
           - review/01-wiring.qmd
