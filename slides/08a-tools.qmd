@@ -194,22 +194,17 @@ chat.register_tool(get_weather)
 ## Demo: Weather R
 
 ```r
-{{< include /../code/03-tools/ellmer-weather.R >}}
+{{< include /code/lecture06/tools/ellmer-weather.R >}}
 ```
 
 ## Demo: Weather Python
 
 ```python
-{{< include /../code/03-tools/chatlas-weather.py >}}
+{{< include /code/lecture06/tools/chatlas-weather.py >}}
 ```
 
 ## Demo: Shiny Application
 
 ```python
-{{< include /../code/03-tools/app.py >}}
+{{< include /code/lecture06/tools/app-express.py >}}
 ```
-
-## You try: register a tool
-
-- Functions: <https://github.com/chendaniely/nydsaic2025-llm/tree/main/helper>
-- App: <https://github.com/chendaniely/nydsaic2025-llm/blob/main/code/03-tools/app.py>
