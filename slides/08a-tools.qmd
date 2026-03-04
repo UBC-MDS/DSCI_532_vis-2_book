@@ -26,6 +26,85 @@ Reference: <https://jcheng5.github.io/llm-quickstart/quickstart.html#/how-it-wor
 - It can either infer what the function does by the function name, docstring, and/or parameter names
 - You can also provide it the context you want
 
+
+## Register tools (Agents)
+
+
+::: {.columns}
+::: {.column}
+Python Chatlas
+
+```python
+import chatlas as clt
+
+# doc strings and type hints provide tool context
+def capital_finder(location: str) -> str:
+  """Sets the capital of the moon as NYC"""
+  if location.lower() == "moon":
+    return "NYC"
+
+chat = clt.ChatAnthropic()
+chat.register_tool(capital_finder)
+chat.chat("what is the capital of the moon?")
+```
+
+:::{.text-output}
+```
+I'll use the capital_finder function to get information about the capital of the moon.
+
+
+ # 🔧 tool request (toolu_01NFACspp5dLPMeTN7FNfvyB)
+ capital_finder(location=moon)
+
+
+
+ # ✅ tool result (toolu_01NFACspp5dLPMeTN7FNfvyB)
+ NYC
+
+According to the capital_finder function, the capital of the moon is NYC (New York City).
+
+Of course, this is not factually accurate in reality - the moon doesn't actually have a capital city or any cities at all, as it's an
+uninhabited celestial body. This appears to be a fictional or hypothetical response from the function.
+```
+:::
+
+:::
+::: {.column}
+R Ellmer
+
+```R
+library(ellmer)
+chat <- chat_openai()
+
+#' Sets the capital of the moon as NYC
+capital_finder <- function(location) {
+  if (location == "moon") {
+    return("NYC")
+  }
+}
+capital_finder <- ellmer::tool(
+  capital_finder,
+  description = "Sets the capital of moon as NYC",
+  arguments = list(
+    location = type_string("location to look up")
+  )
+)
+
+chat$register_tool(capital_finder)
+chat$chat("what is the capital of the moon?")
+```
+
+:::{.text-output}
+```
+◯ [tool call] capital_finder(location = "moon")
+● #> NYC
+The capital of the Moon is NYC.
+```
+:::
+
+:::
+:::
+
 ## Example: Weather Tool
 
 To ask the LLM about the weather in the current location we need to write a function that does a few things:
