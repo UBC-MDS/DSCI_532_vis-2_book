@@ -23,7 +23,7 @@ titanic = load_dataset("titanic").dropna(subset=["age"])
 
 # ── querychat (Tab 1) ─────────────────────────────────────────────────────────
 qc = querychat.QueryChat(
-    titanic,
+    titanic.copy(),
     "titanic",
     greeting="""👋 Ask me anything about the Titanic passengers.
 
