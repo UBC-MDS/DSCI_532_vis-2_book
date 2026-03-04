@@ -8,7 +8,8 @@ title: "Models vs Platforms/Providers"
 - **Model** — the trained neural network itself (GPT-4.1, Claude Sonnet 4.6, Llama 3.3 70B)
 - **Developer** — the lab that trains and releases the model (OpenAI → GPT-4.1, Anthropic → Claude, Meta → Llama, Alibaba → Qwen)
 - **Provider / platform** — hosts and serves models via API (OpenAI, Anthropic, GitHub Models, Groq, Azure)
-- Developer = provider for proprietary models (OpenAI both trains *and* serves GPT-4.1)
+- Developer ≈ provider as well for proprietary models (OpenAI both trains *and* serves GPT-4.1)
+    - But also... GitHub/Azure serve GPT as well (with their limitations) and many other models
 - Developer ≠ provider for open models (Meta trains Llama → Groq, AWS, Azure *serve* it)
 :::
 
@@ -19,7 +20,7 @@ In `chatlas`, switching providers means changing one constructor:
 ```python
 from chatlas import ChatOpenAI, ChatAnthropic, ChatGithub, ChatGroq
 
-chat = ChatGithub(model="gpt-4.1-mini")      # free, 8k input cap
+chat = ChatGithub(model="gpt-4.1-mini")      # free, 8k input cap by default
 chat = ChatOpenAI(model="gpt-4.1-mini")      # paid, full 1M context
 chat = ChatAnthropic(model="claude-sonnet-4-6-20250514")  # paid, 200k (1M beta)
 chat = ChatGroq(model="llama-3.3-70b-versatile")          # free, 128k context
@@ -46,7 +47,7 @@ Key point: the model is the same GPT-4.1-mini whether you access it through GitH
 
 **But providers can cap it lower:**
 
-- GitHub Models limits GPT-4.1-mini to **8k input** — that's 0.8% of the model's 1M capacity!
+- GitHub Models playground limits GPT-4.1-mini to **8k input by default** — that's 0.8% of the model's 1M capacity!
 - Same model, same weights, vastly different limits
 
 :::
