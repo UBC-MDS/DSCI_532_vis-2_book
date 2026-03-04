@@ -4016,30 +4016,6 @@
     ]
   },
   {
-    "objectID": "060-04-mcp.html#example-mcp-use-case",
-    "href": "060-04-mcp.html#example-mcp-use-case",
-    "title": "Model Context Protocol (MCP)",
-    "section": "Example MCP Use Case",
-    "text": "Example MCP Use Case\n\nLLM is asked: “What’s the latest issue assigned to me in GitHub?”\nModel calls the GitHub MCP tool\nTool fetches trusted data via API\nModel responds with the result — no custom integration required",
-    "crumbs": [
-      "Setup",
-      "Lecture 6",
-      "Model Context Protocol (MCP)"
-    ]
-  },
-  {
-    "objectID": "060-04-mcp.html#demo-run-python",
-    "href": "060-04-mcp.html#demo-run-python",
-    "title": "Model Context Protocol (MCP)",
-    "section": "Demo: Run python",
-    "text": "Demo: Run python\nhttps://github.com/chendaniely/nydsaic2025-llm/tree/main/code/07-mcp",
-    "crumbs": [
-      "Setup",
-      "Lecture 6",
-      "Model Context Protocol (MCP)"
-    ]
-  },
-  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
@@ -4780,20 +4756,6 @@
     "title": "Model Context Protocol (MCP)",
     "section": "Benefits of MCP",
     "text": "Benefits of MCP\n\nPortable: one tool, many LLM hosts\nExtensible: supports structured inputs/outputs\nSecure: standardizes permissions and auditing\nFuture-proof: ecosystem of reusable MCP tools"
-  },
-  {
-    "objectID": "slides/08d-mcp.html#example-mcp-use-case",
-    "href": "slides/08d-mcp.html#example-mcp-use-case",
-    "title": "Model Context Protocol (MCP)",
-    "section": "Example MCP Use Case",
-    "text": "Example MCP Use Case\n\nLLM is asked: “What’s the latest issue assigned to me in GitHub?”\nModel calls the GitHub MCP tool\nTool fetches trusted data via API\nModel responds with the result — no custom integration required"
-  },
-  {
-    "objectID": "slides/08d-mcp.html#demo-run-python",
-    "href": "slides/08d-mcp.html#demo-run-python",
-    "title": "Model Context Protocol (MCP)",
-    "section": "Demo: Run python",
-    "text": "Demo: Run python\nhttps://github.com/chendaniely/nydsaic2025-llm/tree/main/code/07-mcp"
   },
   {
     "objectID": "review/01-wiring.html",
