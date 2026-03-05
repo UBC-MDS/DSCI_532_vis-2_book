@@ -204,7 +204,7 @@ server <- function(input, output, session) {
       res <- list(
         role = msg@role,
         content = msg@contents[[1]]@text,
-        model = msg@json$model
+        model = m
       )
       if (is.null(res$model)) {
         # Remove model if not present (will be the case for user messages)
