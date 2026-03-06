@@ -394,6 +394,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Review 1 — Reactivity Basics</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./review/04-llm-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Review 4 - LLM Integration Basics</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -469,7 +475,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="visualizing-penguin-data" class="level2">
 <h2 class="anchored" data-anchor-id="visualizing-penguin-data">Visualizing penguin data</h2>
 <!--TODO: #| output-location: slide is broken -->
-<div id="cc6ecaf9" class="cell" data-execution_count="1">
+<div id="eea9f451" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -500,23 +506,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display" data-execution_count="1">
 
 <style>
-  #altair-viz-480cb502c33e41d69f716acea2cb5856.vega-embed {
+  #altair-viz-7b895d4f1a3a429bb48c0f0483ca4037.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-480cb502c33e41d69f716acea2cb5856.vega-embed details,
-  #altair-viz-480cb502c33e41d69f716acea2cb5856.vega-embed details summary {
+  #altair-viz-7b895d4f1a3a429bb48c0f0483ca4037.vega-embed details,
+  #altair-viz-7b895d4f1a3a429bb48c0f0483ca4037.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-480cb502c33e41d69f716acea2cb5856"></div>
+<div id="altair-viz-7b895d4f1a3a429bb48c0f0483ca4037"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-480cb502c33e41d69f716acea2cb5856") {
-      outputDiv = document.getElementById("altair-viz-480cb502c33e41d69f716acea2cb5856");
+    if (outputDiv.id !== "altair-viz-7b895d4f1a3a429bb48c0f0483ca4037") {
+      outputDiv = document.getElementById("altair-viz-7b895d4f1a3a429bb48c0f0483ca4037");
     }
 
     const paths = {
@@ -572,7 +578,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="change-the-species" class="level2">
 <h2 class="anchored" data-anchor-id="change-the-species">Change the species</h2>
 <!-- TODO: #| output-location: slide is broken -->
-<div id="7bfb2eec" class="cell" data-execution_count="2">
+<div id="42e0687d" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -603,23 +609,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display" data-execution_count="2">
 
 <style>
-  #altair-viz-fb1a3465025f4a8d863284216a294207.vega-embed {
+  #altair-viz-0e51187a2f854a878462690ba9eddaab.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-fb1a3465025f4a8d863284216a294207.vega-embed details,
-  #altair-viz-fb1a3465025f4a8d863284216a294207.vega-embed details summary {
+  #altair-viz-0e51187a2f854a878462690ba9eddaab.vega-embed details,
+  #altair-viz-0e51187a2f854a878462690ba9eddaab.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-fb1a3465025f4a8d863284216a294207"></div>
+<div id="altair-viz-0e51187a2f854a878462690ba9eddaab"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-fb1a3465025f4a8d863284216a294207") {
-      outputDiv = document.getElementById("altair-viz-fb1a3465025f4a8d863284216a294207");
+    if (outputDiv.id !== "altair-viz-0e51187a2f854a878462690ba9eddaab") {
+      outputDiv = document.getElementById("altair-viz-0e51187a2f854a878462690ba9eddaab");
     }
 
     const paths = {
@@ -679,7 +685,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Input Components Gallery: <a href="https://shiny.posit.co/py/components/#inputs" class="uri">https://shiny.posit.co/py/components/#inputs</a></p></li>
 <li><p>What might be a good component to use?</p></li>
 </ul>
-<countdown-timer id="timer_4b86076d743b1e305ea0497238e0a04d385b3131" minutes="01" seconds="00" class="countdown" warn-when="0" update-every="1" play-sound="false" blink-colon="false" start-immediately="false" tabindex="0" style="right: 0;bottom: 0;">
+<countdown-timer id="timer_35e5cc45f4f1554a2d0678496aee0318dd7a2300" minutes="01" seconds="00" class="countdown" warn-when="0" update-every="1" play-sound="false" blink-colon="false" start-immediately="false" tabindex="0" style="right: 0;bottom: 0;">
  </countdown-timer>
 </section>
 <section id="radio-buttons" class="level2">
