@@ -529,7 +529,7 @@ One `@reactive.calc`, multiple outputs-DuckDB queries only once per input change
 
 ## app-01: ibis Intro (penguins)
 
-`code/lecture09/app-01-ibis-intro.py`
+`code/lecture07/app-01-ibis-intro.py`
 
 ::: {.columns}
 ::: {.column}
@@ -571,7 +571,7 @@ def table():
 #| viewerHeight: 520
 
 ## file: app.py
-{{< include /code/lecture09/app-02a-taxi-inmem.py >}}
+{{< include /code/lecture07/app-02a-taxi-inmem.py >}}
 
 ## file: requirements.txt
 ibis-framework
