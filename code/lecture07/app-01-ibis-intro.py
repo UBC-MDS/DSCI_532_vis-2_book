@@ -44,18 +44,15 @@ app_ui = ui.page_sidebar(
 
 
 def server(input, output, session):
-    # Disconnect when the session ends — avoids connection leaks
-    session.on_ended(con.disconnect)
 
     @reactive.calc
     def filtered():
-        # Build the ibis expression — no query runs yet
-        return penguins.filter(
-            [
-                _.species.isin(input.species()),
-                _.island.isin(input.island()),
-            ]
-        )
+        expr = penguins
+        if input.species():
+            expr = expr.filter(_.species.isin(input.species()))
+        if input.island():
+            expr = expr.filter(_.island.isin(input.island()))
+        return expr
 
     @render.text
     def count():

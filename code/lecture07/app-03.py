@@ -1,15 +1,12 @@
-"""querychat query logger — MongoDB Atlas backend (app-03b).
+"""MongoDB write patterns: feedback form + editable DataGrid (app-03).
 
-Logs every generated SQL query + user question + row count to MongoDB Atlas.
-Works on Posit Connect: atomic writes, persistent across restarts, safe under
-multiple workers.
+Demonstrates two ways to write user data to MongoDB Atlas from a Shiny app:
+  1. Simple feedback form — text inputs + button → insert_one
+  2. Editable DataGrid — inline editing + submit → insert_one per row
 
-Compare with app-03a-log-local.py — only save_info() and load_data() differ.
-
-Run: shiny run app-03b-log-mongodb.py
+Run: shiny run app-03.py
 Requires in .env:
-  GITHUB_TOKEN   (or other LLM key)
-  MONGODB_URI    — from Atlas: mongodb+srv://user:pass@cluster.mongodb.net/
+  MONGODB_URI  — from Atlas: mongodb+srv://user:pass@cluster.mongodb.net/
 """
 
 import os
@@ -17,127 +14,89 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
-import querychat
-from chatlas import ChatAuto
 from dotenv import load_dotenv
 from pymongo import MongoClient
-from seaborn import load_dataset
 from shiny import App, reactive, render, ui
 
 load_dotenv(Path(__file__).parent / ".env")
 
-# ── Data + querychat setup ────────────────────────────────────────────────────
-
-_chat_client = ChatAuto()
-LLM_MODEL = f"{_chat_client.provider.name}/{_chat_client.provider.model}"
-
-titanic = load_dataset("titanic")
-qc = querychat.QueryChat(
-    titanic,
-    "titanic",
-    client=_chat_client,
-)
-
-# ── Persistent storage: MongoDB Atlas ────────────────────────────────────────
+# ── MongoDB setup ─────────────────────────────────────────────────────────────
 
 _client = MongoClient(os.environ["MONGODB_URI"])
 collection = _client["dsci532"]["form_log"]
 
-SCHEMA = ["section", "timestamp", "model", "tool", "user_query", "sql", "n_rows"]
+# ── Editable DataGrid template ────────────────────────────────────────────────
 
-
-def save_info(row: dict) -> None:
-    collection.insert_one(row)     # atomic write — safe under multiple workers
-
-
-def load_data(section: str) -> pd.DataFrame:
-    rows = list(collection.find({"section": section}, {"_id": 0}))
-    return pd.DataFrame(rows, columns=SCHEMA) if rows else pd.DataFrame(columns=SCHEMA)
-
+template_df = pd.DataFrame({
+    "name":    [""] * 3,
+    "species": [""] * 3,
+    "island":  [""] * 3,
+    "comment": [""] * 3,
+})
 
 # ── UI ────────────────────────────────────────────────────────────────────────
 
 app_ui = ui.page_sidebar(
-    qc.sidebar(),
-    ui.card(
-        ui.card_header(ui.output_text("title")),
-        ui.output_data_frame("data_table"),
-        fill=True,
+    ui.sidebar(
+        ui.h5("Feedback form"),
+        ui.input_text("name", "Your name"),
+        ui.input_text_area("comment", "Comment"),
+        ui.input_action_button("submit", "Submit", class_="btn-primary w-100"),
     ),
-    ui.card(
-        ui.card_header("Query Log (MongoDB Atlas)"),
-        ui.input_select(
-            "section",
-            "Section",
-            choices=["Section 1", "Section 2"],
-            width="200px",
-        ),
-        ui.download_button("download_log", "Download CSV"),
-        ui.output_data_frame("log_table"),
-    ),
-    fillable=True,
-    title="Titanic Explorer — with MongoDB Logging",
+    ui.tags.style("""
+        .shiny-data-grid tr { height: 42px; }
+        .shiny-data-grid td { padding: 8px 12px; vertical-align: middle; }
+    """),
+    ui.h4("Editable DataGrid → MongoDB"),
+    ui.p("Edit the table below, then click Submit Rows."),
+    ui.output_data_frame("response_table"),
+    ui.input_action_button("submit_grid", "Submit Rows", class_="btn-secondary mt-2"),
+    ui.hr(),
+    ui.h4("Submissions log"),
+    ui.output_data_frame("log_table"),
+    title="App 03 — MongoDB write patterns",
 )
 
 # ── Server ────────────────────────────────────────────────────────────────────
 
 
 def server(input, output, session):
-    qc_vals = qc.server()
 
-    log = reactive.value(load_data("Section 1"))
-    pending = reactive.value(None)    # bridge: hook sets, effect reads
+    # Pattern 1: form → insert_one on button click
+    @reactive.effect
+    @reactive.event(input.submit)
+    def save_response():
+        row = {
+            "source":    "form",
+            "name":      input.name(),
+            "comment":   input.comment(),
+            "timestamp": datetime.now().isoformat(),
+        }
+        collection.insert_one(row)
+        ui.notification_show("Submitted!", type="message", duration=3)
 
-    def on_query(req):
-        """Fires inside Extended Task — only .set() is allowed here, no reactive reads."""
-        if req.name not in ("querychat_update_dashboard", "querychat_query"):
-            return
-        sql = req.arguments.get("query", "")
-        if not sql:
-            return
-        turns = qc_vals.client.get_turns()
-        user_turns = [t for t in turns if t.role == "user"]
-        pending.set({                       # .set() is safe from Extended Task
-            "user_query": user_turns[-1].text if user_turns else "(unknown)",
-            "sql": sql,
-            "tool": req.name,
-        })
-
-    qc_vals.client.on_tool_request(on_query)
+    # Pattern 2: editable DataGrid → insert_one per row on button click
+    @render.data_frame
+    def response_table():
+        return render.DataGrid(template_df, editable=True, height="200px")
 
     @reactive.effect
-    def flush_log():
-        entry = pending()
-        if not entry:
-            return
-        entry["section"] = input.section()
-        entry["model"] = LLM_MODEL
-        entry["n_rows"] = len(qc_vals.df())    # reactive read — safe here
-        entry["timestamp"] = datetime.now().isoformat(timespec="seconds")
-        save_info(entry)
-        log.set(pd.concat([log(), pd.DataFrame([entry])], ignore_index=True))
-        pending.set(None)                       # clear to avoid re-fire
+    @reactive.event(input.submit_grid)
+    def save_edits():
+        edited = response_table.data_view()
+        filled = edited[edited["name"].str.strip() != ""]
+        for row in filled.to_dict("records"):
+            row["source"] = "grid"
+            row["timestamp"] = datetime.now().isoformat()
+            collection.insert_one(row)
+        ui.notification_show(f"{len(filled)} row(s) submitted!", type="message", duration=3)
 
-    @reactive.effect
-    def reload_log_on_section():
-        """Reload log from MongoDB when section selector changes."""
-        log.set(load_data(input.section()))
-
-    @render.text
-    def title():
-        return qc_vals.title() or "Titanic dataset"
-
+    # Live log viewer
     @render.data_frame
-    def data_table():
-        return qc_vals.df()
-
-    @render.data_frame
+    @reactive.event(input.submit, input.submit_grid)
     def log_table():
-        return render.DataGrid(log(), width="100%")
-
-    @render.download(filename=lambda: f"query_log_{input.section().replace(' ', '_').lower()}.csv")
-    def download_log():
-        yield log().to_csv(index=False)
+        rows = list(collection.find({}, {"_id": 0}))
+        return pd.DataFrame(rows) if rows else pd.DataFrame()
 
 
 app = App(app_ui, server)
