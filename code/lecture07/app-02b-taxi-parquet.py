@@ -82,8 +82,6 @@ app_ui = ui.page_sidebar(
 
 
 def server(input, output, session):
-    session.on_ended(con.disconnect)
-
     @reactive.calc
     def filtered():
         expr = taxi
