@@ -1,0 +1,2281 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Databases in Shiny – DSCI 532: Data Visualization 2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c2184ee79b4189700a07fecab5507ffb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/quizdown-0.6.0/quizdown.js"></script>
+<script src="site_libs/quarto-contrib/quizdown-0.6.0/quizdownKatex.js"></script>
+<script src="site_libs/quarto-contrib/quizdown-0.6.0/quizdownHighlight.js"></script>
+<script src="site_libs/quarto-contrib/quizdown-0.6.0/quizdown-init.js"></script>
+<link href="site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.css" rel="stylesheet">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.10.7/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.10.7/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.10.7/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+ 
+  <style>
+  .slide-deck {
+      border: 3px solid #dee2e6;
+  }
+  </style>
+  
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">DSCI 532: Data Visualization 2</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./setup.html"> 
+<span class="menu-text">Setup</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/tree/main/code"> 
+<span class="menu-text">Code Examples</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/UBC-MDS/DSCI_532_vis-2_book"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./090-databases.html">Lecture 9</a></li><li class="breadcrumb-item"><a href="./090-databases.html">Databases in Shiny</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 1</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./010-intro_dashboards.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction to dashboards</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./010-intro_shiny.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction to Shiny</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./010-first_app.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Your first Shiny application</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 2</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-reactivity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">What is Reactivity?</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-dashboard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Build a dashboard</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./020-publish.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Publish your application</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 3</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./030-geoviz-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Geospatial visualization</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./030-tables-intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tables in Shiny</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 4</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./040-styling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">More UI pattern examples</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 5</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./050-01-llm-welcome.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome to LLMs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./050-02-hallucinations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">AI Results</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./050-03-conversation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Anatomy of a Conversation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./050-04-chat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Your first chat</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./050-05-dashboards.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Science Dashboards</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./050-06-env.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Environment Variables</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 6</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./060-01-tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tool Calling</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./060-02-structured.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Structured Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./060-03-rag.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Retrival Augmented Generation (RAG)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./060-04-mcp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Model Context Protocol (MCP)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./060-05-evals.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Evals (Testing LLM Output)</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
+ <span class="menu-text">Lecture 9</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./090-databases.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Databases in Shiny</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Review</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./review/01-wiring.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Review 1 — Reactivity Basics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./review/04-llm-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Review 4 - LLM Integration Basics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#today" id="toc-today" class="nav-link active" data-scroll-target="#today">Today</a></li>
+  <li><a href="#why-not-always-pandas-eager-vs-lazy-loading" id="toc-why-not-always-pandas-eager-vs-lazy-loading" class="nav-link" data-scroll-target="#why-not-always-pandas-eager-vs-lazy-loading">Why Not (always) Pandas?: Eager vs Lazy Loading</a>
+  <ul class="collapse">
+  <li><a href="#the-eager-loading-trap" id="toc-the-eager-loading-trap" class="nav-link" data-scroll-target="#the-eager-loading-trap">The Eager Loading Trap</a></li>
+  <li><a href="#lazy-loading" id="toc-lazy-loading" class="nav-link" data-scroll-target="#lazy-loading">Lazy Loading</a></li>
+  </ul></li>
+  <li><a href="#the-stack-lazy-data-loading" id="toc-the-stack-lazy-data-loading" class="nav-link" data-scroll-target="#the-stack-lazy-data-loading">The Stack: Lazy Data Loading</a>
+  <ul class="collapse">
+  <li><a href="#parquet-duckdb-ibis-works-in-many-analytical-settings-not-only-shiny" id="toc-parquet-duckdb-ibis-works-in-many-analytical-settings-not-only-shiny" class="nav-link" data-scroll-target="#parquet-duckdb-ibis-works-in-many-analytical-settings-not-only-shiny">parquet + DuckDB + ibis (works in many analytical settings, not only shiny)</a></li>
+  <li><a href="#connect-to-your-data" id="toc-connect-to-your-data" class="nav-link" data-scroll-target="#connect-to-your-data">Connect to Your Data</a></li>
+  <li><a href="#ibis-expressions" id="toc-ibis-expressions" class="nav-link" data-scroll-target="#ibis-expressions">ibis Expressions</a></li>
+  <li><a href="#lazy-until-.execute" id="toc-lazy-until-.execute" class="nav-link" data-scroll-target="#lazy-until-.execute">Lazy Until <code>.execute()</code></a></li>
+  <li><a href="#etl-one-time-prep" id="toc-etl-one-time-prep" class="nav-link" data-scroll-target="#etl-one-time-prep">ETL: One-Time Prep</a></li>
+  <li><a href="#part-1-summary-lazy-data-loading" id="toc-part-1-summary-lazy-data-loading" class="nav-link" data-scroll-target="#part-1-summary-lazy-data-loading">Part 1 Summary: Lazy Data Loading</a></li>
+  </ul></li>
+  <li><a href="#dealing-with-data-in-shiny" id="toc-dealing-with-data-in-shiny" class="nav-link" data-scroll-target="#dealing-with-data-in-shiny">Dealing with Data in Shiny</a>
+  <ul class="collapse">
+  <li><a href="#sql-vs-ibis-building-filters" id="toc-sql-vs-ibis-building-filters" class="nav-link" data-scroll-target="#sql-vs-ibis-building-filters">SQL vs ibis: Building Filters</a></li>
+  <li><a href="#ibis-goes-further" id="toc-ibis-goes-further" class="nav-link" data-scroll-target="#ibis-goes-further">ibis Goes Further</a></li>
+  <li><a href="#so-why-not-just-always-write-sql" id="toc-so-why-not-just-always-write-sql" class="nav-link" data-scroll-target="#so-why-not-just-always-write-sql">So Why Not Just (Always) Write SQL?</a></li>
+  <li><a href="#ibis-duckdb-in-shiny" id="toc-ibis-duckdb-in-shiny" class="nav-link" data-scroll-target="#ibis-duckdb-in-shiny">ibis + DuckDB in Shiny</a></li>
+  <li><a href="#app-01-ibis-intro-penguins" id="toc-app-01-ibis-intro-penguins" class="nav-link" data-scroll-target="#app-01-ibis-intro-penguins">app-01: ibis Intro (penguins)</a></li>
+  <li><a href="#app-02-taxi-dashboard" id="toc-app-02-taxi-dashboard" class="nav-link" data-scroll-target="#app-02-taxi-dashboard">app-02: Taxi Dashboard</a></li>
+  </ul></li>
+  <li><a href="#part-2-writing-persistent-storage" id="toc-part-2-writing-persistent-storage" class="nav-link" data-scroll-target="#part-2-writing-persistent-storage">Part 2: Writing &amp; Persistent Storage</a></li>
+  <li><a href="#why-local-files-break" id="toc-why-local-files-break" class="nav-link" data-scroll-target="#why-local-files-break">Why Local Files Break</a>
+  <ul class="collapse">
+  <li><a href="#this-works-locally" id="toc-this-works-locally" class="nav-link" data-scroll-target="#this-works-locally">This Works Locally</a></li>
+  <li><a href="#where-does-this-break" id="toc-where-does-this-break" class="nav-link" data-scroll-target="#where-does-this-break">Where Does This Break?</a></li>
+  <li><a href="#shinylive-silent-failure" id="toc-shinylive-silent-failure" class="nav-link" data-scroll-target="#shinylive-silent-failure">Shinylive: Silent Failure</a></li>
+  <li><a href="#posit-connect-container-restarts" id="toc-posit-connect-container-restarts" class="nav-link" data-scroll-target="#posit-connect-container-restarts">Posit Connect: Container Restarts</a></li>
+  <li><a href="#concurrent-users-or-multiple-workers" id="toc-concurrent-users-or-multiple-workers" class="nav-link" data-scroll-target="#concurrent-users-or-multiple-workers">Concurrent Users or Multiple Workers</a></li>
+  </ul></li>
+  <li><a href="#the-fix-external-storage" id="toc-the-fix-external-storage" class="nav-link" data-scroll-target="#the-fix-external-storage">The Fix: External Storage</a>
+  <ul class="collapse">
+  <li><a href="#persistent-storage-whats-out-there" id="toc-persistent-storage-whats-out-there" class="nav-link" data-scroll-target="#persistent-storage-whats-out-there">Persistent Storage: What’s Out There</a></li>
+  <li><a href="#databases-mode-1-local" id="toc-databases-mode-1-local" class="nav-link" data-scroll-target="#databases-mode-1-local">Databases: Mode 1 — Local</a></li>
+  <li><a href="#databases-mode-2-self-hosted-server" id="toc-databases-mode-2-self-hosted-server" class="nav-link" data-scroll-target="#databases-mode-2-self-hosted-server">Databases: Mode 2 — Self-hosted Server</a></li>
+  <li><a href="#databases-mode-3-cloud" id="toc-databases-mode-3-cloud" class="nav-link" data-scroll-target="#databases-mode-3-cloud">Databases: Mode 3 — Cloud</a></li>
+  <li><a href="#why-mongodb-atlas-today" id="toc-why-mongodb-atlas-today" class="nav-link" data-scroll-target="#why-mongodb-atlas-today">Why MongoDB Atlas Today?</a></li>
+  <li><a href="#app-03-a-simple-form-the-pattern" id="toc-app-03-a-simple-form-the-pattern" class="nav-link" data-scroll-target="#app-03-a-simple-form-the-pattern">App 03: A Simple Form: The Pattern</a></li>
+  <li><a href="#editable-datagrid---mongodb" id="toc-editable-datagrid---mongodb" class="nav-link" data-scroll-target="#editable-datagrid---mongodb">Editable DataGrid -&gt; MongoDB</a></li>
+  <li><a href="#why-local-breaks-the-pattern-to-avoid" id="toc-why-local-breaks-the-pattern-to-avoid" class="nav-link" data-scroll-target="#why-local-breaks-the-pattern-to-avoid">Why Local Breaks: The Pattern to Avoid</a></li>
+  <li><a href="#more-complex-loop-querychat-logger" id="toc-more-complex-loop-querychat-logger" class="nav-link" data-scroll-target="#more-complex-loop-querychat-logger">More complex loop: querychat Logger</a></li>
+  <li><a href="#the-logging-hook-why-not-reactive.effect" id="toc-the-logging-hook-why-not-reactive.effect" class="nav-link" data-scroll-target="#the-logging-hook-why-not-reactive.effect">The Logging Hook: Why Not <code>@reactive.effect</code>?</a></li>
+  <li><a href="#on_tool_request-one-fire-per-query" id="toc-on_tool_request-one-fire-per-query" class="nav-link" data-scroll-target="#on_tool_request-one-fire-per-query"><code>on_tool_request</code>: One Fire Per Query</a></li>
+  <li><a href="#data-flow-app-04" id="toc-data-flow-app-04" class="nav-link" data-scroll-target="#data-flow-app-04">Data Flow: app-04</a></li>
+  <li><a href="#app-04-mongodb-backend" id="toc-app-04-mongodb-backend" class="nav-link" data-scroll-target="#app-04-mongodb-backend">app-04: MongoDB Backend</a></li>
+  <li><a href="#switching-providers" id="toc-switching-providers" class="nav-link" data-scroll-target="#switching-providers">Switching Providers</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./090-databases.html">Lecture 9</a></li><li class="breadcrumb-item"><a href="./090-databases.html">Databases in Shiny</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Databases in Shiny</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="column-page-inset-right">
+    <p><a href="slides/09-databases.html" target="_blank">View slides in full screen</a></p>
+       <div class="ratio ratio-16x9">
+      <iframe class="slide-deck" src="slides/09-databases.html" height="500px" width="100%"></iframe>
+    </div>
+  
+</div>
+<!-- Full lecture: Part 1-querying lazily (ibis + DuckDB); Part 2-writing & persistent storage (MongoDB Atlas) -->
+<!-- Primary examples: NYC Taxi dashboard, querychat query logger -->
+<section id="today" class="level2">
+<h2 class="anchored" data-anchor-id="today">Today</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Part 1: Reading (large) data into your dashboard app</strong></p>
+<ul>
+<li>Why not (always) pandas: Eager Loading Trap</li>
+<li>Lazy Loading in Shiny: DBs, parquet</li>
+<li>Why not (always) SQL: ibis + DuckDB-lazy loading</li>
+<li>Running example: NYC Yellow Taxi (~3M trips)</li>
+<li><code>app-01</code>, <code>app-02a/b</code></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>Part 2: Writing data from your app</strong></p>
+<ul>
+<li>Where problems come from: local, concurrent users, cloud deployments (Posit Connect)</li>
+<li>External backend</li>
+<li>Simple framework (writing form data)</li>
+<li>Using external database to log LLM interaction</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Covered apps
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><code>app-01-ibis-intro.py</code>-ibis + DuckDB basics with penguins</li>
+<li><code>app-02a-taxi-inmem.py</code>-ibis pattern with embedded sample (shinylive)</li>
+<li><code>app-02b-taxi-parquet.py</code>-lazy filtering, full NYC taxi parquet (run locally)</li>
+<li><code>app-03.py</code>-feedback form → MongoDB</li>
+<li><code>app-04.py</code>-querychat + MongoDB Atlas logger</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="why-not-always-pandas-eager-vs-lazy-loading" class="level1">
+<h1>Why Not (always) Pandas?: Eager vs Lazy Loading</h1>
+<section id="the-eager-loading-trap" class="level2">
+<h2 class="anchored" data-anchor-id="the-eager-loading-trap">The Eager Loading Trap</h2>
+<p>Everything so far:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"trips.csv"</span>)   <span class="co"># entire file -&gt; RAM</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p>That works fine for penguins (344 rows).</p>
+<p>. . .</p>
+<p><strong>NYC taxi 2024:</strong> ~40 million rows × 20 columns -&gt; 5+ GB</p>
+<p>. . .</p>
+<div class="columns">
+<div class="column">
+<p><strong>Your laptop</strong> may survive (16–32 GB RAM)…</p>
+</div><div class="column">
+<p><strong>Posit Connect Cloud</strong> (and most of the similar services) free tier: <strong>4 GB RAM</strong>. App crashes on startup.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Plan</th>
+<th>RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Free</td>
+<td>4 GB</td>
+</tr>
+<tr class="even">
+<td>Basic</td>
+<td>8 GB</td>
+</tr>
+<tr class="odd">
+<td>Enhanced</td>
+<td>16 GB</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="lazy-loading" class="level2">
+<h2 class="anchored" data-anchor-id="lazy-loading">Lazy Loading</h2>
+<p><strong>Key idea:</strong> describe <em>what</em> you want (maybe in multiple steps), let the database fetch only the rows you need.</p>
+<div class="columns">
+<div class="column" style="width:45%;">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  subgraph disk["💾 On disk"]
+    D[(parquet&lt;br&gt;3M trips)]
+  end
+  subgraph mem["⚡ In RAM"]
+    direction LR
+    A[/payment = cash/]
+    B[/distance &lt; 5 mi/]
+    F{{filtered}}
+    P1([n_trips])
+    P2([table])
+    A --&gt; F
+    B --&gt; F
+    F --&gt; P1
+    F --&gt; P2
+  end
+  F -- ".execute()" --&gt; D
+  D -- "~190k rows" --&gt; F
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:55%;">
+<div class="incremental">
+<ul class="incremental">
+<li>The query shape lives in Python</li>
+<li>DuckDB executes it against the file on disk (in 525 we will learn more)</li>
+<li>Only the result (e.g.&nbsp;500 matching rows) enters RAM</li>
+</ul>
+</div>
+<p>. . .</p>
+<p>DuckDB scans the parquet file on disk and returns only the matching rows - <strong>the 3M-row file never enters RAM</strong>.</p>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>We covered the Shiny integration angle here. DSCI 525 goes deeper on Parquet, columnar formats, and large-scale data pipelines.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-warning no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><strong>What about Postgres?</strong> You worked with it in DSCI 513 and ibis connects to it too. But Postgres is a transactional database - it needs a running server, index tuning, and configuration to perform well on analytical queries.<br>
+DuckDB is purpose-built for in-process analytics: no server, no install beyond <code>pip</code>, and it reads parquet natively. For single-user dashboards with analytical data, it is the simpler choice.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="the-stack-lazy-data-loading" class="level1">
+<h1>The Stack: Lazy Data Loading</h1>
+<section id="parquet-duckdb-ibis-works-in-many-analytical-settings-not-only-shiny" class="level2">
+<h2 class="anchored" data-anchor-id="parquet-duckdb-ibis-works-in-many-analytical-settings-not-only-shiny">parquet + DuckDB + ibis (works in many analytical settings, not only shiny)</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 36%">
+<col style="width: 31%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Layer</th>
+<th>Tool</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Data</td>
+<td><strong>Parquet file</strong></td>
+<td>Columnar: only needed columns are read</td>
+</tr>
+<tr class="even">
+<td>Query engine</td>
+<td><strong>DuckDB</strong></td>
+<td>Executes (SQL) queries, reads parquet natively</td>
+</tr>
+<tr class="odd">
+<td>Query language</td>
+<td><strong>ibis</strong></td>
+<td>Python API for building queries programmatically</td>
+</tr>
+</tbody>
+</table>
+<p>. . .</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers=""><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="st">'ibis-framework[duckdb]'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>DuckDB runs <strong>in-process</strong>-no server, no config, just a file with data (or nothing at all).</p>
+</section>
+<section id="connect-to-your-data" class="level2">
+<h2 class="anchored" data-anchor-id="connect-to-your-data">Connect to Your Data</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1"></a><span class="im">import</span> ibis</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="im">from</span> ibis <span class="im">import</span> _       <span class="co"># we use _ to refer to columns</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a>con <span class="op">=</span> ibis.duckdb.<span class="ex">connect</span>()   <span class="co"># in-process DuckDB</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a>taxi <span class="op">=</span> con.read_parquet(<span class="st">"data/taxi_2024-01.parquet"</span>)   <span class="co"># NB! no data loaded yet</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p><code>taxi</code> is a table <em>reference</em>, not a DataFrame. Nothing has been read from disk.</p>
+</section>
+<section id="ibis-expressions" class="level2">
+<h2 class="anchored" data-anchor-id="ibis-expressions">ibis Expressions</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># this part defines plan (the query), nothing happens here</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>taxi.<span class="bu">filter</span>([_.payment_type <span class="op">==</span> <span class="dv">1</span>])              <span class="co"># filter rows</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>taxi.select([<span class="st">"trip_distance"</span>, <span class="st">"fare_amount"</span>])    <span class="co"># select columns</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>taxi.limit(<span class="dv">500</span>)                                 <span class="co"># first N rows</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>taxi.count()                                    <span class="co"># row count (still lazy! nothing happened yet)</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">#this part executes the plan (query), stuff finally happens</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>taxi.<span class="bu">filter</span>([_.payment_type <span class="op">==</span> <span class="dv">1</span>]).execute()    <span class="co"># &lt;- runs the query</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p><code>_</code> is a column reference shorthand: <code>_.col_name</code> reads as “the column named col_name”.</p>
+</section>
+<section id="lazy-until-.execute" class="level2">
+<h2 class="anchored" data-anchor-id="lazy-until-.execute">Lazy Until <code>.execute()</code></h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: build the expression (instant: no query sent to DuckDB yet, we just planning what to do)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>expr <span class="op">=</span> (</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    taxi</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>([_.payment_type <span class="op">==</span> <span class="dv">1</span>, _.trip_distance <span class="op">&lt;</span> <span class="dv">5</span>])</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    .select([<span class="st">"trip_distance"</span>, <span class="st">"fare_amount"</span>, <span class="st">"total_amount"</span>])</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    .limit(<span class="dv">500</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: execute (we run our query: DuckDB scans the parquet file NOW)</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> expr.execute()    <span class="co"># returns a DataFrame</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p>You can build and reshape expressions freely. DuckDB only does work at <code>.execute()</code>.</p>
+</section>
+<section id="etl-one-time-prep" class="level2">
+<h2 class="anchored" data-anchor-id="etl-one-time-prep">ETL: One-Time Prep</h2>
+<p>Your raw data arrives as CSV (or json, …) - large, row-oriented, slow to query. Convert it to Parquet once; the app reads the fast columnar file from then on:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">import</span> duckdb <span class="co">#we can use duckdb for that as well! not the only option</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>CSV <span class="op">=</span> <span class="st">"raw/yellow_tripdata_2024-01.csv"</span>   <span class="co"># 2 GB+, row-oriented</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>OUT <span class="op">=</span> <span class="st">"data/taxi_2024-01.parquet"</span>         <span class="co"># columnar, compressed, fast</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a>duckdb.execute(<span class="ss">f"""</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="ss">    COPY (SELECT * FROM read_csv_auto('</span><span class="sc">{</span>CSV<span class="sc">}</span><span class="ss">'))</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="ss">    TO '</span><span class="sc">{</span>OUT<span class="sc">}</span><span class="ss">' (FORMAT PARQUET)</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="ss">"""</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p><code>read_csv_auto</code> infers headers and column types automatically.</p>
+<p>Parquet is ~ <strong>5–10× faster</strong> for filtered queries than CSV - DuckDB only reads the columns it needs.</p>
+<p><em>(we will cover Parquet in depth in DSCI 525 next week)</em></p>
+</section>
+<section id="part-1-summary-lazy-data-loading" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-summary-lazy-data-loading">Part 1 Summary: Lazy Data Loading</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 35%">
+<col style="width: 29%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>What</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>One-time prep</strong></td>
+<td>CSV → Parquet (<code>prep_data.py</code>)</td>
+<td>Columnar format: 5–10× faster filtered reads</td>
+</tr>
+<tr class="even">
+<td><strong>Query engine</strong></td>
+<td>DuckDB (in-process)</td>
+<td>No server, reads Parquet natively, pushes filters to disk</td>
+</tr>
+<tr class="odd">
+<td><strong>Query layer</strong></td>
+<td>ibis or raw SQL</td>
+<td>ibis: composable Python; SQL: familiar, explicit</td>
+</tr>
+<tr class="even">
+<td><strong>Shiny integration</strong></td>
+<td><code>@reactive.calc</code> + <code>.execute()</code></td>
+<td>Query runs once per input change, only matching rows enter RAM</td>
+</tr>
+</tbody>
+</table>
+<p>. . .</p>
+<p>This pattern works beyond Shiny — same stack in notebooks, ETL scripts, or any Python pipeline.</p>
+<p>. . .</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>We covered the Shiny integration angle here. DSCI 525 goes deeper on Parquet, columnar formats, and large-scale data pipelines.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="dealing-with-data-in-shiny" class="level1">
+<h1>Dealing with Data in Shiny</h1>
+<section id="sql-vs-ibis-building-filters" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="sql-vs-ibis-building-filters">SQL vs ibis: Building Filters</h2>
+<p>Three checkbox filters - user can check any combination.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>SQL</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.calc</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filtered():</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    conditions <span class="op">=</span> []</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.payment():</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        ids <span class="op">=</span> <span class="st">", "</span>.join(<span class="bu">str</span>(p) <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">input</span>.payment())</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        conditions.append(<span class="ss">f"payment_type IN (</span><span class="sc">{</span>ids<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.vendor():</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        ids <span class="op">=</span> <span class="st">", "</span>.join(<span class="bu">str</span>(v) <span class="cf">for</span> v <span class="kw">in</span> <span class="bu">input</span>.vendor())</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        conditions.append(<span class="ss">f"VendorID IN (</span><span class="sc">{</span>ids<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.rate_code():</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        ids <span class="op">=</span> <span class="st">", "</span>.join(<span class="bu">str</span>(r) <span class="cf">for</span> r <span class="kw">in</span> <span class="bu">input</span>.rate_code())</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        conditions.append(<span class="ss">f"RatecodeID IN (</span><span class="sc">{</span>ids<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    where <span class="op">=</span> (<span class="st">"WHERE "</span> <span class="op">+</span> <span class="st">" AND "</span>.join(conditions)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>             <span class="cf">if</span> conditions <span class="cf">else</span> <span class="st">""</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(where)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> con.execute(</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"SELECT * FROM taxi </span><span class="sc">{</span>where<span class="sc">}</span><span class="ss"> LIMIT 500"</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    ).df()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:50%;">
+<p><strong>ibis mirror</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.calc</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filtered():</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    expr <span class="op">=</span> taxi</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.payment():</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        expr <span class="op">=</span> expr.<span class="bu">filter</span>(</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            _.payment_type.isin(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                [<span class="bu">int</span>(p) <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">input</span>.payment()]</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.vendor():</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        expr <span class="op">=</span> expr.<span class="bu">filter</span>(</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>            _.VendorID.isin(</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                [<span class="bu">int</span>(v) <span class="cf">for</span> v <span class="kw">in</span> <span class="bu">input</span>.vendor()]</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.rate_code():</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>        expr <span class="op">=</span> expr.<span class="bu">filter</span>(</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>            _.RatecodeID.isin(</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>                [<span class="bu">int</span>(r) <span class="cf">for</span> r <span class="kw">in</span> <span class="bu">input</span>.rate_code()]</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> expr.limit(<span class="dv">500</span>).execute()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<p>. . .</p>
+<p>Same structure per filter - but ibis builds a <strong>query object</strong>, not a string. No injection risk. Nothing to assemble and check. Less problems with ordering expressions.</p>
+</section>
+<section id="ibis-goes-further" class="level2">
+<h2 class="anchored" data-anchor-id="ibis-goes-further">ibis Goes Further</h2>
+<p>When all filters share the same shape, ibis expressions compose in a loop:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>ibis mirror</strong> <em>(from previous slide)</em></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.calc</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filtered():</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    expr <span class="op">=</span> taxi</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.payment():</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        expr <span class="op">=</span> expr.<span class="bu">filter</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>            _.payment_type.isin(</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                [<span class="bu">int</span>(p) <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">input</span>.payment()]</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.vendor():</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        expr <span class="op">=</span> expr.<span class="bu">filter</span>(</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>            _.VendorID.isin(</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                [<span class="bu">int</span>(v) <span class="cf">for</span> v <span class="kw">in</span> <span class="bu">input</span>.vendor()]</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.rate_code():</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        expr <span class="op">=</span> expr.<span class="bu">filter</span>(</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>            _.RatecodeID.isin(</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>                [<span class="bu">int</span>(r) <span class="cf">for</span> r <span class="kw">in</span> <span class="bu">input</span>.rate_code()]</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> expr.limit(<span class="dv">500</span>).execute()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:50%;">
+<p><strong>ibis: filters as a list</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.calc</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filtered():</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># col  = ibis column expression (e.g. _.payment_type)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># fn   = Shiny input callable    (e.g. input.payment)</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># fn() = current checked values  (e.g. ("1", "2"))</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    COLS <span class="op">=</span> {</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"payment"</span>:   (_.payment_type, <span class="bu">input</span>.payment),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"vendor"</span>:    (_.VendorID,     <span class="bu">input</span>.vendor),</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"rate_code"</span>: (_.RatecodeID,   <span class="bu">input</span>.rate_code),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    filters <span class="op">=</span> [</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        col.isin([<span class="bu">int</span>(v) <span class="cf">for</span> v <span class="kw">in</span> fn()])</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> col, fn <span class="kw">in</span> COLS.values()</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> fn()          <span class="co"># skip if nothing checked</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    expr <span class="op">=</span> taxi.<span class="bu">filter</span>(filters) <span class="cf">if</span> filters <span class="cf">else</span> taxi</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> expr.limit(<span class="dv">500</span>).execute()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<p>. . .</p>
+<p>ibis expressions are <strong>first-class Python objects</strong> - store them, loop over them, compose them. Works well when filters are homogeneous (all <code>.isin()</code>). For mixed types (sliders, text), the sql mirror style is clearer.</p>
+<p>ibis expression API: <a href="https://ibis-project.org/reference/expression-collections">ibis-project.org/reference</a></p>
+</section>
+<section id="so-why-not-just-always-write-sql" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="so-why-not-just-always-write-sql">So Why Not Just (Always) Write SQL?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Raw DuckDB SQL</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.calc</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filtered():</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    conditions <span class="op">=</span> []</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.payment():</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        ids <span class="op">=</span> <span class="st">","</span>.join(<span class="bu">str</span>(p) <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">input</span>.payment())</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        conditions.append(</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"payment_type IN (</span><span class="sc">{</span>ids<span class="sc">}</span><span class="ss">)"</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    lo, hi <span class="op">=</span> <span class="bu">input</span>.distance()</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    conditions.append(</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"trip_distance BETWEEN </span><span class="sc">{</span>lo<span class="sc">}</span><span class="ss"> AND </span><span class="sc">{</span>hi<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.passengers() <span class="op">!=</span> <span class="st">"All"</span>:</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>        conditions.append(</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"passenger_count = </span><span class="sc">{</span><span class="bu">input</span><span class="sc">.</span>passengers()<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.vendor() <span class="op">!=</span> <span class="st">"Both"</span>:</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>        conditions.append(</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f"VendorID = </span><span class="sc">{</span><span class="bu">input</span><span class="sc">.</span>vendor()<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    where <span class="op">=</span> (<span class="st">"WHERE "</span> <span class="op">+</span> <span class="st">" AND "</span>.join(conditions)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>             <span class="cf">if</span> conditions <span class="cf">else</span> <span class="st">""</span>)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(where)</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> con.execute(</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f"SELECT * FROM taxi </span><span class="sc">{</span>where<span class="sc">}</span><span class="ss"> LIMIT 500"</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    ).df()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div><div class="column" style="width:50%;">
+<p><strong>ibis expressions</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.calc</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filtered():</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    expr <span class="op">=</span> taxi</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.payment():</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        expr <span class="op">=</span> expr.<span class="bu">filter</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            _.payment_type.isin(</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                [<span class="bu">int</span>(p) <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">input</span>.payment()]</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    lo, hi <span class="op">=</span> <span class="bu">input</span>.distance()</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    expr <span class="op">=</span> expr.<span class="bu">filter</span>(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        _.trip_distance.between(lo, hi)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.passengers() <span class="op">!=</span> <span class="st">"All"</span>:</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        expr <span class="op">=</span> expr.<span class="bu">filter</span>(</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>            _.passenger_count <span class="op">==</span> <span class="bu">int</span>(<span class="bu">input</span>.passengers())</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">input</span>.vendor() <span class="op">!=</span> <span class="st">"Both"</span>:</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>        expr <span class="op">=</span> expr.<span class="bu">filter</span>(</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>            _.VendorID <span class="op">==</span> <span class="bu">int</span>(<span class="bu">input</span>.vendor())</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> expr.limit(<span class="dv">500</span>).execute()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<p>. . .</p>
+<p>SQL: manual <code>WHERE</code> assembly, f-string injection risk, “All” guards scattered everywhere. ibis: each filter is optional-skip it, and it simply isn’t in the query.</p>
+</section>
+<section id="ibis-duckdb-in-shiny" class="level2">
+<h2 class="anchored" data-anchor-id="ibis-duckdb-in-shiny">ibis + DuckDB in Shiny</h2>
+<p>Together with DuckDB and lazy loading:</p>
+<div class="columns">
+<div class="column" style="width:30%;">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A[/"input.payment()"/] --&gt; C
+  B[/"input.distance()"/] --&gt; C
+  C{{filtered}} -- ".execute()" --&gt; DB[(parquet&lt;br&gt;file)]
+  DB -- "filtered&lt;br&gt;rows" --&gt; C
+  C --&gt; D([table])
+  C --&gt; E([value_box])
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:70%;">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>con <span class="op">=</span> ibis.duckdb.<span class="ex">connect</span>()</span>
+<span id="cb13-2"><a href="#cb13-2"></a>taxi <span class="op">=</span> con.read_parquet(<span class="st">"data/taxi_2024-01.parquet"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3"></a></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="kw">def</span> server(<span class="bu">input</span>, output, session):</span>
+<span id="cb13-5"><a href="#cb13-5"></a></span>
+<span id="cb13-6"><a href="#cb13-6"></a>    session.on_ended(con.disconnect)     <span class="co"># clean up when user leaves</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a></span>
+<span id="cb13-8"><a href="#cb13-8"></a>    <span class="at">@reactive.calc</span></span>
+<span id="cb13-9"><a href="#cb13-9"></a>    <span class="kw">def</span> filtered():                      <span class="co"># ibis expression-inputs flow in naturally</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a>        lo, hi <span class="op">=</span> <span class="bu">input</span>.distance()</span>
+<span id="cb13-11"><a href="#cb13-11"></a>        <span class="cf">return</span> taxi.<span class="bu">filter</span>(</span>
+<span id="cb13-12"><a href="#cb13-12"></a>            [</span>
+<span id="cb13-13"><a href="#cb13-13"></a>                _.payment_type.isin([<span class="bu">int</span>(p) <span class="cf">for</span> p <span class="kw">in</span> <span class="bu">input</span>.payment()]),</span>
+<span id="cb13-14"><a href="#cb13-14"></a>                _.trip_distance.between(lo, hi),</span>
+<span id="cb13-15"><a href="#cb13-15"></a>            ]</span>
+<span id="cb13-16"><a href="#cb13-16"></a>        )</span>
+<span id="cb13-17"><a href="#cb13-17"></a></span>
+<span id="cb13-18"><a href="#cb13-18"></a>    <span class="at">@render.data_frame</span></span>
+<span id="cb13-19"><a href="#cb13-19"></a>    <span class="kw">def</span> table():</span>
+<span id="cb13-20"><a href="#cb13-20"></a>        <span class="cf">return</span> filtered().limit(<span class="dv">500</span>).execute()    <span class="co"># query runs here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<p>. . .</p>
+<p>One <code>@reactive.calc</code>, multiple outputs-DuckDB queries only once per input change.</p>
+</section>
+<section id="app-01-ibis-intro-penguins" class="level2">
+<h2 class="anchored" data-anchor-id="app-01-ibis-intro-penguins">app-01: ibis Intro (penguins)</h2>
+<p><code>code/lecture09/app-01-ibis-intro.py</code></p>
+<div class="columns">
+<div class="column">
+<ul>
+<li>Loads palmerpenguins into an in-process DuckDB</li>
+<li>Species + island filters (selectize)</li>
+<li>ibis expression → row count + DataGrid</li>
+</ul>
+</div><div class="column">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>con <span class="op">=</span> ibis.duckdb.<span class="ex">connect</span>()</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>penguins <span class="op">=</span> con.create_table(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"penguins"</span>, load_penguins(), overwrite<span class="op">=</span><span class="va">True</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.calc</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> filtered():</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> penguins.<span class="bu">filter</span>([</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        _.species.isin(<span class="bu">input</span>.species()),</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>        _.island.isin(<span class="bu">input</span>.island()),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="at">@render.data_frame</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> table():</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> filtered().execute()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="app-02-taxi-dashboard" class="level2">
+<h2 class="anchored" data-anchor-id="app-02-taxi-dashboard">app-02: Taxi Dashboard</h2>
+<pre class="shinylive-python" data-engine="python" data-code-line-numbers=""><code>#| '!! shinylive warning !!': |
+#|   shinylive does not work in self-contained HTML documents.
+#|   Please set `embed-resources: false` in your metadata.
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 520
+
+## file: app.py
+## app-02a-taxi-inmem.py — ibis + DuckDB taxi dashboard (shinylive / in-memory version)
+## Uses an embedded 400-row sample so it runs in the browser.
+## For the full 3M-row version with lazy parquet loading: see app-02b-taxi-parquet.py
+
+import random
+
+import ibis
+import pandas as pd
+from ibis import _
+from shiny import App, reactive, render, ui
+
+# ── Embedded sample data (400 rows, realistic distributions) ─────────────────
+random.seed(42)
+_n = 400
+_pw = [60, 30, 5, 5]
+_vw = [45, 55]
+_xw = [2, 70, 15, 6, 3, 2, 2]
+_rows = []
+for i in range(_n):
+    d = round(random.uniform(0.1, 22), 1)
+    f = round(2.5 + d * random.uniform(2.2, 3.5), 2)
+    _rows.append(
+        dict(
+            VendorID=random.choices([1, 2], weights=_vw)[0],
+            passenger_count=random.choices([0, 1, 2, 3, 4, 5, 6], weights=_xw)[0],
+            trip_distance=d,
+            payment_type=random.choices([1, 2, 3, 4], weights=_pw)[0],
+            fare_amount=f,
+            total_amount=round(f * random.uniform(1.05, 1.3), 2),
+        )
+    )
+
+data = pd.DataFrame(_rows)
+
+# In production this would be:
+#   con = ibis.duckdb.connect()
+#   taxi = con.read_parquet("data/taxi_2024-01.parquet")
+taxi = ibis.memtable(data)
+
+# ── UI ────────────────────────────────────────────────────────────────────────
+
+PAYMENT_LABELS = {"1": "Credit card", "2": "Cash", "3": "No charge", "4": "Dispute"}
+VENDOR_CHOICES = {"Both": "Both", "1": "Creative Mobile", "2": "VeriFone"}
+PASSENGER_CHOICES = ["All", "0", "1", "2", "3"]
+
+app_ui = ui.page_sidebar(
+    ui.sidebar(
+        ui.input_checkbox_group(
+            "payment",
+            "Payment type",
+            choices=PAYMENT_LABELS,
+            selected=list(PAYMENT_LABELS.keys()),
+        ),
+        ui.input_slider(
+            "distance", "Trip distance (miles)", min=0, max=25, value=[0, 15], step=0.5
+        ),
+        ui.input_select(
+            "passengers", "Passenger count", choices=PASSENGER_CHOICES, selected="All"
+        ),
+        ui.input_radio_buttons(
+            "vendor", "Vendor", choices=VENDOR_CHOICES, selected="Both"
+        ),
+        width=250,
+    ),
+    ui.layout_columns(
+        ui.value_box("Matching trips", ui.output_text("n_trips")),
+        ui.value_box("Avg fare", ui.output_text("avg_fare")),
+        ui.value_box("Avg distance", ui.output_text("avg_dist")),
+        col_widths=[4, 4, 4],
+    ),
+    ui.output_data_frame("table"),
+    title="NYC Taxi Sample — ibis + DuckDB",
+)
+
+# ── Server ────────────────────────────────────────────────────────────────────
+
+
+def server(input, output, session):
+    @reactive.calc
+    def filtered():
+        expr = taxi
+
+        if input.payment():
+            expr = expr.filter(
+                _.payment_type.isin([int(p) for p in input.payment()])
+            )
+
+        lo, hi = input.distance()
+        expr = expr.filter(_.trip_distance.between(lo, hi))
+
+        if input.passengers() != "All":
+            expr = expr.filter(_.passenger_count == int(input.passengers()))
+
+        if input.vendor() != "Both":
+            expr = expr.filter(_.VendorID == int(input.vendor()))
+
+        return expr
+
+    @render.text
+    def n_trips():
+        return f"{filtered().count().execute():,}"
+
+    @render.text
+    def avg_fare():
+        result = filtered().agg(avg=_.fare_amount.mean()).execute()
+        return f"${result['avg'].iloc[0]:.2f}"
+
+    @render.text
+    def avg_dist():
+        result = filtered().agg(avg=_.trip_distance.mean()).execute()
+        return f"{result['avg'].iloc[0]:.1f} mi"
+
+    @render.data_frame
+    def table():
+        return (
+            filtered()
+            .select(["passenger_count", "trip_distance", "payment_type",
+                     "fare_amount", "total_amount"])
+            .execute()
+        )
+
+
+app = App(app_ui, server)
+
+
+
+## file: requirements.txt
+ibis-framework
+toolz
+pyarrow
+pyarrow-hotfix
+duckdb</code></pre>
+</section>
+</section>
+<section id="part-2-writing-persistent-storage" class="level1">
+<h1>Part 2: Writing &amp; Persistent Storage</h1>
+</section>
+<section id="why-local-files-break" class="level1">
+<h1>Why Local Files Break</h1>
+<section id="this-works-locally" class="level2">
+<h2 class="anchored" data-anchor-id="this-works-locally">This Works Locally</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant U as User
+    participant A as Shiny App
+    participant F as logs.csv
+    U-&gt;&gt;A: submit query
+    A-&gt;&gt;F: append row
+    F--&gt;&gt;A: ok
+    A-&gt;&gt;U: query logged ✓
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>. . .</p>
+<p><code>logs.csv</code> lives on your laptop-survives restarts, only one process writes to it.</p>
+<p>No problem.</p>
+</section>
+<section id="where-does-this-break" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="where-does-this-break">Where Does This Break?</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Deployment</th>
+<th>Works?</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Local machine (terminal)</td>
+<td>✅</td>
+<td>Real filesystem, single process</td>
+</tr>
+<tr class="even">
+<td>Dedicated server (yours)</td>
+<td>⚠️</td>
+<td>Single worker: fine. Multiple workers: race conditions</td>
+</tr>
+<tr class="odd">
+<td><strong>Shinylive</strong></td>
+<td>❌</td>
+<td>In-memory file system is ethemeral (-&gt; next slide)</td>
+</tr>
+<tr class="even">
+<td><strong>Posit Connect</strong></td>
+<td>❌</td>
+<td>Container storage is ethemeral, same single file problems (-&gt; next two slides)</td>
+</tr>
+</tbody>
+</table>
+<p>. . .</p>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Predict before we look: what goes wrong in each case?</p>
+</div>
+</div>
+</div>
+</section>
+<section id="shinylive-silent-failure" class="level2">
+<h2 class="anchored" data-anchor-id="shinylive-silent-failure">Shinylive: Silent Failure</h2>
+<p>Shinylive runs entirely in the browser-there is no server.</p>
+<p>. . .</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df.to_csv(<span class="st">"logs.csv"</span>, mode<span class="op">=</span><span class="st">"a"</span>)   <span class="co"># &lt;- this runs… and succeeds</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p>Pyodide has an <strong>in-memory filesystem</strong> (Emscripten VFS).<br>
+The write succeeds-no error, no warning.</p>
+<p>. . .</p>
+<p>But:</p>
+<ul>
+<li>Data lives in <strong>browser memory</strong>-gone on page reload</li>
+<li>Every browser tab gets its <strong>own isolated instance</strong></li>
+<li>The host machine <strong>never sees the file</strong></li>
+</ul>
+<p>. . .</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>From the <a href="https://shiny.posit.co/py/get-started/shinylive.html">Shiny docs</a>:<br>
+<strong>“No secrets”</strong> - code runs in the browser, credentials are visible to users.<br>
+<strong>“Restricted network”</strong> - browser blocks TCP sockets, so <code>pymongo</code> and <code>requests</code> cannot connect to external services.</p>
+</div>
+</div>
+</section>
+<section id="posit-connect-container-restarts" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="posit-connect-container-restarts">Posit Connect: Container Restarts</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant U as User
+    participant A as App Container
+    participant F as logs.csv
+    U-&gt;&gt;A: submit query
+    A-&gt;&gt;F: append row ✓
+    Note over A,F: redeploy or idle timeout-container recreated
+    U-&gt;&gt;A: submit query
+    A-&gt;&gt;F: ❌ FileNotFoundError
+    Note over F: file never existed&lt;br&gt;in the new container
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>. . .</p>
+<p>Posit Connect runs your app in an <strong>ephemeral container</strong> - the filesystem resets on every restart or redeploy.</p>
+</section>
+<section id="concurrent-users-or-multiple-workers" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="concurrent-users-or-multiple-workers">Concurrent Users or Multiple Workers</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant U1 as User 1
+    participant F as logs.csv
+    participant U2 as User 2
+    U1-&gt;&gt;F: read → 3 rows
+    U2-&gt;&gt;F: read → 3 rows
+    Note over U1: LLM call (await-event loop switches)
+    U2-&gt;&gt;F: write → 4 rows ✓
+    U1-&gt;&gt;F: write → 4 rows ✓
+    Note over F: race condition-U1 overwrites U2's new row
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>. . .</p>
+<p>Every <code>await</code> (e.g.&nbsp;an LLM call) is a yield point-the event loop can switch to another user’s request between your <strong>read</strong> and your <strong>write</strong>.</p>
+<p>Posit Connect makes this worse: it scales by spinning up <strong>multiple separate processes</strong> (workers), each with their own copy of the file. No coordination means concurrent writes silently corrupt data-even if you never hit an <code>await</code>.</p>
+</section>
+</section>
+<section id="the-fix-external-storage" class="level1">
+<h1>The Fix: External Storage</h1>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant W1 as Worker 1
+    participant S as External Service
+    participant W2 as Worker 2
+    W1-&gt;&gt;S: append row
+    S--&gt;&gt;W1: ok
+    W2-&gt;&gt;S: append row
+    S--&gt;&gt;W2: ok
+    Note over S: atomic writes, persistent,&lt;br&gt;survives restarts
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>. . .</p>
+<p>Swap the backend-keep the same <code>save_info()</code> / <code>load_data()</code> wrapper in your app.</p>
+<section id="persistent-storage-whats-out-there" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="persistent-storage-whats-out-there">Persistent Storage: What’s Out There</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Service</th>
+<th>Free tier</th>
+<th>Schema</th>
+<th>Python client</th>
+<th>Good for</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Google Sheets</strong></td>
+<td>✅ Unlimited rows</td>
+<td>None</td>
+<td><code>gspread</code></td>
+<td>Simple logs, familiar UI</td>
+</tr>
+<tr class="even">
+<td><strong>Airtable</strong></td>
+<td>✅ 1 000 rows</td>
+<td>Must pre-define columns</td>
+<td><code>pyairtable</code></td>
+<td>Low-code apps, visual editing</td>
+</tr>
+<tr class="odd">
+<td><strong>PostgreSQL</strong> (server or cloud)</td>
+<td>✅ varies</td>
+<td>SQL schema</td>
+<td><code>psycopg2</code> / <code>sqlalchemy</code></td>
+<td>Structured data, joins</td>
+</tr>
+<tr class="even">
+<td><strong>MongoDB</strong> (server or cloud)</td>
+<td>✅ varies</td>
+<td>None (document store)</td>
+<td><code>pymongo</code></td>
+<td>Logs, surveys, free-form records</td>
+</tr>
+</tbody>
+</table>
+<p>. . .</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>See Shiny docs: <a href="https://shiny.posit.co/py/docs/persistent-data-storage.html">Persistent data storage</a></p>
+</div>
+</div>
+</div>
+<p>. . .</p>
+</section>
+<section id="databases-mode-1-local" class="level2">
+<h2 class="anchored" data-anchor-id="databases-mode-1-local">Databases: Mode 1 — Local</h2>
+<p>Both Postgres and MongoDB can run on your laptop. This works fine during development.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant A as Shiny App&lt;br/&gt;(your laptop)
+    participant D as Database&lt;br/&gt;(localhost)
+    A-&gt;&gt;D: INSERT / insert_one
+    D--&gt;&gt;A: ✅ ok
+    Note over D: lives on your machine,&lt;br/&gt;survives restarts
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Problem:</strong> deploy the app and the database stays behind.<br>
+The container on Posit Connect has no idea <code>localhost:5432</code> or <code>localhost:27017</code> exists.</p>
+</section>
+<section id="databases-mode-2-self-hosted-server" class="level2">
+<h2 class="anchored" data-anchor-id="databases-mode-2-self-hosted-server">Databases: Mode 2 — Self-hosted Server</h2>
+<p>You run the database on a separate server, accessible over the network.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant A as App Container&lt;br/&gt;(Posit Connect)
+    participant F as Firewall / VPC
+    participant D as Database Server&lt;br/&gt;(your VM)
+    A-&gt;&gt;F: connect (port 5432 / 27017)
+    Note over F: inbound rule open?&lt;br/&gt;IP allowlist? auth configured?
+    F-&gt;&gt;D: forward
+    D--&gt;&gt;A: ✅ ok (if everything is configured)
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>. . .</p>
+<p>This works — but you own the maintenance: updates, backups, auth rules, uptime.<br>
+For a student project or a small app, that’s a lot of overhead.</p>
+</section>
+<section id="databases-mode-3-cloud" class="level2">
+<h2 class="anchored" data-anchor-id="databases-mode-3-cloud">Databases: Mode 3 — Cloud</h2>
+<p>Someone else runs the database. You get a connection string.</p>
+<div class="columns">
+<div class="column" style="width:70%;">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant A as App Container&lt;br/&gt;(Posit Connect)
+    participant D as Cloud DB&lt;br/&gt;(MongoDB Atlas / Supabase / Neon / …)
+    A-&gt;&gt;D: INSERT / insert_one&lt;br/&gt;via connection string
+    D--&gt;&gt;A: ✅ ok
+    Note over D: managed, persistent,&lt;br/&gt;free tier available,&lt;br/&gt;accessible from anywhere
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>No firewall config. No server to maintain. Free tier covers small apps easily.<br>
+Works identically locally and on Posit Connect — same connection string in <code>.env</code>.</p>
+</div><div class="column" style="width:30%;">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>DB</th>
+<th>Cloud providers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>MongoDB</strong></td>
+<td>Atlas (M0 free), Azure Cosmos DB</td>
+</tr>
+<tr class="even">
+<td><strong>Postgres</strong></td>
+<td>Neon, Supabase, Railway, Render</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="why-mongodb-atlas-today" class="level2">
+<h2 class="anchored" data-anchor-id="why-mongodb-atlas-today">Why MongoDB Atlas Today?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>MongoDB</th>
+<th>Postgres</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Data shape</td>
+<td>Documents (JSON), flexible</td>
+<td>Tables, fixed schema</td>
+</tr>
+<tr class="even">
+<td>Best for</td>
+<td>Logs, surveys, free-form records</td>
+<td>Joins, constraints, reporting</td>
+</tr>
+<tr class="odd">
+<td>Python client</td>
+<td><code>pymongo</code></td>
+<td><code>psycopg2</code> / ibis</td>
+</tr>
+<tr class="even">
+<td>Free cloud</td>
+<td>Atlas M0, 512 MB</td>
+<td>Neon, Supabase</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<ul>
+<li><strong>Free tier</strong> — M0 cluster, no credit card required</li>
+<li><strong>No schema</strong> — <code>insert_one(dict)</code>, add fields any time</li>
+<li><strong>Auth</strong> — one connection string in <code>.env</code></li>
+<li><strong>Concurrent writes</strong> — atomic at the document level</li>
+</ul>
+</div>
+</div>
+<p>. . .</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17" data-code-line-numbers=""><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># .env</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="va">MONGODB_URI</span><span class="op">=</span>mongodb+srv://user:pass@cluster.mongodb.net/<span class="pp">?</span>appName=Cluster0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Setup: mongodb.com → free account → create M0 cluster → create user with password → copy connection string</p>
+</section>
+<section id="app-03-a-simple-form-the-pattern" class="level2">
+<h2 class="anchored" data-anchor-id="app-03-a-simple-form-the-pattern">App 03: A Simple Form: The Pattern</h2>
+<p>Any Shiny input can trigger a write.<br>
+The simplest case: a feedback form.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># UI: plain inputs</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>ui.input_text(<span class="st">"name"</span>, <span class="st">"Your name"</span>),</span>
+<span id="cb18-3"><a href="#cb18-3"></a>ui.input_text_area(<span class="st">"comment"</span>, <span class="st">"Comment"</span>),</span>
+<span id="cb18-4"><a href="#cb18-4"></a>ui.input_action_button(<span class="st">"submit"</span>, <span class="st">"Submit"</span>),</span>
+<span id="cb18-5"><a href="#cb18-5"></a></span>
+<span id="cb18-6"><a href="#cb18-6"></a><span class="co"># Server: write on button click</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a><span class="at">@reactive.effect</span></span>
+<span id="cb18-8"><a href="#cb18-8"></a><span class="at">@reactive.event</span>(<span class="bu">input</span>.submit)</span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="kw">def</span> save_response():</span>
+<span id="cb18-10"><a href="#cb18-10"></a>    row <span class="op">=</span> {<span class="st">"name"</span>: <span class="bu">input</span>.name(), <span class="st">"comment"</span>: <span class="bu">input</span>.comment(),</span>
+<span id="cb18-11"><a href="#cb18-11"></a>           <span class="st">"timestamp"</span>: datetime.now().isoformat()}</span>
+<span id="cb18-12"><a href="#cb18-12"></a>    collection.insert_one(row)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p><code>@reactive.event(input.submit)</code> - only fires on button click, not on every keystroke.</p>
+</section>
+<section id="editable-datagrid---mongodb" class="level2">
+<h2 class="anchored" data-anchor-id="editable-datagrid---mongodb">Editable DataGrid -&gt; MongoDB</h2>
+<p>Shiny’s <code>DataGrid</code> supports inline editing-students can fill in a table and submit it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># Render an editable grid seeded with empty rows</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="at">@render.data_frame</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="kw">def</span> response_table():</span>
+<span id="cb19-4"><a href="#cb19-4"></a>    <span class="cf">return</span> render.DataGrid(template_df, editable<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-5"><a href="#cb19-5"></a></span>
+<span id="cb19-6"><a href="#cb19-6"></a><span class="co"># On submit: read edits and write to MongoDB</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a><span class="at">@reactive.effect</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="at">@reactive.event</span>(<span class="bu">input</span>.submit)</span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="kw">def</span> save_edits():</span>
+<span id="cb19-10"><a href="#cb19-10"></a>    edited <span class="op">=</span> response_table.data_view()   <span class="co"># DataFrame with user edits</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a>    <span class="cf">for</span> row <span class="kw">in</span> edited.to_dict(<span class="st">"records"</span>):</span>
+<span id="cb19-12"><a href="#cb19-12"></a>        collection.insert_one(row)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><code>app-03.py</code> shows both patterns side by side.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="why-local-breaks-the-pattern-to-avoid" class="level2">
+<h2 class="anchored" data-anchor-id="why-local-breaks-the-pattern-to-avoid">Why Local Breaks: The Pattern to Avoid</h2>
+<p>This works locally — but breaks on Posit Connect:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>LOG_FILE <span class="op">=</span> Path(<span class="st">"logs/query_log.csv"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_info(row: <span class="bu">dict</span>):</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame([row])</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    LOG_FILE.parent.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    df.to_csv(LOG_FILE, mode<span class="op">=</span><span class="st">"a"</span>, header<span class="op">=</span><span class="kw">not</span> LOG_FILE.exists(), index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_data() <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> LOG_FILE.exists():</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pd.read_csv(LOG_FILE)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(columns<span class="op">=</span>[<span class="st">"timestamp"</span>, <span class="st">"user_query"</span>, <span class="st">"sql"</span>, <span class="st">"n_rows"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Works locally, though struggles with multiple users. On Posit Connect: file resets on restart, corrupts under multiple workers.</p>
+</div>
+</div>
+</section>
+<section id="more-complex-loop-querychat-logger" class="level2">
+<h2 class="anchored" data-anchor-id="more-complex-loop-querychat-logger">More complex loop: querychat Logger</h2>
+<p><strong>What We’re Logging</strong></p>
+<p>Every time querychat generates SQL, we capture:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>timestamp</code></td>
+<td><code>datetime.now()</code></td>
+</tr>
+<tr class="even">
+<td><code>user_query</code></td>
+<td><code>on_tool_request</code> hook: last user turn</td>
+</tr>
+<tr class="odd">
+<td><code>sql</code></td>
+<td><code>req.arguments["query"]</code> from the tool call</td>
+</tr>
+<tr class="even">
+<td><code>n_rows</code></td>
+<td><code>len(qc_vals.df())</code>: how many rows (reactive domain caveat)</td>
+</tr>
+<tr class="odd">
+<td><code>model</code></td>
+<td><code>ChatAuto</code> provider + model name</td>
+</tr>
+<tr class="even">
+<td><code>section</code></td>
+<td><code>input.section()</code>: user-selected</td>
+</tr>
+</tbody>
+</table>
+<p>. . .</p>
+<p><code>qc_vals</code> is what <code>qc.server()</code> returns-exposes <code>.sql()</code>, <code>.df()</code>, <code>.title()</code>, <code>.client</code>.</p>
+</section>
+<section id="the-logging-hook-why-not-reactive.effect" class="level2">
+<h2 class="anchored" data-anchor-id="the-logging-hook-why-not-reactive.effect">The Logging Hook: Why Not <code>@reactive.effect</code>?</h2>
+<p>The naive approach:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.effect</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_query():</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    sql <span class="op">=</span> qc_vals.sql()          <span class="co"># fires on every reactive invalidation</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    save_info(...)               <span class="co"># -&gt; thousands of duplicate writes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p><code>qc_vals.sql()</code> invalidates on <strong>every streaming token</strong> from the LLM, not just when the final SQL arrives.</p>
+<p>. . .</p>
+<p>Better: hook directly into the tool call (querychat allows that)</p>
+</section>
+<section id="on_tool_request-one-fire-per-query" class="level2">
+<h2 class="anchored" data-anchor-id="on_tool_request-one-fire-per-query"><code>on_tool_request</code>: One Fire Per Query</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a><span class="kw">def</span> on_query(req):</span>
+<span id="cb22-2"><a href="#cb22-2"></a>    <span class="cf">if</span> req.name <span class="kw">not</span> <span class="kw">in</span> (<span class="st">"querychat_update_dashboard"</span>, <span class="st">"querychat_query"</span>):</span>
+<span id="cb22-3"><a href="#cb22-3"></a>        <span class="cf">return</span>                            <span class="co"># ignore other tools</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a>    sql <span class="op">=</span> req.arguments.get(<span class="st">"query"</span>, <span class="st">""</span>)</span>
+<span id="cb22-5"><a href="#cb22-5"></a>    turns <span class="op">=</span> qc_vals.client.get_turns()</span>
+<span id="cb22-6"><a href="#cb22-6"></a>    user_turns <span class="op">=</span> [t <span class="cf">for</span> t <span class="kw">in</span> turns <span class="cf">if</span> t.role <span class="op">==</span> <span class="st">"user"</span>]</span>
+<span id="cb22-7"><a href="#cb22-7"></a>    pending.<span class="bu">set</span>({<span class="st">"user_query"</span>: user_turns[<span class="op">-</span><span class="dv">1</span>].text,</span>
+<span id="cb22-8"><a href="#cb22-8"></a>                 <span class="st">"sql"</span>: sql, <span class="st">"tool"</span>: req.name})   <span class="co"># .set() is safe from Extended Task</span></span>
+<span id="cb22-9"><a href="#cb22-9"></a></span>
+<span id="cb22-10"><a href="#cb22-10"></a>qc_vals.client.on_tool_request(on_query) <span class="co">#register the hook</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p>Fires <strong>exactly once</strong> when the LLM calls the tool-before the response streams back.</p>
+</section>
+<section id="data-flow-app-04" class="level2 smaller">
+<h2 class="smaller anchored" data-anchor-id="data-flow-app-04">Data Flow: app-04</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">sequenceDiagram
+    participant U as User&lt;br/&gt;(browser)
+    box Shiny App Process
+        participant QC as querychat
+        participant OTR as on_tool_request
+        participant RV as reactive.value&lt;br/&gt;(pending)
+        participant FL as flush_log
+    end
+    participant MDB as MongoDB Atlas
+    box Log App (separate process)
+        participant LOG as Log DataGrid
+    end
+
+    U-&gt;&gt;QC: sends message
+    QC-&gt;&gt;OTR: LLM tool call fires
+    OTR-&gt;&gt;RV: pending.set(row)
+    RV--&gt;&gt;FL: invalidates effect
+    FL-&gt;&gt;MDB: insert_one(row)
+    LOG-&gt;&gt;MDB: load_data()
+    MDB--&gt;&gt;LOG: DataFrame
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>. . .</p>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>The log viewer (<code>load_data()</code> + DataGrid) reads from MongoDB directly.<br>
+It could run as a <strong>separate app</strong>-on a different machine, accessible only to instructors.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="app-04-mongodb-backend" class="level2">
+<h2 class="anchored" data-anchor-id="app-04-mongodb-backend">app-04: MongoDB Backend</h2>
+<p>Only <code>save_info()</code> and <code>load_data()</code> change, everything else is identical to 04a:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a><span class="im">from</span> pymongo <span class="im">import</span> MongoClient</span>
+<span id="cb23-2"><a href="#cb23-2"></a><span class="im">import</span> os</span>
+<span id="cb23-3"><a href="#cb23-3"></a></span>
+<span id="cb23-4"><a href="#cb23-4"></a>collection <span class="op">=</span> MongoClient(os.environ[<span class="st">"MONGODB_URI"</span>])[<span class="st">"dsci532"</span>][<span class="st">"query_log"</span>]</span>
+<span id="cb23-5"><a href="#cb23-5"></a></span>
+<span id="cb23-6"><a href="#cb23-6"></a><span class="kw">def</span> save_info(row: <span class="bu">dict</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb23-7"><a href="#cb23-7"></a>    collection.insert_one(row)          <span class="co"># atomic-safe under multiple workers</span></span>
+<span id="cb23-8"><a href="#cb23-8"></a></span>
+<span id="cb23-9"><a href="#cb23-9"></a><span class="kw">def</span> load_data(section: <span class="bu">str</span>) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb23-10"><a href="#cb23-10"></a>    rows <span class="op">=</span> <span class="bu">list</span>(collection.find({<span class="st">"section"</span>: section}, {<span class="st">"_id"</span>: <span class="dv">0</span>}))</span>
+<span id="cb23-11"><a href="#cb23-11"></a>    <span class="cf">return</span> pd.DataFrame(rows, columns<span class="op">=</span>SCHEMA) <span class="cf">if</span> rows <span class="cf">else</span> pd.DataFrame(columns<span class="op">=</span>SCHEMA)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p><code>insert_one()</code> is atomic-no locking, no race conditions, works across workers.</p>
+</section>
+<section id="switching-providers" class="level2">
+<h2 class="anchored" data-anchor-id="switching-providers">Switching Providers</h2>
+<p>The same app works with any LLM-no code changes, just env vars:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" data-code-line-numbers=""><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GitHub Models (free):</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="va">CHATLAS_CHAT_PROVIDER_MODEL</span><span class="op">=</span>github/gpt-4.1-mini</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="va">GITHUB_TOKEN</span><span class="op">=</span>...</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Anthropic:</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="va">CHATLAS_CHAT_PROVIDER_MODEL</span><span class="op">=</span>anthropic/claude-haiku-4-5</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="va">ANTHROPIC_API_KEY</span><span class="op">=</span>...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> chatlas <span class="im">import</span> ChatAuto</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>_chat <span class="op">=</span> ChatAuto()                            <span class="co"># reads CHATLAS_CHAT_PROVIDER_MODEL</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>LLM_MODEL <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>_chat<span class="sc">.</span>provider<span class="sc">.</span>name<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>_chat<span class="sc">.</span>provider<span class="sc">.</span>model<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> querychat.QueryChat(titanic, <span class="st">"titanic"</span>, client<span class="op">=</span>_chat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>. . .</p>
+<p>Deploy the same code twice on Posit Connect with different env vars -&gt; compare models in MongoDB.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/UBC-MDS\.github\.io\/DSCI_532_vis-2_book\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book">UBC DSCI 532: Data Visualization 2</a></p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="site_libs/quarto-contrib/line-highlight-1.0.0/line-highlight.js" defer="true"></script>
+</body></html>
