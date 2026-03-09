@@ -191,7 +191,7 @@
     "href": "slides/09-databases.html#app-01-ibis-intro-penguins",
     "title": "Databases in Shiny",
     "section": "app-01: ibis Intro (penguins)",
-    "text": "app-01: ibis Intro (penguins)\ncode/lecture09/app-01-ibis-intro.py\n\n\n\nLoads palmerpenguins into an in-process DuckDB\nSpecies + island filters (selectize)\nibis expression → row count + DataGrid\n\n\ncon = ibis.duckdb.connect()\npenguins = con.create_table(\n    \"penguins\", load_penguins(), overwrite=True\n)\n\n@reactive.calc\ndef filtered():\n    return penguins.filter([\n        _.species.isin(input.species()),\n        _.island.isin(input.island()),\n    ])\n\n@render.data_frame\ndef table():\n    return filtered().execute()"
+    "text": "app-01: ibis Intro (penguins)\ncode/lecture07/app-01-ibis-intro.py\n\n\n\nLoads palmerpenguins into an in-process DuckDB\nSpecies + island filters (selectize)\nibis expression → row count + DataGrid\n\n\ncon = ibis.duckdb.connect()\npenguins = con.create_table(\n    \"penguins\", load_penguins(), overwrite=True\n)\n\n@reactive.calc\ndef filtered():\n    return penguins.filter([\n        _.species.isin(input.species()),\n        _.island.isin(input.island()),\n    ])\n\n@render.data_frame\ndef table():\n    return filtered().execute()"
   },
   {
     "objectID": "slides/09-databases.html#app-02-taxi-dashboard",
@@ -4128,7 +4128,7 @@
     "href": "090-databases.html#app-01-ibis-intro-penguins",
     "title": "Databases in Shiny",
     "section": "app-01: ibis Intro (penguins)",
-    "text": "app-01: ibis Intro (penguins)\ncode/lecture09/app-01-ibis-intro.py\n\n\n\nLoads palmerpenguins into an in-process DuckDB\nSpecies + island filters (selectize)\nibis expression → row count + DataGrid\n\n\ncon = ibis.duckdb.connect()\npenguins = con.create_table(\n    \"penguins\", load_penguins(), overwrite=True\n)\n\n@reactive.calc\ndef filtered():\n    return penguins.filter([\n        _.species.isin(input.species()),\n        _.island.isin(input.island()),\n    ])\n\n@render.data_frame\ndef table():\n    return filtered().execute()",
+    "text": "app-01: ibis Intro (penguins)\ncode/lecture07/app-01-ibis-intro.py\n\n\n\nLoads palmerpenguins into an in-process DuckDB\nSpecies + island filters (selectize)\nibis expression → row count + DataGrid\n\n\ncon = ibis.duckdb.connect()\npenguins = con.create_table(\n    \"penguins\", load_penguins(), overwrite=True\n)\n\n@reactive.calc\ndef filtered():\n    return penguins.filter([\n        _.species.isin(input.species()),\n        _.island.isin(input.island()),\n    ])\n\n@render.data_frame\ndef table():\n    return filtered().execute()",
     "crumbs": [
       "Setup",
       "Lecture 7",
