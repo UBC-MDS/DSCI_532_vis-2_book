@@ -1,0 +1,36 @@
+payment_type codes (how the passenger paid):
+1 = Credit card
+2 = Cash
+3 = No charge
+4 = Dispute
+5 = Unknown
+6 = Voided trip
+Use payment_type when filtering by payment method.
+
+trip_distance is measured in miles from the taximeter.
+Short trips are under 1 mile. Long trips are over 10 miles.
+Average trip distance in 2024 is approximately 3.2 miles.
+
+fare_amount is the time-and-distance fare calculated by the meter.
+It does not include tips, tolls, or surcharges.
+total_amount includes all charges: fare, tip, tolls, surcharges, and taxes.
+tip_amount is only recorded for credit card payments. Cash tips are not captured.
+
+RatecodeID defines the fare rate type applied for the trip:
+1 = Standard rate (most trips)
+2 = JFK airport flat rate ($70 + tolls)
+3 = Newark airport
+4 = Nassau or Westchester
+5 = Negotiated fare (pre-arranged price, not metered)
+6 = Group ride
+Use RatecodeID=2 to filter for JFK airport trips.
+Use RatecodeID=5 to filter for negotiated fare trips.
+
+PULocationID and DOLocationID are NYC taxi zone IDs.
+Manhattan zones are roughly 1–105.
+Airport zones: JFK = 132, LaGuardia = 138, Newark = 1.
+Use these IDs when filtering trips by pickup or dropoff location.
+
+tpep_pickup_datetime and tpep_dropoff_datetime are timestamps.
+Use them to filter by hour of day, day of week, or date range.
+Peak hours are 7–9 AM and 5–8 PM on weekdays.
