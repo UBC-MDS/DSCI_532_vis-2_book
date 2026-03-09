@@ -1,0 +1,1052 @@
+---
+title: "Databases in Shiny"
+---
+
+<!-- Full lecture: Part 1-querying lazily (ibis + DuckDB); Part 2-writing & persistent storage (MongoDB Atlas) -->
+<!-- Primary examples: NYC Taxi dashboard, querychat query logger -->
+
+## Today
+
+::: {.columns}
+::: {.column width="50%"}
+**Part 1: Reading (large) data into your dashboard app**
+
+- Why not (always) pandas: Eager Loading Trap
+- Lazy Loading in Shiny: DBs, parquet
+- Why not (always) SQL: ibis + DuckDB-lazy loading
+- Running example: NYC Yellow Taxi (~3M trips)
+- `app-01`, `app-02a/b`
+
+:::
+::: {.column width="50%"}
+
+**Part 2: Writing data from your app**
+
+- Where problems come from: local, concurrent users, cloud deployments (Posit Connect)
+- External backend
+- Simple framework (writing form data)
+- Using external database to log LLM interaction
+
+:::
+:::
+
+::: {.callout-note appearance="minimal"}
+### Covered apps
+
+- `app-01-ibis-intro.py`-ibis + DuckDB basics with penguins
+- `app-02a-taxi-inmem.py`-ibis pattern with embedded sample (shinylive)
+- `app-02b-taxi-parquet.py`-lazy filtering, full NYC taxi parquet (run locally)
+- `app-03.py`-feedback form → MongoDB
+- `app-04.py`-querychat + MongoDB Atlas logger
+:::
+
+# Why Not (always) Pandas?: Eager vs Lazy Loading
+
+
+## The Eager Loading Trap
+
+Everything so far:
+
+```python
+import pandas as pd
+
+df = pd.read_csv("trips.csv")   # entire file -> RAM
+```
+
+. . .
+
+That works fine for penguins (344 rows).
+
+. . .
+
+**NYC taxi 2024:** ~40 million rows × 20 columns -> 5+ GB
+
+. . .
+
+::: {.columns}
+::: {.column}
+**Your laptop** may survive (16–32 GB RAM)...
+:::
+::: {.column}
+**Posit Connect Cloud** (and most of the similar services) free tier: **4 GB RAM**. App crashes on startup.
+
+| Plan | RAM |
+|------|-----|
+| Free | 4 GB |
+| Basic | 8 GB |
+| Enhanced | 16 GB |
+:::
+:::
+
+
+## Lazy Loading
+
+**Key idea:** describe *what* you want (maybe in multiple steps), let the database fetch only the rows you need.
+
+:::::  {.columns}
+:::: {.column width="45%"}
+```{mermaid}
+flowchart LR
+  subgraph disk["💾 On disk"]
+    D[(parquet<br>3M trips)]
+  end
+  subgraph mem["⚡ In RAM"]
+    direction LR
+    A[/payment = cash/]
+    B[/distance < 5 mi/]
+    F{{filtered}}
+    P1([n_trips])
+    P2([table])
+    A --> F
+    B --> F
+    F --> P1
+    F --> P2
+  end
+  F -- ".execute()" --> D
+  D -- "~190k rows" --> F
+```
+::::
+:::: {.column width="55%"}
+::: {.incremental}
+- The query shape lives in Python
+- DuckDB executes it against the file on disk (in 525 we will learn more)
+- Only the result (e.g. 500 matching rows) enters RAM
+:::
+
+. . .
+
+DuckDB scans the parquet file on disk and returns only the matching rows - **the 3M-row file never enters RAM**.
+::::
+:::::
+
+
+::: {.callout-note appearance="minimal"}
+We covered the Shiny integration angle here. DSCI 525 goes deeper on Parquet, columnar formats, and large-scale data pipelines.
+:::
+
+::: {.callout-warning appearance="minimal"}
+**What about Postgres?** You worked with it in DSCI 513 and ibis connects to it too. But Postgres is a transactional database - it needs a running server, index tuning, and configuration to perform well on analytical queries.  
+DuckDB is purpose-built for in-process analytics: no server, no install beyond `pip`, and it reads parquet natively. For single-user dashboards with analytical data, it is the simpler choice.
+:::
+
+# The Stack: Lazy Data Loading
+
+
+## parquet + DuckDB + ibis (works in many analytical settings, not only shiny)
+
+| Layer | Tool | Role |
+|-------|------|------|
+| Data | **Parquet file** | Columnar: only needed columns are read |
+| Query engine | **DuckDB** | Executes (SQL) queries, reads parquet natively |
+| Query language | **ibis** | Python API for building queries programmatically |
+
+
+. . .
+
+```bash
+pip install 'ibis-framework[duckdb]'
+```
+
+DuckDB runs **in-process**-no server, no config, just a file with data (or nothing at all).
+
+
+## Connect to Your Data
+
+```{.python code-line-numbers="|1-2|4|6"}
+import ibis
+from ibis import _       # we use _ to refer to columns
+
+con = ibis.duckdb.connect()   # in-process DuckDB
+
+taxi = con.read_parquet("data/taxi_2024-01.parquet")   # NB! no data loaded yet
+```
+
+. . .
+
+`taxi` is a table *reference*, not a DataFrame. Nothing has been read from disk.
+
+
+## ibis Expressions
+
+```{.python code-line-numbers="|1|2|3|4|6"}
+# this part defines plan (the query), nothing happens here
+taxi.filter([_.payment_type == 1])              # filter rows
+taxi.select(["trip_distance", "fare_amount"])    # select columns
+taxi.limit(500)                                 # first N rows
+taxi.count()                                    # row count (still lazy! nothing happened yet)
+
+#this part executes the plan (query), stuff finally happens
+taxi.filter([_.payment_type == 1]).execute()    # <- runs the query
+```
+
+. . .
+
+`_` is a column reference shorthand: `_.col_name` reads as "the column named col_name".
+
+
+## Lazy Until `.execute()`
+
+```python
+# Step 1: build the expression (instant: no query sent to DuckDB yet, we just planning what to do)
+expr = (
+    taxi
+    .filter([_.payment_type == 1, _.trip_distance < 5])
+    .select(["trip_distance", "fare_amount", "total_amount"])
+    .limit(500)
+)
+
+# Step 2: execute (we run our query: DuckDB scans the parquet file NOW)
+df = expr.execute()    # returns a DataFrame
+```
+
+. . .
+
+You can build and reshape expressions freely. DuckDB only does work at `.execute()`.
+
+
+## ETL: One-Time Prep
+
+Your raw data arrives as CSV (or json, ...) - large, row-oriented, slow to query.
+Convert it to Parquet once; the app reads the fast columnar file from then on:
+
+```{.python code-line-numbers="|1|3-4|6-9"}
+import duckdb #we can use duckdb for that as well! not the only option
+
+CSV = "raw/yellow_tripdata_2024-01.csv"   # 2 GB+, row-oriented
+OUT = "data/taxi_2024-01.parquet"         # columnar, compressed, fast
+
+duckdb.execute(f"""
+    COPY (SELECT * FROM read_csv_auto('{CSV}'))
+    TO '{OUT}' (FORMAT PARQUET)
+""")
+```
+
+. . .
+
+`read_csv_auto` infers headers and column types automatically.
+
+Parquet is ~ **5–10× faster** for filtered queries than CSV - DuckDB only reads the columns it needs.
+
+*(we will cover Parquet in depth in DSCI 525 next week)*
+
+
+## Part 1 Summary: Lazy Data Loading
+
+| Step | What | Why |
+|------|------|-----|
+| **One-time prep** | CSV → Parquet (`prep_data.py`) | Columnar format: 5–10× faster filtered reads |
+| **Query engine** | DuckDB (in-process) | No server, reads Parquet natively, pushes filters to disk |
+| **Query layer** | ibis or raw SQL | ibis: composable Python; SQL: familiar, explicit |
+| **Shiny integration** | `@reactive.calc` + `.execute()` | Query runs once per input change, only matching rows enter RAM |
+
+. . .
+
+This pattern works beyond Shiny — same stack in notebooks, ETL scripts, or any Python pipeline.
+
+. . .
+
+::: {.callout-note appearance="minimal"}
+We covered the Shiny integration angle here. DSCI 525 goes deeper on Parquet, columnar formats, and large-scale data pipelines.
+:::
+
+
+# Dealing with Data in Shiny
+
+
+## SQL vs ibis: Building Filters {.scrollable}
+
+Three checkbox filters - user can check any combination.
+
+::: {.columns}
+::: {.column width="50%"}
+**SQL**
+
+```python
+@reactive.calc
+def filtered():
+    conditions = []
+
+    if input.payment():
+        ids = ", ".join(str(p) for p in input.payment())
+        conditions.append(f"payment_type IN ({ids})")
+
+    if input.vendor():
+        ids = ", ".join(str(v) for v in input.vendor())
+        conditions.append(f"VendorID IN ({ids})")
+
+    if input.rate_code():
+        ids = ", ".join(str(r) for r in input.rate_code())
+        conditions.append(f"RatecodeID IN ({ids})")
+
+    where = ("WHERE " + " AND ".join(conditions)
+             if conditions else "")
+    print(where)
+    return con.execute(
+        f"SELECT * FROM taxi {where} LIMIT 500"
+    ).df()
+```
+
+:::
+::: {.column width="50%"}
+**ibis mirror**
+
+```python
+@reactive.calc
+def filtered():
+    expr = taxi
+
+    if input.payment():
+        expr = expr.filter(
+            _.payment_type.isin(
+                [int(p) for p in input.payment()]
+            )
+        )
+
+    if input.vendor():
+        expr = expr.filter(
+            _.VendorID.isin(
+                [int(v) for v in input.vendor()]
+            )
+        )
+
+    if input.rate_code():
+        expr = expr.filter(
+            _.RatecodeID.isin(
+                [int(r) for r in input.rate_code()]
+            )
+        )
+
+    return expr.limit(500).execute()
+```
+
+:::
+:::
+
+. . .
+
+Same structure per filter - but ibis builds a **query object**, not a string.
+No injection risk. Nothing to assemble and check. Less problems with ordering expressions.
+
+
+## ibis Goes Further
+
+When all filters share the same shape, ibis expressions compose in a loop:
+
+::: {.columns}
+::: {.column width="50%"}
+**ibis mirror** *(from previous slide)*
+
+```python
+@reactive.calc
+def filtered():
+    expr = taxi
+
+    if input.payment():
+        expr = expr.filter(
+            _.payment_type.isin(
+                [int(p) for p in input.payment()]
+            )
+        )
+    if input.vendor():
+        expr = expr.filter(
+            _.VendorID.isin(
+                [int(v) for v in input.vendor()]
+            )
+        )
+    if input.rate_code():
+        expr = expr.filter(
+            _.RatecodeID.isin(
+                [int(r) for r in input.rate_code()]
+            )
+        )
+    return expr.limit(500).execute()
+```
+
+:::
+::: {.column width="50%"}
+**ibis: filters as a list**
+
+```python
+@reactive.calc
+def filtered():
+    # col  = ibis column expression (e.g. _.payment_type)
+    # fn   = Shiny input callable    (e.g. input.payment)
+    # fn() = current checked values  (e.g. ("1", "2"))
+    COLS = {
+        "payment":   (_.payment_type, input.payment),
+        "vendor":    (_.VendorID,     input.vendor),
+        "rate_code": (_.RatecodeID,   input.rate_code),
+    }
+    filters = [
+        col.isin([int(v) for v in fn()])
+        for col, fn in COLS.values()
+        if fn()          # skip if nothing checked
+    ]
+    expr = taxi.filter(filters) if filters else taxi
+    return expr.limit(500).execute()
+```
+
+:::
+:::
+
+. . .
+
+ibis expressions are **first-class Python objects** - store them, loop over them, compose them.
+Works well when filters are homogeneous (all `.isin()`). 
+For mixed types (sliders, text), the sql mirror style is clearer.
+
+ibis expression API: [ibis-project.org/reference](https://ibis-project.org/reference/expression-collections)
+
+
+## So Why Not Just (Always) Write SQL? {.scrollable}
+
+::: {.columns}
+::: {.column width="50%"}
+**Raw DuckDB SQL**
+
+```python
+@reactive.calc
+def filtered():
+    conditions = []
+
+    if input.payment():
+        ids = ",".join(str(p) for p in input.payment())
+        conditions.append(
+            f"payment_type IN ({ids})"
+        )
+
+    lo, hi = input.distance()
+    conditions.append(
+        f"trip_distance BETWEEN {lo} AND {hi}"
+    )
+
+    if input.passengers() != "All":
+        conditions.append(
+            f"passenger_count = {input.passengers()}"
+        )
+
+    if input.vendor() != "Both":
+        conditions.append(
+            f"VendorID = {input.vendor()}"
+        )
+
+    where = ("WHERE " + " AND ".join(conditions)
+             if conditions else "")
+    print(where)
+    return con.execute(
+        f"SELECT * FROM taxi {where} LIMIT 500"
+    ).df()
+```
+
+:::
+::: {.column width="50%"}
+**ibis expressions**
+
+```python
+@reactive.calc
+def filtered():
+    expr = taxi
+
+    if input.payment():
+        expr = expr.filter(
+            _.payment_type.isin(
+                [int(p) for p in input.payment()]
+            )
+        )
+
+    lo, hi = input.distance()
+    expr = expr.filter(
+        _.trip_distance.between(lo, hi)
+    )
+
+    if input.passengers() != "All":
+        expr = expr.filter(
+            _.passenger_count == int(input.passengers())
+        )
+
+    if input.vendor() != "Both":
+        expr = expr.filter(
+            _.VendorID == int(input.vendor())
+        )
+
+    return expr.limit(500).execute()
+```
+
+:::
+:::
+
+. . .
+
+SQL: manual `WHERE` assembly, f-string injection risk, "All" guards scattered everywhere.
+ibis: each filter is optional-skip it, and it simply isn't in the query.
+
+## ibis + DuckDB in Shiny
+
+Together with DuckDB and lazy loading:
+
+:::: {.columns}
+::: {.column width="30%"}
+```{mermaid}
+flowchart LR
+  A[/"input.payment()"/] --> C
+  B[/"input.distance()"/] --> C
+  C{{filtered}} -- ".execute()" --> DB[(parquet<br>file)]
+  DB -- "filtered<br>rows" --> C
+  C --> D([table])
+  C --> E([value_box])
+```
+:::
+::: {.column width="70%"}
+```{.python code-line-numbers="|1-2|6|8-9|11-16|18-20"}
+con = ibis.duckdb.connect()
+taxi = con.read_parquet("data/taxi_2024-01.parquet")
+
+def server(input, output, session):
+
+    session.on_ended(con.disconnect)     # clean up when user leaves
+
+    @reactive.calc
+    def filtered():                      # ibis expression-inputs flow in naturally
+        lo, hi = input.distance()
+        return taxi.filter(
+            [
+                _.payment_type.isin([int(p) for p in input.payment()]),
+                _.trip_distance.between(lo, hi),
+            ]
+        )
+
+    @render.data_frame
+    def table():
+        return filtered().limit(500).execute()    # query runs here
+```
+:::
+::::
+
+. . .
+
+One `@reactive.calc`, multiple outputs-DuckDB queries only once per input change.
+
+
+## app-01: ibis Intro (penguins)
+
+`code/lecture09/app-01-ibis-intro.py`
+
+::: {.columns}
+::: {.column}
+
+- Loads palmerpenguins into an in-process DuckDB
+- Species + island filters (selectize)
+- ibis expression → row count + DataGrid
+
+:::
+::: {.column}
+
+```python
+con = ibis.duckdb.connect()
+penguins = con.create_table(
+    "penguins", load_penguins(), overwrite=True
+)
+
+@reactive.calc
+def filtered():
+    return penguins.filter([
+        _.species.isin(input.species()),
+        _.island.isin(input.island()),
+    ])
+
+@render.data_frame
+def table():
+    return filtered().execute()
+```
+
+:::
+:::
+
+
+## app-02: Taxi Dashboard
+
+```{shinylive-python}
+#| standalone: true
+#| components: [editor, viewer]
+#| viewerHeight: 520
+
+## file: app.py
+{{< include /code/lecture09/app-02a-taxi-inmem.py >}}
+
+## file: requirements.txt
+ibis-framework
+toolz
+pyarrow
+pyarrow-hotfix
+duckdb
+```
+
+
+
+# Part 2: Writing & Persistent Storage
+
+# Why Local Files Break
+
+
+## This Works Locally
+
+```{mermaid}
+sequenceDiagram
+    participant U as User
+    participant A as Shiny App
+    participant F as logs.csv
+    U->>A: submit query
+    A->>F: append row
+    F-->>A: ok
+    A->>U: query logged ✓
+```
+
+. . .
+
+`logs.csv` lives on your laptop-survives restarts, only one process writes to it.
+
+No problem.
+
+
+## Where Does This Break? {.smaller}
+
+| Deployment | Works? | Why |
+|---|---|---|
+| Local machine (terminal) | ✅ | Real filesystem, single process |
+| Dedicated server (yours) | ⚠️ | Single worker: fine. Multiple workers: race conditions |
+| **Shinylive** | ❌ | In-memory file system is ethemeral (-> next slide) |
+| **Posit Connect** | ❌ | Container storage is ethemeral, same single file problems (-> next two slides) |
+
+. . .
+
+::: {.callout-tip appearance="minimal"}
+Predict before we look: what goes wrong in each case?
+:::
+
+
+## Shinylive: Silent Failure
+
+Shinylive runs entirely in the browser-there is no server.
+
+. . .
+
+```python
+df.to_csv("logs.csv", mode="a")   # <- this runs… and succeeds
+```
+
+. . .
+
+Pyodide has an **in-memory filesystem** (Emscripten VFS).  
+The write succeeds-no error, no warning.
+
+. . .
+
+But:
+
+- Data lives in **browser memory**-gone on page reload
+- Every browser tab gets its **own isolated instance**
+- The host machine **never sees the file**
+
+. . .
+
+::: {.callout-warning}
+From the [Shiny docs](https://shiny.posit.co/py/get-started/shinylive.html):  
+**"No secrets"** - code runs in the browser, credentials are visible to users.  
+**"Restricted network"** - browser blocks TCP sockets, so `pymongo` and `requests` cannot connect to external services.
+:::
+
+
+## Posit Connect: Container Restarts {.scrollable}
+
+```{mermaid}
+sequenceDiagram
+    participant U as User
+    participant A as App Container
+    participant F as logs.csv
+    U->>A: submit query
+    A->>F: append row ✓
+    Note over A,F: redeploy or idle timeout-container recreated
+    U->>A: submit query
+    A->>F: ❌ FileNotFoundError
+    Note over F: file never existed<br>in the new container
+```
+
+. . .
+
+Posit Connect runs your app in an **ephemeral container** - the filesystem resets on every restart or redeploy.
+
+
+## Concurrent Users or Multiple Workers {.scrollable}
+
+```{mermaid}
+sequenceDiagram
+    participant U1 as User 1
+    participant F as logs.csv
+    participant U2 as User 2
+    U1->>F: read → 3 rows
+    U2->>F: read → 3 rows
+    Note over U1: LLM call (await-event loop switches)
+    U2->>F: write → 4 rows ✓
+    U1->>F: write → 4 rows ✓
+    Note over F: race condition-U1 overwrites U2's new row
+```
+
+. . .
+
+Every `await` (e.g. an LLM call) is a yield point-the event loop can switch to another user's request between your **read** and your **write**.
+
+Posit Connect makes this worse: it scales by spinning up **multiple separate processes** (workers), each with their own copy of the file.
+No coordination means concurrent writes silently corrupt data-even if you never hit an `await`.
+
+
+# The Fix: External Storage
+
+```{mermaid}
+sequenceDiagram
+    participant W1 as Worker 1
+    participant S as External Service
+    participant W2 as Worker 2
+    W1->>S: append row
+    S-->>W1: ok
+    W2->>S: append row
+    S-->>W2: ok
+    Note over S: atomic writes, persistent,<br>survives restarts
+```
+
+. . .
+
+Swap the backend-keep the same `save_info()` / `load_data()` wrapper in your app.
+
+
+## Persistent Storage: What's Out There {.smaller}
+
+| Service | Free tier | Schema | Python client | Good for |
+|---|---|---|---|---|
+| **Google Sheets** | ✅ Unlimited rows | None | `gspread` | Simple logs, familiar UI |
+| **Airtable** | ✅ 1 000 rows | Must pre-define columns | `pyairtable` | Low-code apps, visual editing |
+| **PostgreSQL** (server or cloud) | ✅ varies | SQL schema | `psycopg2` / `sqlalchemy` | Structured data, joins |
+| **MongoDB** (server or cloud) | ✅ varies | None (document store) | `pymongo` | Logs, surveys, free-form records |
+
+. . .
+
+::: {.callout-note appearance="minimal"}
+See Shiny docs: [Persistent data storage](https://shiny.posit.co/py/docs/persistent-data-storage.html)
+:::
+
+. . .
+
+## Databases: Mode 1 — Local
+
+Both Postgres and MongoDB can run on your laptop. This works fine during development.
+
+```{mermaid}
+sequenceDiagram
+    participant A as Shiny App<br/>(your laptop)
+    participant D as Database<br/>(localhost)
+    A->>D: INSERT / insert_one
+    D-->>A: ✅ ok
+    Note over D: lives on your machine,<br/>survives restarts
+```
+
+. . .
+
+**Problem:** deploy the app and the database stays behind.  
+The container on Posit Connect has no idea `localhost:5432` or `localhost:27017` exists.
+
+## Databases: Mode 2 — Self-hosted Server
+
+You run the database on a separate server, accessible over the network.
+
+```{mermaid}
+sequenceDiagram
+    participant A as App Container<br/>(Posit Connect)
+    participant F as Firewall / VPC
+    participant D as Database Server<br/>(your VM)
+    A->>F: connect (port 5432 / 27017)
+    Note over F: inbound rule open?<br/>IP allowlist? auth configured?
+    F->>D: forward
+    D-->>A: ✅ ok (if everything is configured)
+```
+
+. . .
+
+This works — but you own the maintenance: updates, backups, auth rules, uptime.  
+For a student project or a small app, that's a lot of overhead.
+
+## Databases: Mode 3 — Cloud
+
+Someone else runs the database. You get a connection string.
+
+:::: {.columns}
+::: {.column width="70%"}
+```{mermaid}
+sequenceDiagram
+    participant A as App Container<br/>(Posit Connect)
+    participant D as Cloud DB<br/>(MongoDB Atlas / Supabase / Neon / …)
+    A->>D: INSERT / insert_one<br/>via connection string
+    D-->>A: ✅ ok
+    Note over D: managed, persistent,<br/>free tier available,<br/>accessible from anywhere
+```
+
+No firewall config. No server to maintain. Free tier covers small apps easily.  
+Works identically locally and on Posit Connect — same connection string in `.env`.
+:::
+::: {.column width="30%"}
+| DB | Cloud providers |
+|---|---|
+| **MongoDB** | Atlas (M0 free), Azure Cosmos DB |
+| **Postgres** | Neon, Supabase, Railway, Render |
+:::
+::::
+
+
+## Why MongoDB Atlas Today?
+
+:::: {.columns}
+::: {.column width="50%"}
+| | MongoDB | Postgres |
+|---|---|---|
+| Data shape | Documents (JSON), flexible | Tables, fixed schema |
+| Best for | Logs, surveys, free-form records | Joins, constraints, reporting |
+| Python client | `pymongo` | `psycopg2` / ibis |
+| Free cloud | Atlas M0, 512 MB | Neon, Supabase |
+:::
+::: {.column width="50%"}
+- **Free tier** — M0 cluster, no credit card required
+- **No schema** — `insert_one(dict)`, add fields any time
+- **Auth** — one connection string in `.env`
+- **Concurrent writes** — atomic at the document level
+:::
+::::
+
+. . .
+
+```bash
+# .env
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/?appName=Cluster0
+```
+
+Setup: mongodb.com → free account → create M0 cluster → create user with password → copy connection string
+
+
+## App 03: A Simple Form: The Pattern
+
+Any Shiny input can trigger a write.  
+The simplest case: a feedback form.
+
+```{.python code-line-numbers="|1-4|6-9|11-14"}
+# UI: plain inputs
+ui.input_text("name", "Your name"),
+ui.input_text_area("comment", "Comment"),
+ui.input_action_button("submit", "Submit"),
+
+# Server: write on button click
+@reactive.effect
+@reactive.event(input.submit)
+def save_response():
+    row = {"name": input.name(), "comment": input.comment(),
+           "timestamp": datetime.now().isoformat()}
+    collection.insert_one(row)
+```
+
+. . .
+
+`@reactive.event(input.submit)` - only fires on button click, not on every keystroke.
+
+
+## Editable DataGrid -> MongoDB
+
+Shiny's `DataGrid` supports inline editing-students can fill in a table and submit it:
+
+```{.python code-line-numbers="|1-3|5-9"}
+# Render an editable grid seeded with empty rows
+@render.data_frame
+def response_table():
+    return render.DataGrid(template_df, editable=True)
+
+# On submit: read edits and write to MongoDB
+@reactive.effect
+@reactive.event(input.submit)
+def save_edits():
+    edited = response_table.data_view()   # DataFrame with user edits
+    for row in edited.to_dict("records"):
+        collection.insert_one(row)
+```
+
+. . .
+
+::: {.callout-note appearance="minimal"}
+`app-03.py` shows both patterns side by side.
+:::
+
+
+## Why Local Breaks: The Pattern to Avoid
+
+This works locally — but breaks on Posit Connect:
+
+```python
+LOG_FILE = Path("logs/query_log.csv")
+
+def save_info(row: dict):
+    df = pd.DataFrame([row])
+    LOG_FILE.parent.mkdir(exist_ok=True)
+    df.to_csv(LOG_FILE, mode="a", header=not LOG_FILE.exists(), index=False)
+
+def load_data() -> pd.DataFrame:
+    if LOG_FILE.exists():
+        return pd.read_csv(LOG_FILE)
+    return pd.DataFrame(columns=["timestamp", "user_query", "sql", "n_rows"])
+```
+
+. . .
+
+::: {.callout-warning}
+Works locally, though struggles with multiple users. On Posit Connect: file resets on restart, corrupts under multiple workers.
+:::
+
+
+## More complex loop: querychat Logger
+
+
+**What We're Logging**
+
+Every time querychat generates SQL, we capture:
+
+| Field | Source |
+|---|---|
+| `timestamp` | `datetime.now()` |
+| `user_query` | `on_tool_request` hook: last user turn |
+| `sql` | `req.arguments["query"]` from the tool call |
+| `n_rows` | `len(qc_vals.df())`: how many rows (reactive domain caveat) |
+| `model` | `ChatAuto` provider + model name |
+| `section` | `input.section()`: user-selected |
+
+. . .
+
+`qc_vals` is what `qc.server()` returns-exposes `.sql()`, `.df()`, `.title()`, `.client`.
+
+
+## The Logging Hook: Why Not `@reactive.effect`?
+
+The naive approach:
+
+```python
+@reactive.effect
+def log_query():
+    sql = qc_vals.sql()          # fires on every reactive invalidation
+    save_info(...)               # -> thousands of duplicate writes
+```
+
+. . .
+
+`qc_vals.sql()` invalidates on **every streaming token** from the LLM, not just when the final SQL arrives.
+
+. . .
+
+Better: hook directly into the tool call (querychat allows that)
+
+
+## `on_tool_request`: One Fire Per Query
+
+```{.python code-line-numbers="|1-2|3-6|7-8"}
+def on_query(req):
+    if req.name not in ("querychat_update_dashboard", "querychat_query"):
+        return                            # ignore other tools
+    sql = req.arguments.get("query", "")
+    turns = qc_vals.client.get_turns()
+    user_turns = [t for t in turns if t.role == "user"]
+    pending.set({"user_query": user_turns[-1].text,
+                 "sql": sql, "tool": req.name})   # .set() is safe from Extended Task
+
+qc_vals.client.on_tool_request(on_query) #register the hook
+```
+
+. . .
+
+Fires **exactly once** when the LLM calls the tool-before the response streams back.
+
+
+## Data Flow: app-04 {.smaller}
+
+```{mermaid}
+sequenceDiagram
+    participant U as User<br/>(browser)
+    box Shiny App Process
+        participant QC as querychat
+        participant OTR as on_tool_request
+        participant RV as reactive.value<br/>(pending)
+        participant FL as flush_log
+    end
+    participant MDB as MongoDB Atlas
+    box Log App (separate process)
+        participant LOG as Log DataGrid
+    end
+
+    U->>QC: sends message
+    QC->>OTR: LLM tool call fires
+    OTR->>RV: pending.set(row)
+    RV-->>FL: invalidates effect
+    FL->>MDB: insert_one(row)
+    LOG->>MDB: load_data()
+    MDB-->>LOG: DataFrame
+```
+
+. . .
+
+::: {.callout-tip appearance="minimal"}
+The log viewer (`load_data()` + DataGrid) reads from MongoDB directly.  
+It could run as a **separate app**-on a different machine, accessible only to instructors.
+:::
+
+
+
+## app-04: MongoDB Backend
+
+Only `save_info()` and `load_data()` change, everything else is identical to 04a:
+
+```{.python code-line-numbers="|1-4|6-8|10-13"}
+from pymongo import MongoClient
+import os
+
+collection = MongoClient(os.environ["MONGODB_URI"])["dsci532"]["query_log"]
+
+def save_info(row: dict) -> None:
+    collection.insert_one(row)          # atomic-safe under multiple workers
+
+def load_data(section: str) -> pd.DataFrame:
+    rows = list(collection.find({"section": section}, {"_id": 0}))
+    return pd.DataFrame(rows, columns=SCHEMA) if rows else pd.DataFrame(columns=SCHEMA)
+```
+
+. . .
+
+`insert_one()` is atomic-no locking, no race conditions, works across workers.
+
+
+## Switching Providers
+
+The same app works with any LLM-no code changes, just env vars:
+
+```bash
+# GitHub Models (free):
+CHATLAS_CHAT_PROVIDER_MODEL=github/gpt-4.1-mini
+GITHUB_TOKEN=...
+
+# Anthropic:
+CHATLAS_CHAT_PROVIDER_MODEL=anthropic/claude-haiku-4-5
+ANTHROPIC_API_KEY=...
+```
+
+. . .
+
+```python
+from chatlas import ChatAuto
+
+_chat = ChatAuto()                            # reads CHATLAS_CHAT_PROVIDER_MODEL
+LLM_MODEL = f"{_chat.provider.name}/{_chat.provider.model}"
+qc = querychat.QueryChat(titanic, "titanic", client=_chat)
+```
+
+. . .
+
+Deploy the same code twice on Posit Connect with different env vars -> compare models in MongoDB.
