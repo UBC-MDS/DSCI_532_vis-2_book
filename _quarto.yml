@@ -64,7 +64,7 @@ website:
           - 060-04-mcp.qmd
           - 060-05-evals.qmd
 
-      - section: "Lecture 9"
+      - section: "Lecture 7"
         contents:
           - 090-databases.qmd
 
