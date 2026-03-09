@@ -1,0 +1,11 @@
+---
+title: Databases in Shiny
+---
+
+:::{.column-page-inset-right}
+
+{{< revealjs file="slides/09-databases.html" height="500px" class="ratio ratio-16x9" >}}
+
+:::
+
+{{< include slides/09-databases.qmd >}}

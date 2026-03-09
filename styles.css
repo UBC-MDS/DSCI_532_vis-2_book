@@ -27,6 +27,12 @@
 	overflow: visible;
 }
 
+/* Mermaid: define fg lightest/lighter vars so subgraph backgrounds render light */
+.reveal {
+	--mermaid-fg-color--lightest: #f0f0f0;
+	--mermaid-fg-color--lighter: #cccccc;
+}
+
 .reveal .cell-output-display table,
 .reveal .cell-output-display .dataframe {
 	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
