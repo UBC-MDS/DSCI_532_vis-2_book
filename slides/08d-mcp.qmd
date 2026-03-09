@@ -1,17 +1,5 @@
 ---
 title: Model Context Protocol (MCP)
-
-format:
-  revealjs:
-    smaller: true
-    slide-number: true
-
-    footer: >
-      The New York Data Science & AI Conference. 2025.
-      <https://github.com/chendaniely/nydsaic2025-llm>
-
-editor:
-  render-on-save: true
 ---
 
 ## What is Model Context Protocol (MCP)?
@@ -46,14 +34,3 @@ editor:
 - Future-proof: ecosystem of reusable MCP tools
 
 ---
-
-## Example MCP Use Case
-
-- LLM is asked: *“What’s the latest issue assigned to me in GitHub?”*
-- Model calls the **GitHub MCP tool**
-- Tool fetches trusted data via API
-- Model responds with the result — no custom integration required
-
-## Demo: Run python
-
-<https://github.com/chendaniely/nydsaic2025-llm/tree/main/code/07-mcp>

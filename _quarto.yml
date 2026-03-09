@@ -64,13 +64,14 @@ website:
           - 060-04-mcp.qmd
           - 060-05-evals.qmd
 
-      - section: "Lecture 9"
+      - section: "Lecture 7"
         contents:
           - 090-databases.qmd
 
       - section: "Review"
         contents:
           - review/01-wiring.qmd
+          - review/04-llm-basics.qmd
 
 format:
   html:
