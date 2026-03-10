@@ -9,6 +9,8 @@ __pycache__/
 **/*.pyc
 .env
 
+code/lecture08/data/
+
 # Local Netlify folder
 .netlify
 
