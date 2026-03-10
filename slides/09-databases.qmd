@@ -879,32 +879,6 @@ def save_edits():
 `app-03.py` shows both patterns side by side.
 :::
 
-
-## Why Local Breaks: The Pattern to Avoid
-
-This works locally — but breaks on Posit Connect:
-
-```python
-LOG_FILE = Path("logs/query_log.csv")
-
-def save_info(row: dict):
-    df = pd.DataFrame([row])
-    LOG_FILE.parent.mkdir(exist_ok=True)
-    df.to_csv(LOG_FILE, mode="a", header=not LOG_FILE.exists(), index=False)
-
-def load_data() -> pd.DataFrame:
-    if LOG_FILE.exists():
-        return pd.read_csv(LOG_FILE)
-    return pd.DataFrame(columns=["timestamp", "user_query", "sql", "n_rows"])
-```
-
-. . .
-
-::: {.callout-warning}
-Works locally, though struggles with multiple users. On Posit Connect: file resets on restart, corrupts under multiple workers.
-:::
-
-
 ## More complex loop: querychat Logger
 
 

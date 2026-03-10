@@ -1552,18 +1552,6 @@
     ]
   },
   {
-    "objectID": "090-databases.html#why-local-breaks-the-pattern-to-avoid",
-    "href": "090-databases.html#why-local-breaks-the-pattern-to-avoid",
-    "title": "Databases in Shiny",
-    "section": "Why Local Breaks: The Pattern to Avoid",
-    "text": "Why Local Breaks: The Pattern to Avoid\nThis works locally — but breaks on Posit Connect:\nLOG_FILE = Path(\"logs/query_log.csv\")\n\ndef save_info(row: dict):\n    df = pd.DataFrame([row])\n    LOG_FILE.parent.mkdir(exist_ok=True)\n    df.to_csv(LOG_FILE, mode=\"a\", header=not LOG_FILE.exists(), index=False)\n\ndef load_data() -&gt; pd.DataFrame:\n    if LOG_FILE.exists():\n        return pd.read_csv(LOG_FILE)\n    return pd.DataFrame(columns=[\"timestamp\", \"user_query\", \"sql\", \"n_rows\"])\n. . .\n\n\n\n\n\n\nWarning\n\n\n\nWorks locally, though struggles with multiple users. On Posit Connect: file resets on restart, corrupts under multiple workers.",
-    "crumbs": [
-      "Setup",
-      "Lecture 7",
-      "Databases in Shiny"
-    ]
-  },
-  {
     "objectID": "090-databases.html#more-complex-loop-querychat-logger",
     "href": "090-databases.html#more-complex-loop-querychat-logger",
     "title": "Databases in Shiny",
@@ -5445,13 +5433,6 @@
     "title": "Databases in Shiny",
     "section": "Editable DataGrid -> MongoDB",
     "text": "Editable DataGrid -&gt; MongoDB\nShiny’s DataGrid supports inline editing-students can fill in a table and submit it:\n# Render an editable grid seeded with empty rows\n@render.data_frame\ndef response_table():\n    return render.DataGrid(template_df, editable=True)\n\n# On submit: read edits and write to MongoDB\n@reactive.effect\n@reactive.event(input.submit)\ndef save_edits():\n    edited = response_table.data_view()   # DataFrame with user edits\n    for row in edited.to_dict(\"records\"):\n        collection.insert_one(row)\n\n\n\n\napp-03.py shows both patterns side by side."
-  },
-  {
-    "objectID": "slides/09-databases.html#why-local-breaks-the-pattern-to-avoid",
-    "href": "slides/09-databases.html#why-local-breaks-the-pattern-to-avoid",
-    "title": "Databases in Shiny",
-    "section": "Why Local Breaks: The Pattern to Avoid",
-    "text": "Why Local Breaks: The Pattern to Avoid\nThis works locally — but breaks on Posit Connect:\nLOG_FILE = Path(\"logs/query_log.csv\")\n\ndef save_info(row: dict):\n    df = pd.DataFrame([row])\n    LOG_FILE.parent.mkdir(exist_ok=True)\n    df.to_csv(LOG_FILE, mode=\"a\", header=not LOG_FILE.exists(), index=False)\n\ndef load_data() -&gt; pd.DataFrame:\n    if LOG_FILE.exists():\n        return pd.read_csv(LOG_FILE)\n    return pd.DataFrame(columns=[\"timestamp\", \"user_query\", \"sql\", \"n_rows\"])\n\n\n\n\n\n\n\nWarning\n\n\nWorks locally, though struggles with multiple users. On Posit Connect: file resets on restart, corrupts under multiple workers."
   },
   {
     "objectID": "slides/09-databases.html#more-complex-loop-querychat-logger",

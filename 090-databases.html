@@ -469,7 +469,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#why-mongodb-atlas-today" id="toc-why-mongodb-atlas-today" class="nav-link" data-scroll-target="#why-mongodb-atlas-today">Why MongoDB Atlas Today?</a></li>
   <li><a href="#app-03-a-simple-form-the-pattern" id="toc-app-03-a-simple-form-the-pattern" class="nav-link" data-scroll-target="#app-03-a-simple-form-the-pattern">App 03: A Simple Form: The Pattern</a></li>
   <li><a href="#editable-datagrid---mongodb" id="toc-editable-datagrid---mongodb" class="nav-link" data-scroll-target="#editable-datagrid---mongodb">Editable DataGrid -&gt; MongoDB</a></li>
-  <li><a href="#why-local-breaks-the-pattern-to-avoid" id="toc-why-local-breaks-the-pattern-to-avoid" class="nav-link" data-scroll-target="#why-local-breaks-the-pattern-to-avoid">Why Local Breaks: The Pattern to Avoid</a></li>
   <li><a href="#more-complex-loop-querychat-logger" id="toc-more-complex-loop-querychat-logger" class="nav-link" data-scroll-target="#more-complex-loop-querychat-logger">More complex loop: querychat Logger</a></li>
   <li><a href="#the-logging-hook-why-not-reactive.effect" id="toc-the-logging-hook-why-not-reactive.effect" class="nav-link" data-scroll-target="#the-logging-hook-why-not-reactive.effect">The Logging Hook: Why Not <code>@reactive.effect</code>?</a></li>
   <li><a href="#on_tool_request-one-fire-per-query" id="toc-on_tool_request-one-fire-per-query" class="nav-link" data-scroll-target="#on_tool_request-one-fire-per-query"><code>on_tool_request</code>: One Fire Per Query</a></li>
@@ -1671,35 +1670,6 @@ The simplest case: a feedback form.</p>
 </div>
 </div>
 </section>
-<section id="why-local-breaks-the-pattern-to-avoid" class="level2">
-<h2 class="anchored" data-anchor-id="why-local-breaks-the-pattern-to-avoid">Why Local Breaks: The Pattern to Avoid</h2>
-<p>This works locally — but breaks on Posit Connect:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>LOG_FILE <span class="op">=</span> Path(<span class="st">"logs/query_log.csv"</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_info(row: <span class="bu">dict</span>):</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame([row])</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    LOG_FILE.parent.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    df.to_csv(LOG_FILE, mode<span class="op">=</span><span class="st">"a"</span>, header<span class="op">=</span><span class="kw">not</span> LOG_FILE.exists(), index<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_data() <span class="op">-&gt;</span> pd.DataFrame:</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> LOG_FILE.exists():</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pd.read_csv(LOG_FILE)</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(columns<span class="op">=</span>[<span class="st">"timestamp"</span>, <span class="st">"user_query"</span>, <span class="st">"sql"</span>, <span class="st">"n_rows"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>. . .</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Warning
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Works locally, though struggles with multiple users. On Posit Connect: file resets on restart, corrupts under multiple workers.</p>
-</div>
-</div>
-</section>
 <section id="more-complex-loop-querychat-logger" class="level2">
 <h2 class="anchored" data-anchor-id="more-complex-loop-querychat-logger">More complex loop: querychat Logger</h2>
 <p><strong>What We’re Logging</strong></p>
@@ -1748,10 +1718,10 @@ Warning
 <section id="the-logging-hook-why-not-reactive.effect" class="level2">
 <h2 class="anchored" data-anchor-id="the-logging-hook-why-not-reactive.effect">The Logging Hook: Why Not <code>@reactive.effect</code>?</h2>
 <p>The naive approach:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.effect</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_query():</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    sql <span class="op">=</span> qc_vals.sql()          <span class="co"># fires on every reactive invalidation</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    save_info(...)               <span class="co"># -&gt; thousands of duplicate writes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="at">@reactive.effect</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_query():</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    sql <span class="op">=</span> qc_vals.sql()          <span class="co"># fires on every reactive invalidation</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    save_info(...)               <span class="co"># -&gt; thousands of duplicate writes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>. . .</p>
 <p><code>qc_vals.sql()</code> invalidates on <strong>every streaming token</strong> from the LLM, not just when the final SQL arrives.</p>
 <p>. . .</p>
@@ -1759,16 +1729,16 @@ Warning
 </section>
 <section id="on_tool_request-one-fire-per-query" class="level2">
 <h2 class="anchored" data-anchor-id="on_tool_request-one-fire-per-query"><code>on_tool_request</code>: One Fire Per Query</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a><span class="kw">def</span> on_query(req):</span>
-<span id="cb22-2"><a href="#cb22-2"></a>    <span class="cf">if</span> req.name <span class="kw">not</span> <span class="kw">in</span> (<span class="st">"querychat_update_dashboard"</span>, <span class="st">"querychat_query"</span>):</span>
-<span id="cb22-3"><a href="#cb22-3"></a>        <span class="cf">return</span>                            <span class="co"># ignore other tools</span></span>
-<span id="cb22-4"><a href="#cb22-4"></a>    sql <span class="op">=</span> req.arguments.get(<span class="st">"query"</span>, <span class="st">""</span>)</span>
-<span id="cb22-5"><a href="#cb22-5"></a>    turns <span class="op">=</span> qc_vals.client.get_turns()</span>
-<span id="cb22-6"><a href="#cb22-6"></a>    user_turns <span class="op">=</span> [t <span class="cf">for</span> t <span class="kw">in</span> turns <span class="cf">if</span> t.role <span class="op">==</span> <span class="st">"user"</span>]</span>
-<span id="cb22-7"><a href="#cb22-7"></a>    pending.<span class="bu">set</span>({<span class="st">"user_query"</span>: user_turns[<span class="op">-</span><span class="dv">1</span>].text,</span>
-<span id="cb22-8"><a href="#cb22-8"></a>                 <span class="st">"sql"</span>: sql, <span class="st">"tool"</span>: req.name})   <span class="co"># .set() is safe from Extended Task</span></span>
-<span id="cb22-9"><a href="#cb22-9"></a></span>
-<span id="cb22-10"><a href="#cb22-10"></a>qc_vals.client.on_tool_request(on_query) <span class="co">#register the hook</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">def</span> on_query(req):</span>
+<span id="cb21-2"><a href="#cb21-2"></a>    <span class="cf">if</span> req.name <span class="kw">not</span> <span class="kw">in</span> (<span class="st">"querychat_update_dashboard"</span>, <span class="st">"querychat_query"</span>):</span>
+<span id="cb21-3"><a href="#cb21-3"></a>        <span class="cf">return</span>                            <span class="co"># ignore other tools</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a>    sql <span class="op">=</span> req.arguments.get(<span class="st">"query"</span>, <span class="st">""</span>)</span>
+<span id="cb21-5"><a href="#cb21-5"></a>    turns <span class="op">=</span> qc_vals.client.get_turns()</span>
+<span id="cb21-6"><a href="#cb21-6"></a>    user_turns <span class="op">=</span> [t <span class="cf">for</span> t <span class="kw">in</span> turns <span class="cf">if</span> t.role <span class="op">==</span> <span class="st">"user"</span>]</span>
+<span id="cb21-7"><a href="#cb21-7"></a>    pending.<span class="bu">set</span>({<span class="st">"user_query"</span>: user_turns[<span class="op">-</span><span class="dv">1</span>].text,</span>
+<span id="cb21-8"><a href="#cb21-8"></a>                 <span class="st">"sql"</span>: sql, <span class="st">"tool"</span>: req.name})   <span class="co"># .set() is safe from Extended Task</span></span>
+<span id="cb21-9"><a href="#cb21-9"></a></span>
+<span id="cb21-10"><a href="#cb21-10"></a>qc_vals.client.on_tool_request(on_query) <span class="co">#register the hook</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>. . .</p>
 <p>Fires <strong>exactly once</strong> when the LLM calls the tool-before the response streams back.</p>
 </section>
@@ -1821,36 +1791,36 @@ It could run as a <strong>separate app</strong>-on a different machine, accessib
 <section id="app-04-mongodb-backend" class="level2">
 <h2 class="anchored" data-anchor-id="app-04-mongodb-backend">app-04: MongoDB Backend</h2>
 <p>Only <code>save_info()</code> and <code>load_data()</code> change, everything else is identical to 04a:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1"></a><span class="im">from</span> pymongo <span class="im">import</span> MongoClient</span>
-<span id="cb23-2"><a href="#cb23-2"></a><span class="im">import</span> os</span>
-<span id="cb23-3"><a href="#cb23-3"></a></span>
-<span id="cb23-4"><a href="#cb23-4"></a>collection <span class="op">=</span> MongoClient(os.environ[<span class="st">"MONGODB_URI"</span>])[<span class="st">"dsci532"</span>][<span class="st">"query_log"</span>]</span>
-<span id="cb23-5"><a href="#cb23-5"></a></span>
-<span id="cb23-6"><a href="#cb23-6"></a><span class="kw">def</span> save_info(row: <span class="bu">dict</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
-<span id="cb23-7"><a href="#cb23-7"></a>    collection.insert_one(row)          <span class="co"># atomic-safe under multiple workers</span></span>
-<span id="cb23-8"><a href="#cb23-8"></a></span>
-<span id="cb23-9"><a href="#cb23-9"></a><span class="kw">def</span> load_data(section: <span class="bu">str</span>) <span class="op">-&gt;</span> pd.DataFrame:</span>
-<span id="cb23-10"><a href="#cb23-10"></a>    rows <span class="op">=</span> <span class="bu">list</span>(collection.find({<span class="st">"section"</span>: section}, {<span class="st">"_id"</span>: <span class="dv">0</span>}))</span>
-<span id="cb23-11"><a href="#cb23-11"></a>    <span class="cf">return</span> pd.DataFrame(rows, columns<span class="op">=</span>SCHEMA) <span class="cf">if</span> rows <span class="cf">else</span> pd.DataFrame(columns<span class="op">=</span>SCHEMA)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-code-line-numbers=""><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1"></a><span class="im">from</span> pymongo <span class="im">import</span> MongoClient</span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="im">import</span> os</span>
+<span id="cb22-3"><a href="#cb22-3"></a></span>
+<span id="cb22-4"><a href="#cb22-4"></a>collection <span class="op">=</span> MongoClient(os.environ[<span class="st">"MONGODB_URI"</span>])[<span class="st">"dsci532"</span>][<span class="st">"query_log"</span>]</span>
+<span id="cb22-5"><a href="#cb22-5"></a></span>
+<span id="cb22-6"><a href="#cb22-6"></a><span class="kw">def</span> save_info(row: <span class="bu">dict</span>) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
+<span id="cb22-7"><a href="#cb22-7"></a>    collection.insert_one(row)          <span class="co"># atomic-safe under multiple workers</span></span>
+<span id="cb22-8"><a href="#cb22-8"></a></span>
+<span id="cb22-9"><a href="#cb22-9"></a><span class="kw">def</span> load_data(section: <span class="bu">str</span>) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb22-10"><a href="#cb22-10"></a>    rows <span class="op">=</span> <span class="bu">list</span>(collection.find({<span class="st">"section"</span>: section}, {<span class="st">"_id"</span>: <span class="dv">0</span>}))</span>
+<span id="cb22-11"><a href="#cb22-11"></a>    <span class="cf">return</span> pd.DataFrame(rows, columns<span class="op">=</span>SCHEMA) <span class="cf">if</span> rows <span class="cf">else</span> pd.DataFrame(columns<span class="op">=</span>SCHEMA)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>. . .</p>
 <p><code>insert_one()</code> is atomic-no locking, no race conditions, works across workers.</p>
 </section>
 <section id="switching-providers" class="level2">
 <h2 class="anchored" data-anchor-id="switching-providers">Switching Providers</h2>
 <p>The same app works with any LLM-no code changes, just env vars:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" data-code-line-numbers=""><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GitHub Models (free):</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="va">CHATLAS_CHAT_PROVIDER_MODEL</span><span class="op">=</span>github/gpt-4.1-mini</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="va">GITHUB_TOKEN</span><span class="op">=</span>...</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Anthropic:</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="va">CHATLAS_CHAT_PROVIDER_MODEL</span><span class="op">=</span>anthropic/claude-haiku-4-5</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="va">ANTHROPIC_API_KEY</span><span class="op">=</span>...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" data-code-line-numbers=""><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GitHub Models (free):</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="va">CHATLAS_CHAT_PROVIDER_MODEL</span><span class="op">=</span>github/gpt-4.1-mini</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="va">GITHUB_TOKEN</span><span class="op">=</span>...</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Anthropic:</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="va">CHATLAS_CHAT_PROVIDER_MODEL</span><span class="op">=</span>anthropic/claude-haiku-4-5</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="va">ANTHROPIC_API_KEY</span><span class="op">=</span>...</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>. . .</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> chatlas <span class="im">import</span> ChatAuto</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>_chat <span class="op">=</span> ChatAuto()                            <span class="co"># reads CHATLAS_CHAT_PROVIDER_MODEL</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>LLM_MODEL <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>_chat<span class="sc">.</span>provider<span class="sc">.</span>name<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>_chat<span class="sc">.</span>provider<span class="sc">.</span>model<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> querychat.QueryChat(titanic, <span class="st">"titanic"</span>, client<span class="op">=</span>_chat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" data-code-line-numbers=""><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> chatlas <span class="im">import</span> ChatAuto</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>_chat <span class="op">=</span> ChatAuto()                            <span class="co"># reads CHATLAS_CHAT_PROVIDER_MODEL</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>LLM_MODEL <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>_chat<span class="sc">.</span>provider<span class="sc">.</span>name<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>_chat<span class="sc">.</span>provider<span class="sc">.</span>model<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>qc <span class="op">=</span> querychat.QueryChat(titanic, <span class="st">"titanic"</span>, client<span class="op">=</span>_chat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>. . .</p>
 <p>Deploy the same code twice on Posit Connect with different env vars -&gt; compare models in MongoDB.</p>
 
