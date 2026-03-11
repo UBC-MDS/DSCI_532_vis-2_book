@@ -4522,14 +4522,14 @@
     "href": "setup.html",
     "title": "Setup",
     "section": "",
-    "text": "Here is the working requirements.txt to get started for this course. You may need more packages for your actual project repository.\nMake sure you are installing these packages in a separate virtual enviornment (for the course and project).\njupyter\nipykernel\nshiny\nshinywidgets\nshinylive\naltair\nvegafusion\nvl-convert-python\nvega-datasets\npandas\ngeopandas\ngeoarrow-pandas\npyogrio\npolars\nnarwhals\nplotnine\nplotly\nseaborn\nmatplotlib\nridgeplot\nfolium\nbranca\nmapclassify\nmaplibre\ngreat-tables\npalmerpenguins\nlxml\nbeautifulsoup4\nrequests\nopenai\nanthropic\nchatlas\ninspect-ai\n#keplergl\nquerychat\nduckdb\npython-dotenv\nnumpy\ntiktoken"
+    "text": "Here is the working requirements.txt to get started for this course. You may need more packages for your actual project repository.\nMake sure you are installing these packages in a separate virtual enviornment (for the course and project).\njupyter\nipykernel\nshiny\nshinywidgets\nshinylive\naltair\nvegafusion\nvl-convert-python\nvega-datasets\npandas\ngeopandas\ngeoarrow-pandas\npyogrio\npolars\nnarwhals\nplotnine\nplotly\nseaborn\nmatplotlib\nridgeplot\nfolium\nbranca\nmapclassify\nmaplibre\ngreat-tables\npalmerpenguins\nlxml\nbeautifulsoup4\nrequests\nopenai\nanthropic\nchatlas\ninspect-ai\n#keplergl\nquerychat\nduckdb\npython-dotenv\nnumpy\ntiktoken\nibis-framework[duckdb]\nibis-framework[polars]\nibis-framework[postgres]\nibis-framework[sqlite]\nnarwhals\npymongo\nsnakeviz\npytest\npytest-playwright"
   },
   {
     "objectID": "setup.html#python",
     "href": "setup.html#python",
     "title": "Setup",
     "section": "",
-    "text": "Here is the working requirements.txt to get started for this course. You may need more packages for your actual project repository.\nMake sure you are installing these packages in a separate virtual enviornment (for the course and project).\njupyter\nipykernel\nshiny\nshinywidgets\nshinylive\naltair\nvegafusion\nvl-convert-python\nvega-datasets\npandas\ngeopandas\ngeoarrow-pandas\npyogrio\npolars\nnarwhals\nplotnine\nplotly\nseaborn\nmatplotlib\nridgeplot\nfolium\nbranca\nmapclassify\nmaplibre\ngreat-tables\npalmerpenguins\nlxml\nbeautifulsoup4\nrequests\nopenai\nanthropic\nchatlas\ninspect-ai\n#keplergl\nquerychat\nduckdb\npython-dotenv\nnumpy\ntiktoken"
+    "text": "Here is the working requirements.txt to get started for this course. You may need more packages for your actual project repository.\nMake sure you are installing these packages in a separate virtual enviornment (for the course and project).\njupyter\nipykernel\nshiny\nshinywidgets\nshinylive\naltair\nvegafusion\nvl-convert-python\nvega-datasets\npandas\ngeopandas\ngeoarrow-pandas\npyogrio\npolars\nnarwhals\nplotnine\nplotly\nseaborn\nmatplotlib\nridgeplot\nfolium\nbranca\nmapclassify\nmaplibre\ngreat-tables\npalmerpenguins\nlxml\nbeautifulsoup4\nrequests\nopenai\nanthropic\nchatlas\ninspect-ai\n#keplergl\nquerychat\nduckdb\npython-dotenv\nnumpy\ntiktoken\nibis-framework[duckdb]\nibis-framework[polars]\nibis-framework[postgres]\nibis-framework[sqlite]\nnarwhals\npymongo\nsnakeviz\npytest\npytest-playwright"
   },
   {
     "objectID": "setup.html#llms",
