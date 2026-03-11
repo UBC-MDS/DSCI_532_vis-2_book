@@ -8,7 +8,7 @@ venv
 __pycache__/
 **/*.pyc
 .env
-data/*
+**/data/*
 .pytest_cache
 
 code/lecture08/data/
