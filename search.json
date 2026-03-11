@@ -110,6 +110,13 @@
     "text": "Setup\nrequirements.txt\npytest\npytest-playwright\nInstall browers\nplaywright install"
   },
   {
+    "objectID": "slides/10-testing.html#run-tests",
+    "href": "slides/10-testing.html#run-tests",
+    "title": "Testing",
+    "section": "Run tests",
+    "text": "Run tests\nCall pytest!\npytest\nSee the test in the browser\npytest --headed\nor specify a specific brower\npytest --brower firefox"
+  },
+  {
     "objectID": "slides/10-testing.html#testing-shiny",
     "href": "slides/10-testing.html#testing-shiny",
     "title": "Testing",
@@ -128,7 +135,7 @@
     "href": "slides/10-testing.html#playwright-example",
     "title": "Testing",
     "section": "Playwright Example",
-    "text": "Playwright Example\nfrom shiny.playwright import controller\nfrom shiny.run import ShinyAppProc\nfrom playwright.sync_api import Page\nfrom shiny.pytest import create_app_fixture\n\napp = create_app_fixture(\"app.py\")\n\ndef test_basic_app(page: Page, app: ShinyAppProc):\n    page.goto(app.url)\n\n    selectize_day = controller.InputSelectize(page, \"adaptive-filter_day\")\n    selectize_day.set(\"Fri\")\n    selectize_day.expect_selected([\"Fri\"])\n\n    selectize_time = controller.InputSelectize(page, \"adaptive-filter_time\")\n    selectize_time.expect_choices([\"Dinner\"])"
+    "text": "Playwright Example\nhttps://shiny.posit.co/py/api/testing/\nfrom shiny.playwright import controller\nfrom shiny.run import ShinyAppProc\nfrom playwright.sync_api import Page\nfrom shiny.pytest import create_app_fixture\n\napp = create_app_fixture(\"app.py\")\n\ndef test_basic_app(page: Page, app: ShinyAppProc):\n    page.goto(app.url)\n\n    selectize_day = controller.InputSelectize(page, \"adaptive-filter_day\")\n    selectize_day.set(\"Fri\")\n    selectize_day.expect_selected([\"Fri\"])\n\n    selectize_time = controller.InputSelectize(page, \"adaptive-filter_time\")\n    selectize_time.expect_choices([\"Dinner\"])"
   },
   {
     "objectID": "slides/08e-evals_inspect.html#chatlas-inspect-ai",

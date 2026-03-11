@@ -23,6 +23,28 @@ Install browers
 playwright install
 ```
 
+## Run tests
+
+Call pytest!
+
+```bash
+pytest
+```
+
+See the test in the browser
+
+```bash
+pytest --headed
+```
+
+or specify a specific brower
+
+```bash
+pytest --brower firefox
+```
+
+
+
 ## Testing Shiny
 
 - Testing is always great (nothing new here)
@@ -52,6 +74,8 @@ def test_index_intersection_all():
 ```
 
 ## Playwright Example
+
+<https://shiny.posit.co/py/api/testing/>
 
 ```{.python}
 from shiny.playwright import controller
