@@ -1,0 +1,16 @@
+---
+title: "Course Summary — Capstone Navigator"
+subtitle: "What you learned, when to reach for it"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+filters:
+  - quizdown
+---
+
+[📊 View as slide deck](../slides/11-summary.html){.btn .btn-sm .btn-outline-primary target="_blank"}
+
+---
+
+{{< include /slides/11-summary.qmd >}}
