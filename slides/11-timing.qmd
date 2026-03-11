@@ -1,0 +1,37 @@
+---
+title: Timing
+---
+
+
+## Marimo
+
+:::{.callout-note}
+code examples are run using marimo notebooks: <https://marimo.io/>
+:::
+
+## Simple timing
+
+- using the `time.perf_counter()` function to set the start point,
+- Calculate it again at the end of what you want, and subtract the difference
+
+## File I/O
+
+- File I/O is usually the slowest part of your application
+- You can see that parquet files work better in general over CSVs
+
+## More detailed timing
+
+- Python has the cProfile module that lets you time all the functions and components
+- The `snakeviz` library helps make the cProfile table a bit more readable
+
+## Timing in Shiny for R
+
+- Shiny for R has many tools to help you time your `
+
+<https://profvis.r-lib.org/>
+
+- Profviz example: <https://profvis.r-lib.org/examples.html#example-3---profiling-a-shiny-application>
+
+## Timing in Shiny for Python
+
+- There are no Shiny specific tools for profiling a Shiny for Python app at the moment

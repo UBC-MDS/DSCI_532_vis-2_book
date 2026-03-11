@@ -68,6 +68,12 @@ website:
         contents:
           - 090-databases.qmd
 
+      - section: "Lecture 8"
+        contents:
+          - 100-testing.qmd
+          - 110-timing.qmd
+          - 120-modules.qmd
+
       - section: "Review"
         contents:
           - review/01-wiring.qmd
