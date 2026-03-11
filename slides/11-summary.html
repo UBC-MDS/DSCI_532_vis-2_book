@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdownKatex.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdownHighlight.js"></script>
+<script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown-init.js"></script><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.27">
+
+  <title>DSCI 532: Data Visualization 2 – DSCI 532: Review and pre-Capstone Navigator</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-534cd8e3a96973385dffff3f4709048d.css">
+  <link rel="stylesheet" href="../styles.css">
+  <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">DSCI 532: Review and pre-Capstone Navigator</h1>
+  <p class="subtitle">What you learned, when to use it</p>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section>
+<section id="block-1-dashboards-shiny-and-design" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Block 1 Dashboards, Shiny and Design</h1>
+
+</section>
+<section id="shiny-architecture" class="slide level2">
+<h2>Shiny Architecture</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I need to build a web app from Python without writing HTML/JS,</strong><br>
+I take Shiny to use reactivity (input -&gt; reactive graph -&gt; output model),<br>
+so I can create interactive dashboards entirely in Python.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li><code>ui</code> defines the layout</li>
+<li><code>server</code> wires inputs to outputs via the reactive graph</li>
+<li>Shiny re-runs only what changed</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+Static report or chart that doesn’t need user interaction → Quarto/Altair alone is simpler.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-05-core-altair-first_app.py"><code>app-05-core-altair-first_app.py</code></a> — complete first app: radio input + Altair output</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/01-intro_shiny.html">Slides: Intro to Shiny</a></li>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html">Slides: First Shiny App</a></li>
+<li><a href="https://shiny.posit.co/py/docs/overview.html">Shiny for Python docs</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="dashboard-design" class="slide level2">
+<h2>Dashboard Design</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I’m designing a dashboard and don’t know where to start,</strong><br>
+I want a set of layout and communication principles,<br>
+so I can make intentional choices about what to show and where.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li>Be concise (one message per card), layout logically (filter left, output right), provide context (titles, units, source)</li>
+<li>Use cards + sidebar as default skeleton</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+Exploratory analysis for yourself → just use a notebook. Dashboards are for communicating to an audience.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture02/core/app.py"><code>app.py</code></a> — complete restaurant tipping dashboard: sidebar + cards + value boxes</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://dsci532-review-pages.netlify.app/slides/01b-dashboard-design.html">Slides: Dashboard Design</a> — layout principles, Miller’s law, grid</li>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06b-styling.html">Slides: Styling &amp; UX</a> — themes, value boxes, fillable vs fluid, accordion</li>
+<li><a href="https://shiny.posit.co/py/layouts/">Shiny layouts</a></li>
+<li><a href="https://shiny.posit.co/py/components/">Shiny components</a></li>
+<li><a href="https://bootswatch.com/">Bootswatch themes</a> — quick theme picker</li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="styling-theming-export" class="slide level2">
+<h2>Styling, Theming &amp; Export</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When my app works but looks rough, or I need users to download results,</strong><br>
+I use Bootstrap utilities, Shiny themes, value boxes, and CSV export,<br>
+so I can ship a polished, usable dashboard.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li><code>shinyswatch.theme.*</code> for global themes</li>
+<li><code>ui.value_box()</code> for KPI cards</li>
+<li><code>@render.download</code> + <code>io.StringIO</code> for CSV export</li>
+<li><code>ui.update_*</code> + <code>req()</code> for linked filters that reset gracefully</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+Deep custom branding needs → inline CSS and custom Bootstrap SCSS is more flexible but much more work.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture04/app-04-full-dashboard.py"><code>app-04-full-dashboard.py</code></a> — full styled dashboard with theme + value boxes</li>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture04/app-07-export-csv.py"><code>app-07-export-csv.py</code></a> — CSV download button</li>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture04/app-08-reset-selections.py"><code>app-08-reset-selections.py</code></a> — reset all filters to defaults</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06b-styling.html">Slides: Styling</a></li>
+<li><a href="https://shiny.posit.co/py/docs/theming.html">Shiny theming</a></li>
+<li><a href="https://bootswatch.com/">Bootswatch themes</a></li>
+<li><a href="https://getbootstrap.com/docs/5.3/utilities/">Bootstrap utilities</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="block-1-quiz" class="slide level2">
+<h2>Block 1 Quiz</h2>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### A data scientist built an analysis notebook. When does it make sense to turn it into a Shiny app?
+
+&gt; Think about audience and interaction.
+
+- [ ] Whenever the analysis uses Python
+  &gt; Python notebooks and Shiny apps both use Python — the language isn't the deciding factor.
+- [x] When non-technical stakeholders need to explore the results without editing code
+  &gt; Correct! Shiny wraps the analysis in a UI so users can change inputs without touching code.
+- [ ] When you want to version-control the analysis
+  &gt; Git works equally well for notebooks — this isn't a reason to switch to Shiny.
+- [ ] When the analysis takes more than 10 seconds to run
+  &gt; Slow analysis benefits from caching, not necessarily from Shiny. Both tools can cache.
+
+### Where should filters and controls go in a standard dashboard layout?
+
+&gt; Think about scanning direction and the filter → output relationship.
+
+- [x] Left sidebar — inputs on the left, outputs to the right
+  &gt; Correct! Left-to-right scanning means users set filters first (left) then read results (right). Cards + sidebar is the default Shiny skeleton.
+- [ ] Top navigation bar — filters in a dropdown menu
+  &gt; Works for global filters shared across all pages, but sidebar is the standard for per-chart controls.
+- [ ] Floating panel over the charts
+  &gt; Floating panels obscure content and add interaction complexity without benefit.
+- [ ] Bottom of the page, below the charts
+  &gt; Putting filters below outputs reverses the logical flow — users must scroll down to change inputs, then back up to see results.
+
+### Match each Shiny UI component to its primary purpose.
+
+&gt; Think about what each element communicates or contains.
+
+- `ui.value_box()` :: Highlight a KPI metric with supporting context (changes, dynamics, icons)
+  &gt; Value boxes are purpose-built for prominent KPI display — not for wrapping charts or forms.
+- `ui.card()` :: Group related outputs (chart + title + caption) into a visual container
+  &gt; Cards are general containers — use them to give charts a bordered, padded frame.
+- `ui.sidebar()` :: Hold input widgets separate from the main output area
+  &gt; The sidebar pattern keeps controls visually distinct and leaves the main panel for outputs.
+- `shinyswatch.theme.*` :: Apply a Bootstrap colour palette globally across all components
+  &gt; Shinyswatch themes swap the entire Bootstrap colour scheme in one line — no per-component styling needed.
+</div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="block-2-reactivity" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Block 2 Reactivity</h1>
+
+</section>
+<section id="the-reactive-graph" class="slide level2">
+<h2>The Reactive Graph</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I first add interactivity to a Python web app,</strong> I use Shiny’s reactive graph (inputs → reactive contexts → outputs), so I can write plain Python functions and let Shiny handle re-execution automatically.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li>Reading <code>input.x()</code> inside a reactive context registers a dependency on that input</li>
+<li><code>@render.*</code> functions are reactive endpoints — they re-run only when their upstream inputs change</li>
+<li>Dependency tracking is automatic: Shiny records what each context reads at runtime</li>
+<li>Changing an input invalidates only the outputs that depend on it — not the whole server</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong> The reactive graph underlies every Shiny app — it’s not a choice. Understanding it is essential for debugging why outputs don’t update (missing reactive context) or update too often (shared mutable state outside reactive scope).</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-05-core-altair-first_app.py"><code>app-05-core-altair-first_app.py</code></a> — minimal reactive graph: one input → one render</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html">Slides: Reactivity</a></li>
+<li><a href="https://shiny.posit.co/py/docs/reactive-foundations.html">Shiny reactive foundations</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="reactive.calc-shared-computation" class="slide level2">
+<h2><code>@reactive.calc</code> — Shared Computation</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I have an expensive filter or aggregation used by multiple outputs,</strong><br>
+I use <code>@reactive.calc</code> to cache the result,<br>
+so I can avoid re-running the same computation for every output that depends on it.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li>Wrap shared logic in <code>@reactive.calc</code></li>
+<li>Shiny caches the result and re-runs only when upstream inputs change</li>
+<li>Without it, each <code>@render.*</code> reruns the full pipeline independently</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+Logic used by only one output → just compute inline inside <code>@render.*</code>. <code>@reactive.calc</code> adds indirection without benefit for single consumers.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture02/core/app-05-reactive_calc_reuse.py"><code>app-05-reactive_calc_reuse.py</code></a> — <code>@reactive.calc</code> shared across multiple outputs</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html">Slides: Reactivity</a></li>
+<li><a href="https://dsci532-review-pages.netlify.app/slides/04-dashboard-core.html">Slides: Build a dashboard</a></li>
+<li><a href="https://shiny.posit.co/py/docs/reactive-foundations.html">Shiny reactive foundations</a></li>
+<li><a href="https://shiny.posit.co/py/docs/reactive-patterns.html">Shiny reactive patterns</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="reactivity-deferred-execution-side-effects" class="slide level2">
+<h2>Reactivity: Deferred Execution &amp; Side Effects</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I need computation or a write to fire only on user action,</strong> I use <code>@reactive.event</code>, <code>@reactive.effect</code>, and <code>req()</code>, so I can control exactly when side effects run and guard against partial input.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li><code>@reactive.event(input.btn)</code> and <code>ui.input_action_button("btn", "Submit")</code>: defers any render, calc, or effect to a button click</li>
+<li><code>@reactive.effect</code>: runs a side effect (e.g.&nbsp;write to DB) when dependencies change — returns nothing</li>
+<li><code>req(input.x)</code>: silently stops execution if input is <code>None</code> or empty — guards against partial-input errors</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong> <code>@reactive.event</code> when the UI should stay live — it freezes updates until the button fires. <code>@reactive.effect</code> for computation that returns a value — use <code>@reactive.calc</code> instead.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-03.py"><code>app-03.py</code></a> — <code>@reactive.event(input.submit)</code> gates a MongoDB write behind a button</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html">Slides: Reactivity</a></li>
+<li><a href="https://dsci532-review-pages.netlify.app/slides/04-dashboard-core.html">Slides: Build a dashboard</a></li>
+<li><a href="https://shiny.posit.co/py/docs/reactive-foundations.html">Shiny reactive foundations</a></li>
+<li><a href="https://shiny.posit.co/py/api/core/shiny.req.html">Shiny: req() docs</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="block-2-quiz" class="slide level2">
+<h2>Block 2 Quiz</h2>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### You have a sidebar filter that 3 different charts all depend on. Where should the filtering logic live?
+
+&gt; Think about caching and avoiding repeated computation.
+
+- [ ] Inside each `@render.plot` separately
+  &gt; Not ideal — the same filter runs three times on every input change, and results aren't shared.
+- [x] In a `@reactive.calc` function called by all three
+  &gt; Correct! `@reactive.calc` caches the result and re-runs only when upstream inputs change — all three renders share the same cached result.
+- [ ] In a `@reactive.event` triggered by a button
+  &gt; `@reactive.event` is for delaying execution until a button click, not for sharing computation across outputs.
+- [ ] In a module-level variable updated on input change
+  &gt; Module-level variables are not reactive — Shiny won't know to re-run outputs when they change.
+
+### Which statement best describes Shiny's reactive graph?
+
+&gt; Think about what "reactive" means — selective re-execution.
+
+- [ ] It runs all server code top-to-bottom on every input change
+  &gt; That's how a simple script works, not Shiny. Shiny tracks dependencies.
+- [x] It re-runs only the outputs whose upstream inputs have changed
+  &gt; Correct! Shiny builds a dependency graph and invalidates only the affected outputs, not the entire server.
+- [ ] It queues all input changes and batches them every 500ms
+  &gt; Shiny does not batch on a timer — it reacts to each input change and propagates invalidation immediately.
+- [ ] It requires you to manually declare which inputs each output depends on
+  &gt; Dependency tracking is automatic — Shiny records which inputs are read inside each reactive context at runtime.
+
+### Match each Shiny concept to its role in the reactive graph.
+
+&gt; Think about what each piece produces, consumes, or controls.
+
+- `input.species()` :: Reactive source: reads user input, invalidates dependents
+    &gt; Reading an input inside a reactive context registers a dependency on it.
+- `@render.plot` / `@render.text` :: Reactive endpoint: re-runs and pushes result to the UI
+    &gt; Render functions are leaves of the reactive graph — they consume but don't share.
+- `@reactive.calc` :: Reactive node: caches a result shared across multiple consumers
+    &gt; Re-runs only when its own inputs change; all downstream outputs share the cached value.
+- `@reactive.event(input.run)` :: Gate: blocks re-execution until a specific input fires
+    &gt; Breaks automatic dependency tracking; only the listed input can trigger it.
+- `ui.output_plot("id")` :: UI placeholder: reserves a layout slot for an output
+    &gt; Without a matching placeholder, the render function's result has nowhere to go.
+
+### You click "Submit" but the app writes to the database even when required fields are empty. Which two fixes work together?
+
+&gt; Think about how to gate execution and validate inputs.
+
+- [ ] Add a `@reactive.calc` that returns the input values
+  &gt; `@reactive.calc` caches computation but doesn't gate execution on a button click.
+- [x] Wrap the write in `@reactive.effect` decorated with `@reactive.event(input.submit)`
+  &gt; Correct! This ensures the effect only fires when the submit button is clicked, not on every keystroke.
+- [x] Add `req(input.name, input.email)` inside the effect
+  &gt; Correct! `req()` silently aborts the effect if any required input is `None` or empty string.
+- [ ] Use `@reactive.event` on the `@render.text` output instead
+  &gt; `@reactive.event` on a render defers the display, not the write — the DB write is in the effect.
+
+### Match each definition to the reactive concept.
+
+&gt; Definition on the left — concept on the right.
+
+- Caches a derived value; re-runs only when its inputs change; result shared across consumers :: `@reactive.calc`
+    &gt; Unlike `@render.*`, the result is shared — all downstream outputs use the same cached value.
+- Runs a side-effectful action (e.g. write to DB) when dependencies change; returns nothing :: `@reactive.effect`
+    &gt; Use when you need something to happen as a consequence of input change, but there's no output to display.
+- Decorator that breaks automatic dependency tracking; defers execution until a specific input fires :: `@reactive.event`
+    &gt; Wrap `@reactive.effect` or `@reactive.calc` with this to gate execution behind a button click.
+- Silently aborts the current reactive context if a value is `None`, empty, or falsy :: `req()`
+    &gt; Prevents partial-input errors — the context simply stops; no error is shown to the user.
+
+### Match each scenario to the right reactive tool.
+
+&gt; Think about caching vs. side effects vs. gating vs. guarding.
+
+- Filter used by 3 charts, should auto-update on input change :: `@reactive.calc`
+  &gt; `@reactive.calc` caches and shares the result — all three charts get the same cached value.
+- Write to database, but only when user clicks Submit :: `@reactive.effect` + `@reactive.event(input.submit)`
+  &gt; `@reactive.event` gates the effect to the button; `@reactive.effect` runs the side-effectful write.
+- Stop execution silently if a text input is blank :: `req(input.query)`
+  &gt; `req()` aborts the reactive context without an error if the value is falsy — guards against empty inputs.
+- Log to console every time a dropdown changes, no return value :: `@reactive.effect` (no event)
+  &gt; `@reactive.effect` with automatic dependency tracking runs whenever its inputs change — no gate needed.
+
+</div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="block-3-tables-data" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Block 3 Tables &amp; Data</h1>
+
+</section>
+<section id="tables-datagrid-.data_view" class="slide level2">
+<h2>Tables: DataGrid &amp; <code>.data_view()</code></h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I want users to sort, filter, or select rows and have the rest of the app react,</strong><br>
+I use <code>DataGrid</code> with <code>cell_selection</code> + <code>.data_view()</code>,<br>
+so I can drive charts and summaries from whatever the user is looking at.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li><code>render.DataGrid(df, selection_mode="rows")</code> enables row selection</li>
+<li><code>.data_view(selected=True)</code> returns selected rows</li>
+<li><code>.data_view()</code> returns filtered rows</li>
+<li>Both are reactive</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+Read-only display where users just scroll → plain <code>DataTable</code> is simpler and styled out of the box. No need for <code>.data_view()</code> if nothing reacts to the table.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/tables/app-04-table-linked.py"><code>app-04-table-linked.py</code></a> — DataGrid row selection drives linked Altair chart</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06a-tables.html">Slides: Tables in Shiny</a></li>
+<li><a href="https://shiny.posit.co/py/components/outputs/data-grid/">Shiny DataGrid docs</a></li>
+<li><a href="https://shiny.posit.co/py/components/outputs/data-table/">Shiny DataTable docs</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="csv-export" class="slide level2">
+<h2>CSV Export</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When users need to export the current view of the data,</strong> I use <code>@render.download</code> with <code>ui.download_button</code>, so I can give users a file without blocking the UI or writing anything to disk.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li><code>@render.download</code> wraps a function that yields file bytes — Shiny serves it as a download link</li>
+<li>Use <code>tbl.data_view()</code> inside to export only the currently filtered rows</li>
+<li><code>io.StringIO</code> + <code>.getvalue().encode()</code> converts a DataFrame to CSV bytes in memory</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+Very large files → result is buffered in memory before sending.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/tables/app-04-table-linked.py"><code>app-04-table-linked.py</code></a> — CSV download from DataGrid selection</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06a-tables.html">Slides: Tables in Shiny</a></li>
+<li><a href="https://shiny.posit.co/py/components/outputs/download-button/">Shiny: download button</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="db-writes" class="slide level2">
+<h2>DB Writes</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I need to save user input data or logs from my app across sessions,</strong> I use an external database (MongoDB / Postgres / Airtable / Google Sheets) and <code>@reactive.effect</code> + <code>@reactive.event(input.save)</code> to write on button click, so I can record submissions without blocking the UI or triggering on every keystroke.</p>
+<p><strong>Choosing a provider:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li><strong>Free-form records / logs / surveys</strong> → MongoDB Atlas (document store, no schema needed)</li>
+<li><strong>Structured data with joins</strong> → PostgreSQL via Neon or Supabase (free tier, SQL schema)</li>
+<li><strong>Small logs, non-technical team</strong> → Google Sheets (<code>gspread</code>) or Airtable (<code>pyairtable</code>)</li>
+<li><strong>Local prototype only</strong> → SQLite or plain CSV (breaks with multiple workers on Posit Connect)</li>
+<li>Always use a <strong>cloud-hosted</strong> provider in production — local DB stays on your laptop</li>
+<li>Store the connection URI in <code>.env</code>, never in code</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong> Multi-step transactional writes → wrap in a proper DB transaction. Read-only dashboards → no persistence needed.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-03.py"><code>app-03.py</code></a> — form data → MongoDB Atlas via <code>@reactive.effect</code></li>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-04.py"><code>app-04.py</code></a> — querychat + MongoDB logger</li>
+</ul>
+<p><strong>MongoDB quick pattern:</strong><br>
+<code>MongoClient(uri)["db"]["col"].insert_one(doc)</code> / <code>.find()</code></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Provider</th>
+<th>Free tier</th>
+<th>Client</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://www.mongodb.com/docs/atlas/getting-started/">MongoDB Atlas</a></td>
+<td>M0, 512 MB</td>
+<td><code>pymongo</code></td>
+</tr>
+<tr class="even">
+<td><a href="https://neon.tech/docs/get-started-with-neon/connect-neon">Neon</a> / <a href="https://supabase.com/docs/guides/database/connecting-to-postgres">Supabase</a></td>
+<td>Postgres, varies</td>
+<td><code>psycopg2</code></td>
+</tr>
+<tr class="odd">
+<td><a href="https://pyairtable.readthedocs.io/en/latest/getting-started.html">Airtable</a></td>
+<td>1 000 rows</td>
+<td><code>pyairtable</code></td>
+</tr>
+<tr class="even">
+<td><a href="https://docs.gspread.org/en/latest/oauth2.html">Google Sheets</a></td>
+<td>Unlimited</td>
+<td><code>gspread</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html">Slides: Databases in Shiny</a></li>
+<li><a href="https://shiny.posit.co/py/docs/persistent-data-storage.html">Shiny: Persistent data storage</a></li>
+<li><a href="https://pymongo.readthedocs.io/">PyMongo docs</a></li>
+<li><a href="https://neon.tech">Neon (free Postgres)</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="lazy-loading-ibis-duckdb-parquet" class="slide level2">
+<h2>Lazy Loading: ibis + DuckDB + Parquet</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When my dataset is too large to load into memory at app startup,</strong><br>
+I use lazy evaluation with ibis + DuckDB over Parquet files,<br>
+so filters run as queries against the file and only the result is loaded.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li><code>ibis.duckdb.connect()</code> → <code>con.read_parquet(path)</code> → build ibis expressions → <code>.execute()</code> only when rendering</li>
+<li>The expression is a query plan, not data — nothing loads until you call <code>.execute()</code></li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+Dataset fits in memory easily (&lt;100MB) → <code>pd.read_parquet()</code> at startup is simpler. Shinylive (WASM) → DuckDB file access silently fails; use in-memory sample instead.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-02b-taxi-parquet.py"><code>app-02b-taxi-parquet.py</code></a> — full lazy filtering over NYC taxi Parquet with ibis + DuckDB</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html">Slides: Databases in Shiny</a></li>
+<li><a href="https://ibis-project.org/">ibis docs</a></li>
+<li><a href="https://duckdb.org/docs/">DuckDB docs</a></li>
+<li><a href="https://parquet.apache.org/">Parquet format</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="block-3-quiz" class="slide level2">
+<h2>Block 3 Quiz</h2>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### `tbl.data_view(selected=True)` returns ______ when no rows are selected.
+
+&gt; Think about what "selected rows" means when nothing is highlighted.
+
+- [ ] `None`
+  &gt; Not quite — Shiny returns an actual DataFrame object, not `None`. Always check `.empty` rather than `is None`.
+- [ ] The full unfiltered dataframe
+  &gt; That's what `.data()` returns. `.data_view(selected=True)` is scoped to selection only.
+- [x] An empty DataFrame
+  &gt; Correct! When no rows are selected, `.data_view(selected=True)` returns an empty DataFrame. Use `if not df.empty:` before consuming it downstream.
+- [ ] Raises a `ValueError`
+  &gt; No exception is raised — it returns gracefully with an empty result.
+
+### When should you prefer `DataGrid` over `DataTable`?
+
+&gt; Think about interactivity vs. display.
+
+- [ ] When you want built-in Bootstrap styling with no configuration
+  &gt; That describes `DataTable` — it applies Bootstrap table styles out of the box.
+- [x] When users need to select rows and drive other outputs from that selection
+  &gt; Correct! `DataGrid` supports `cell_selection` and exposes `.data_view(selected=True)` for reactive row-driven outputs.
+- [ ] When displaying a small static summary table
+  &gt; Either works for static display; `DataTable` is simpler for pure read-only use.
+- [ ] When rendering inside a shinylive WASM app
+  &gt; Both work in shinylive — this isn't a differentiator.
+
+### A user wants to download the currently filtered table as a CSV. What's the right pattern?
+
+&gt; Think about which data_view method gives you the visible rows and how Shiny serves files.
+
+- [ ] `@reactive.effect` that writes a CSV file to disk on every filter change
+  &gt; Writing to disk on every change is wasteful and creates race conditions with multiple users.
+- [ ] Return the dataframe from a `@reactive.calc` and let the browser handle the download
+  &gt; Browsers can't pull data from server-side reactive contexts directly — Shiny must serve it.
+- [x] `@render.download` that calls `tbl.data_view()` and yields CSV bytes; trigger with `ui.download_button`
+  &gt; Correct! `@render.download` wraps the function, `.data_view()` gives the visible rows, and Shiny serves the result when the button is clicked.
+- [ ] `ui.download_button` linked directly to a module-level DataFrame variable
+  &gt; Module-level variables aren't reactive — filter changes won't be reflected in the download.
+
+### Your Shiny app loads a 2GB Parquet file at startup. It crashes on Posit Connect due to memory limits. What's the right fix?
+
+&gt; Think about when data actually enters memory.
+
+- [ ] Increase the Posit Connect memory limit
+  &gt; Treating symptoms, not the cause — and you may not control the limit in production.
+- [x] Switch to ibis + DuckDB lazy loading — load only query results
+  &gt; Correct! With ibis, `.execute()` runs a SQL query and loads only the filtered result — the 2GB file never fully enters RAM.
+- [ ] Convert the Parquet to CSV, which compresses better
+  &gt; CSV is larger than Parquet, not smaller — and loading it still puts the full file in memory.
+- [ ] Load the file in a `@reactive.calc` instead of module level
+  &gt; Moving the load inside `@reactive.calc` doesn't change the memory footprint — it still loads the full file, just on first use.
+
+### Match each dataset situation to eager or lazy loading.
+
+&gt; Think about file size, query patterns, and where the filtering happens.
+
+- 80MB CSV, loaded once, no filtering at runtime :: Eager — `read_csv()` at startup
+    &gt; Small and static — load it once into a DataFrame. No query engine needed.
+- 4GB Parquet, users apply filters interactively :: Lazy — ibis + DuckDB
+    &gt; Too large for memory; ibis pushes the filter to DuckDB so only results are loaded.
+- Dataset fits in memory but query is slow — reused by 3 outputs :: Eager load + `@reactive.calc`
+    &gt; Load eagerly, then cache the filtered result with `@reactive.calc` — no need for DuckDB.
+- Shinylive (WASM) app with a large dataset :: Eager — in-memory sample only
+    &gt; DuckDB file access silently fails in WASM; pre-sample the data before embedding.
+
+### Match each task to the right storage approach.
+
+&gt; Think about persistence, concurrency, and deployment constraints.
+
+- User submits a feedback form; data must survive app restarts across multiple workers :: MongoDB Atlas
+    &gt; Cloud document store — no schema needed, free tier available, works across workers.
+- Dashboard reads a static 50MB dataset once at startup :: `read_parquet()` / `read_csv()` in-memory
+    &gt; Small, static data — just load it once. No database overhead needed.
+- App must filter a 5GB Parquet file efficiently on a server :: ibis + DuckDB lazy loading
+    &gt; ibis pushes the filter to DuckDB, which queries the Parquet file directly — only results enter memory.
+- Quick local prototype, one user, data can reset on restart :: SQLite or plain CSV write
+    &gt; For local-only prototypes a simple file write is fine — but this breaks with multiple workers on Posit Connect.
+### Match each data-out scenario to the right Shiny pattern.
+
+&gt; Think about whether data leaves the server as a file or gets persisted on the server.
+
+- User clicks "Download CSV" to get the current filtered table :: `@render.download` + `ui.download_button`
+    &gt; `@render.download` wraps a function yielding file bytes; Shiny streams it to the browser — nothing is written to disk.
+- User submits a form and the data must be saved for future sessions :: `@reactive.effect` + `@reactive.event(input.save)`
+    &gt; `@reactive.effect` runs the write; `@reactive.event` gates it to the button so it doesn't fire on every keystroke.
+- Guard against writing empty fields to the database :: `req(input.field)` before the write
+    &gt; `req()` silently aborts the reactive context if the field is `None` or empty — no error shown, no write executed.
+
+</div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="block-4-llm-ai-integration" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Block 4 LLM &amp; AI Integration</h1>
+
+</section>
+<section id="conversation-anatomy-first-chat" class="slide level2">
+<h2>Conversation Anatomy + First Chat</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I want to integrate an LLM into my app and need to understand costs and limits,</strong><br>
+I need to be aware of tokens, context windows, and the HTTP request cycle,<br>
+so I can choose the right architecture, model and provider to avoid nasty surprises in production.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li>Every LLM call is a stateless HTTP POST</li>
+<li>Context = all prior messages resent each turn (cost grows!)</li>
+<li>Tokens ≠ words (~¾ word each)</li>
+<li>Context window = max tokens in + out</li>
+<li>Use <code>chatlas</code> (Python) or <code>ellmer</code> (R) to abstract the API</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+If your “AI feature” is just keyword matching or a lookup table → no need for an LLM at all.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/03-first-chat.ipynb"><code>03-first-chat.ipynb</code></a> — basic Chatlas conversation</li>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/05-switch-provider.ipynb"><code>05-switch-provider.ipynb</code></a> — swapping between GitHub Models / Anthropic / OpenAI</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07c-conversation.html">Slides: Anatomy of a conversation</a></li>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07d-chat.html">Slides: Your first chat</a></li>
+<li><a href="https://posit-dev.github.io/chatlas/">Chatlas docs</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="system-prompt-greeting-customization" class="slide level2">
+<h2>System Prompt + Greeting Customization</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I embed a chat interface in my dashboard using <code>QueryChat</code>,</strong> I use a custom system prompt and welcome message, so the LLM stays on topic and users know what to ask.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li>Pass <code>system_prompt=</code> to <code>QueryChat</code> to constrain behavior — sent with <strong>every</strong> request</li>
+<li>Set <code>greeting=</code> for the opening message — rendered <strong>locally</strong>, not generated by the LLM</li>
+<li>Use <code>data_description=</code> to inject schema context the LLM needs</li>
+</ul>
+</div>
+<p><code>QueryChat(df, "name", system_prompt="You are...", greeting="Hi! Ask me about...")</code></p>
+<p><strong>When NOT to use:</strong><br>
+If the user should have full open-ended access to any topic → a minimal or no system prompt is better.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/demo01/app-07e-querychat-instructions.py"><code>app-07e-querychat-instructions.py</code></a> — <code>system_prompt</code> + <code>data_description</code></li>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/demo01/app-07f-two-tabs.py"><code>app-07f-two-tabs.py</code></a> — full two-tab dashboard with querychat</li>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/querychat/querychat-explore.ipynb"><code>querychat-explore.ipynb</code></a> — greeting + extra instructions walkthrough</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07d-dashboards.html">Slides: Dashboards with querychat</a></li>
+<li><a href="https://posit-dev.github.io/querychat/">querychat docs</a></li>
+<li><a href="https://posit-dev.github.io/chatlas/reference/Chat.html">Chatlas: system prompt</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="tool-calling-mcp" class="slide level2">
+<h2>Tool Calling + MCP</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I want the LLM to fetch live data or call functions during a conversation,</strong><br>
+I use tool calling (or MCP for multi-tool setups),<br>
+so the LLM can answer questions it couldn’t from training data alone.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li>Define a Python function, register it with <code>chat.register_tool(fn)</code> (chatlas)</li>
+<li>The LLM decides when to call it and passes back the result into the next message</li>
+<li>MCP extends this: a server exposes many tools over a standard protocol — one connection, many capabilities</li>
+</ul>
+</div>
+<p><strong>Tool calling vs MCP:</strong> use tool calling for 1-3 custom functions in your app; use MCP when connecting to an existing ecosystem (GitHub, databases, file systems).</p>
+<p><strong>When NOT to use:</strong><br>
+Static data the LLM can receive once in the system prompt → just inject it, no tool needed.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/tools/chatlas-weather.py"><code>chatlas-weather.py</code></a> — register + call a weather tool</li>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/tools/app-weather-core.py"><code>app-weather-core.py</code></a> — tool calling wired into a Shiny app</li>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/querychat/querychat-explore.ipynb"><code>querychat-explore.ipynb</code></a> — querychat tool loop walkthrough</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08a-tools.html">Slides: Tool calling</a></li>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08d-mcp.html">Slides: MCP</a></li>
+<li><a href="https://posit-dev.github.io/chatlas/tool-calling.html">Chatlas: tool calling</a></li>
+<li><a href="https://modelcontextprotocol.io/">Model Context Protocol</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="structured-output" class="slide level2">
+<h2>Structured Output</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I need to extract structured fields from unstructured text (documents, reviews, emails),</strong><br>
+I use <code>chat.extract_data()</code> with a Pydantic schema,<br>
+so I can get typed, validated JSON instead of prose.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li>Define a Pydantic <code>BaseModel</code> with field descriptions → pass to <code>chat.extract_data(text, SentimentResult)</code></li>
+<li>Works for sentiment, entity extraction, classification, and PDF/image parsing</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+Data that’s already structured (CSV, SQL) → no need. Simple yes/no classification with fixed categories → a rule-based approach is cheaper and more reliable.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/structured/01-simple.py"><code>01-simple.py</code></a> — extract typed fields from text with Pydantic</li>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/structured/02-image.py"><code>02-image.py</code></a> — multimodal: extract structure from an image</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08b-structured.html">Slides: Structured data</a></li>
+<li><a href="https://posit-dev.github.io/chatlas/structured-data.html">Chatlas: structured data</a></li>
+<li><a href="https://docs.pydantic.dev/">Pydantic docs</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="rag-retrieval-augmented-generation" class="slide level2">
+<h2>RAG (Retrieval-Augmented Generation)</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When my LLM doesn’t know domain-specific terms or dataset conventions,</strong><br>
+I inject relevant context chunks per query,<br>
+so the LLM answers with correct domain knowledge without fine-tuning.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li>Build a knowledge base (plain <code>.txt</code> files work; for larger KBs use <code>llama_index</code> with <code>VectorStoreIndex</code> or ChromaDB)</li>
+<li>At query time: retrieve top-k matching chunks (TF-IDF for exact terms, embeddings for semantic similarity), prepend them to the user message</li>
+<li>The LLM sees: <code>[context] + [user question]</code></li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+General knowledge questions the LLM already knows well → RAG adds latency for no gain. More than ~50 chunks → consider a proper vector DB (Chroma, Pinecone).</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/rag/rag_demo.ipynb"><code>rag_demo.ipynb</code></a> — full walkthrough: KB → TF-IDF retrieval → per-query injection</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08c-rag.html">Slides: RAG</a></li>
+<li><a href="https://docs.llamaindex.ai/en/stable/getting_started/starter_example/">LlamaIndex: starter</a></li>
+<li><a href="https://docs.trychroma.com/getting-started">ChromaDB docs</a></li>
+<li><a href="https://www.sbert.net/">sentence-transformers</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="llm-logging" class="slide level2">
+<h2>LLM Logging</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I want to record what users ask the LLM in my Shiny app,</strong><br>
+I use the <code>on_tool_request</code> hook on the <code>QueryChat</code> client,<br>
+so I can log queries to a database without blocking the conversation flow.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li><code>client.on_tool_request(fn)</code> fires once per query (not per tool call)</li>
+<li>Write to MongoDB Atlas (or any DB) inside the callback</li>
+<li>Use <code>@reactive.effect</code> only for Shiny-reactive side effects</li>
+<li>Use the hook for non-reactive logging</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+You only need to log for debugging → print to console instead. You need full conversation history → store the entire message thread, not just the query.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-04.py"><code>app-04.py</code></a> — <code>on_tool_request</code> hook logs queries to MongoDB Atlas</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html">Slides: Databases in Shiny</a></li>
+<li><a href="https://posit-dev.github.io/querychat/">querychat: on_tool_request</a></li>
+<li><a href="https://pymongo.readthedocs.io/">PyMongo docs</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="evals" class="slide level2">
+<h2>Evals</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I want to know if my LLM prompt changes are actually improvements,</strong><br>
+I use a repeatable eval suite that scores model responses,<br>
+so I can iterate on prompts with evidence instead of vibes.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li>Define test cases (input + expected output or rubric)</li>
+<li>Use <code>inspect_ai</code> (or similar) to run the same queries across prompt versions and score with an LLM judge or exact match</li>
+<li>Track pass rates over prompt iterations</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+Prototyping — manual spot-checking is faster. Production with unpredictable input distributions → evals on fixed test sets won’t catch all failure modes; combine with logging.</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/evals/evals.py"><code>evals.py</code></a> — <code>inspect_ai</code> task → solver → scorer pipeline</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08e-evals_inspect.html">Slides: Evals</a></li>
+<li><a href="https://inspect.ai/">inspect_ai docs</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="block-4-quiz" class="slide level2">
+<h2>Block 4 Quiz</h2>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### In QueryChat, the `greeting=` message is displayed when the chat opens. How is it generated?
+
+&gt; Think about what "greeting" means in the context of a chat widget.
+
+- [ ] The LLM generates it on every session start
+  &gt; If the LLM generated it, the greeting would vary per session and cost tokens — that's not how it works.
+- [x] It is a static string rendered locally — the LLM never sees it
+  &gt; Correct! `greeting=` is just a local UI string. It's displayed client-side and never sent to the model.
+- [ ] It is generated once at app startup and cached
+  &gt; There's no LLM call at startup — the string is hardcoded in your `QueryChat(...)` call.
+- [ ] It is injected at the start of the chat history sent to the LLM
+  &gt; The greeting is purely cosmetic — it doesn't appear in the message history the LLM receives.
+
+### Your app needs the LLM to answer questions about your company's internal product catalog (500 items, updated weekly). Which approach fits best?
+
+&gt; Think about context window limits, cost of retraining, and freshness.
+
+- [ ] Include the full catalog in the system prompt
+  &gt; 500 items would likely exceed the context window, and the system prompt is sent with every request — expensive and fragile.
+- [ ] Fine-tune the model on catalog data
+  &gt; Fine-tuning is expensive, requires retraining weekly, and doesn't guarantee factual recall. Use it to change behaviour, not inject knowledge.
+- [x] Use RAG — retrieve relevant items per query
+  &gt; Correct! RAG retrieves only the most relevant chunks at query time, keeps the context small, and naturally handles weekly updates by refreshing the KB.
+- [ ] Use structured output extraction
+  &gt; Structured output extracts fields *from* text you provide — it doesn't retrieve knowledge from a store.
+
+### What does `chat.register_tool(fn)` actually do?
+
+&gt; Think about when `fn` actually runs.
+
+- [ ] Runs `fn` immediately and injects the result into the system prompt
+  &gt; The function is not called at registration — it's called later, on demand, by the LLM.
+- [x] Tells the LLM the function exists; the LLM decides when to call it
+  &gt; Correct! Registration sends the function signature and docstring to the model. The LLM chooses when (and whether) to invoke it based on the conversation.
+- [ ] Wraps `fn` to run in a background thread during streaming
+  &gt; Tool calls block the response until the function returns — they are not threaded by default.
+- [ ] Registers `fn` as a Shiny reactive that updates on each message
+  &gt; Tool functions are plain Python callables — they have no reactive context.
+
+### Match each AI technique to the situation it solves best.
+
+&gt; Think about what information is missing, how dynamic it is, and what output format you need.
+
+- Extract author, date, and sentiment from 1000 customer reviews :: Structured output (Pydantic schema)
+  &gt; Structured output extracts typed, validated fields from unstructured text — perfect for batch document processing.
+- Answer questions about a private 200-page policy document :: RAG (retrieve relevant chunks per query)
+  &gt; RAG keeps the context small and fresh — inject only the sections relevant to each question.
+- Let the LLM check today's weather before answering :: Tool calling (register a weather function)
+  &gt; Tool calling gives the LLM access to live external data it couldn't know from training.
+- Connect the LLM to GitHub, a database, and a file system at once :: MCP (Model Context Protocol)
+  &gt; MCP standardises multi-tool connectivity — one server exposes many capabilities over a single protocol.
+- Constrain the LLM to only discuss your dataset :: System prompt
+  &gt; The system prompt shapes behaviour at session start — ideal for focus and tone constraints.
+</div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="block-5-geospatial-visualization" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Block 5 Geospatial Visualization</h1>
+
+</section>
+<section id="geospatial-visualization" class="slide level2">
+<h2>Geospatial Visualization</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<p><strong>When I need to show geographic patterns in my data,</strong><br>
+I use choropleth maps or point maps linked to charts,<br>
+so I can let users explore regional variation interactively.</p>
+<p><strong>Key points:</strong></p>
+<div style="line-height:1.3; margin-top:0.2em">
+<ul>
+<li>Use Altair’s <code>mark_geoshape()</code> for choropleths</li>
+<li><code>mark_circle()</code> on a map for point data</li>
+<li>Link to a chart via Shiny server logic (click → filter → re-render) or Altair-native selection</li>
+</ul>
+</div>
+<p><strong>When NOT to use:</strong><br>
+Data without a clear geographic dimension → a standard bar/scatter is less noisy. Fine-grained street-level routing → use a dedicated mapping library (Folium, Leaflet).</p>
+</div><div class="column" style="width:45%;">
+<div class="callout callout-note no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Starting blocks</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/maps/app-04-map-and-chart.py"><code>app-04-map-and-chart.py</code></a> — choropleth map linked to bar chart</li>
+<li><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/maps/app-05-map-click.py"><code>app-05-map-click.py</code></a> — Altair-native click selection on map</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-tip no-icon callout-titled callout-style-simple">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>References</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/05a-geoviz.html">Slides: Geospatial viz</a></li>
+<li><a href="https://altair-viz.github.io/gallery/index.html#maps">Altair maps gallery</a></li>
+<li><a href="https://github.com/altair-viz/vega_datasets">Vega datasets</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+<section id="block-5-quiz" class="slide level2">
+<h2>Block 5 Quiz</h2>
+<div class="quizdown">
+---
+shuffleAnswers: true
+---
+
+### You need to display geographic data. Match each situation to the right approach.
+
+&gt; Think about what the data represents and what kind of interaction you need.
+
+- Show unemployment rate by US state, colour-encoded :: Altair choropleth (`mark_geoshape`)
+  &gt; Choropleth maps encode a numeric variable as fill colour across geographic regions — the classic use case.
+- Show individual taxi pickup locations across a city :: Point map (`mark_circle` on lat/lon)
+  &gt; Point maps plot individual observations — better than choropleth when the data is already lat/lon coordinates.
+- Let a user click a state and update a bar chart :: Map linked to chart via Shiny server logic
+  &gt; Click → Shiny input → filter → re-render is the standard pattern for cross-widget linking in Shiny.
+- Show two ranked categories side-by-side without a map :: Standard bar chart, no map needed
+  &gt; Not every geographic question needs a map — if the comparison is categorical, a bar chart communicates more clearly.
+</div>
+</section>
+<section class="slide level2">
+
+</section></section>
+<section>
+<section id="summary-map" class="title-slide slide level1 center" data-background-color="#1a252f">
+<h1>Summary Map</h1>
+
+</section>
+<section id="job-story-map" class="slide level2">
+<h2>Job Story Map</h2>
+<div style="font-size:0.52em; line-height:1.35">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>When I…</th>
+<th>I use…</th>
+<th>So I can…</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reactivity</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>have a costly filter used by multiple outputs</td>
+<td><code>@reactive.calc</code></td>
+<td>cache once, not once per output</td>
+</tr>
+<tr class="odd">
+<td>need computation to fire only on user action</td>
+<td><code>@reactive.event</code> + <code>@reactive.effect</code></td>
+<td>control when side effects run</td>
+</tr>
+<tr class="even">
+<td><strong>Data I/O</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>want users to sort/filter/select rows and the app reacts</td>
+<td><code>DataGrid</code> + <code>.data_view()</code></td>
+<td>drive outputs from what the user sees</td>
+</tr>
+<tr class="even">
+<td>need to give users a file</td>
+<td><code>@render.download</code> + <code>download_button</code></td>
+<td>export without blocking the UI</td>
+</tr>
+<tr class="odd">
+<td>need to persist input or logs across sessions</td>
+<td>external DB + <code>@reactive.effect</code> + <code>@reactive.event</code></td>
+<td>record submissions asynchronously</td>
+</tr>
+<tr class="even">
+<td>have a dataset too large to load at startup</td>
+<td>ibis + DuckDB + Parquet</td>
+<td>filters run as queries, only results load</td>
+</tr>
+<tr class="odd">
+<td><strong>LLM &amp; AI</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>embed a chat interface in a dashboard</td>
+<td><code>QueryChat</code> + <code>system_prompt</code></td>
+<td>keep the LLM on topic</td>
+</tr>
+<tr class="odd">
+<td>LLM needs to call live data or functions</td>
+<td><code>chat.register_tool()</code> (chatlas)</td>
+<td>LLM can act mid-conversation</td>
+</tr>
+<tr class="even">
+<td>need structured fields from unstructured text</td>
+<td>Pydantic + structured output</td>
+<td>get typed, validated JSON</td>
+</tr>
+<tr class="odd">
+<td>LLM lacks domain-specific knowledge</td>
+<td>RAG (per-query injection)</td>
+<td>correct answers without fine-tuning</td>
+</tr>
+<tr class="even">
+<td>want to log what users ask the LLM</td>
+<td><code>on_tool_request</code> hook</td>
+<td>audit trail without blocking the flow</td>
+</tr>
+<tr class="odd">
+<td>want to measure if prompt changes improve output</td>
+<td><code>inspect_ai</code> evals</td>
+<td>iterate with evidence, not vibes</td>
+</tr>
+<tr class="even">
+<td><strong>Geospatial</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>need to show geographic patterns</td>
+<td>Altair choropleth / point map</td>
+<td>explore regional variation interactively</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="what-to-reach-for" class="slide level2">
+<h2>What to reach for</h2>
+<div style="font-size:0.50em; line-height:1.35">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Tool</th>
+<th>Apps</th>
+<th>Slides</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Interactive web app</td>
+<td>Shiny</td>
+<td><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-05-core-altair-first_app.py">app-05</a></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/01-intro_shiny.html">01</a>, <a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html">02</a></td>
+</tr>
+<tr class="even">
+<td>Shared filter logic</td>
+<td><code>@reactive.calc</code></td>
+<td><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture02/core/app-05-reactive_calc_reuse.py">app-05</a></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html">03</a>, <a href="https://dsci532-review-pages.netlify.app/slides/04-dashboard-core.html">04</a></td>
+</tr>
+<tr class="odd">
+<td>Large file, server deployment</td>
+<td>ibis + DuckDB + Parquet</td>
+<td><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-02b-taxi-parquet.py">app-02b</a></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html">09-db</a></td>
+</tr>
+<tr class="even">
+<td>Persist user data across restarts</td>
+<td>MongoDB Atlas</td>
+<td><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-03.py">app-03</a>, <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-04.py">app-04</a></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html">09-db</a></td>
+</tr>
+<tr class="odd">
+<td>Add AI chat to dashboard</td>
+<td><code>querychat</code> + <code>QueryChat</code></td>
+<td><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/demo01/app-07e-querychat-instructions.py">app-07e</a>, <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/demo01/app-07f-two-tabs.py">app-07f</a></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07d-dashboards.html">07d-dash</a></td>
+</tr>
+<tr class="even">
+<td>LLM needs domain knowledge</td>
+<td>RAG (inject per query)</td>
+<td><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/rag/rag_demo.ipynb">rag_demo</a></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08c-rag.html">08c-rag</a></td>
+</tr>
+<tr class="odd">
+<td>Extract fields from documents</td>
+<td>Structured output (Pydantic)</td>
+<td></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08b-structured.html">08b-struct</a></td>
+</tr>
+<tr class="even">
+<td>LLM needs live external data</td>
+<td>Tool calling</td>
+<td></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08a-tools.html">08a-tools</a></td>
+</tr>
+<tr class="odd">
+<td>Multi-tool LLM ecosystem</td>
+<td>MCP</td>
+<td></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08d-mcp.html">08d-mcp</a></td>
+</tr>
+<tr class="even">
+<td>Track prompt quality over time</td>
+<td>Evals (<code>inspect_ai</code>)</td>
+<td></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08e-evals_inspect.html">08e-evals</a></td>
+</tr>
+<tr class="odd">
+<td>Log what users ask</td>
+<td><code>on_tool_request</code> hook</td>
+<td><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-04.py">app-04</a></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html">09-db</a></td>
+</tr>
+<tr class="even">
+<td>Row selection drives chart</td>
+<td><code>DataGrid</code> + <code>.data_view()</code></td>
+<td><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/tables/app-04-table-linked.py">app-04-tbl</a></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06a-tables.html">06a-tbl</a></td>
+</tr>
+<tr class="odd">
+<td>Show geographic patterns</td>
+<td>Altair choropleth / point map</td>
+<td><a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/maps/app-04-map-and-chart.py">app-04-map</a>, <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/maps/app-05-map-click.py">app-05-map</a></td>
+<td><a href="https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/05a-geoviz.html">05a-geo</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>DSCI 532: Data Visualization 2 <a href="https://github.com/UBC-MDS/DSCI_532_vis-2_book" class="uri">https://github.com/UBC-MDS/DSCI_532_vis-2_book</a></p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/UBC-MDS\.github\.io\/DSCI_532_vis-2_book\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
