@@ -1,0 +1,1 @@
+https://blobs.duckdb.org/data/nyc-taxi-dataset/trips_xaa.csv.gz
