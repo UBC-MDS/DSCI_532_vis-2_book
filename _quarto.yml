@@ -72,6 +72,7 @@ website:
         contents:
           - review/01-wiring.qmd
           - review/04-llm-basics.qmd
+          - review/05-course-summary.qmd
 
 format:
   html:

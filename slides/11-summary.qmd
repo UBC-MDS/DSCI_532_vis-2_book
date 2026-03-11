@@ -1,0 +1,1071 @@
+---
+title: "DSCI 532: Review and pre-Capstone Navigator"
+subtitle: "What you learned, when to use it"
+format:
+  revealjs:
+    font-size: 0.5em
+    slide-number: true
+    toc: false
+---
+
+# Block 1 Dashboards, Shiny and Design {background-color="#2c3e50"}
+
+---
+
+## Shiny Architecture
+
+::: {.columns}
+::: {.column width="55%"}
+**When I need to build a web app from Python without writing HTML/JS,**  
+I take Shiny to use reactivity (input -> reactive graph -> output model),  
+so I can create interactive dashboards entirely in Python.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- `ui` defines the layout
+- `server` wires inputs to outputs via the reactive graph
+- Shiny re-runs only what changed
+:::
+
+**When NOT to use:**  
+Static report or chart that doesn't need user interaction → Quarto/Altair alone is simpler.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-05-core-altair-first_app.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-05-core-altair-first_app.py) — complete first app: radio input + Altair output
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Intro to Shiny](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/01-intro_shiny.html)
+- [Slides: First Shiny App](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html)
+- [Shiny for Python docs](https://shiny.posit.co/py/docs/overview.html)
+:::
+:::
+:::
+---
+
+## Dashboard Design
+
+::: {.columns}
+::: {.column width="55%"}
+**When I'm designing a dashboard and don't know where to start,**  
+I want a set of layout and communication principles,  
+so I can make intentional choices about what to show and where.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- Be concise (one message per card), layout logically (filter left, output right), provide context (titles, units, source)
+- Use cards + sidebar as default skeleton
+:::
+
+**When NOT to use:**  
+Exploratory analysis for yourself → just use a notebook. Dashboards are for communicating to an audience.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture02/core/app.py) — complete restaurant tipping dashboard: sidebar + cards + value boxes
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Dashboard Design](https://dsci532-review-pages.netlify.app/slides/01b-dashboard-design.html) — layout principles, Miller's law, grid
+- [Slides: Styling & UX](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06b-styling.html) — themes, value boxes, fillable vs fluid, accordion
+- [Shiny layouts](https://shiny.posit.co/py/layouts/)
+- [Shiny components](https://shiny.posit.co/py/components/)
+- [Bootswatch themes](https://bootswatch.com/) — quick theme picker
+:::
+:::
+:::
+---
+
+## Styling, Theming & Export
+
+::: {.columns}
+::: {.column width="55%"}
+**When my app works but looks rough, or I need users to download results,**  
+I use Bootstrap utilities, Shiny themes, value boxes, and CSV export,  
+so I can ship a polished, usable dashboard.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- `shinyswatch.theme.*` for global themes
+- `ui.value_box()` for KPI cards
+- `@render.download` + `io.StringIO` for CSV export
+- `ui.update_*` + `req()` for linked filters that reset gracefully
+:::
+
+**When NOT to use:**  
+Deep custom branding needs → inline CSS and custom Bootstrap SCSS is more flexible but much more work.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-04-full-dashboard.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture04/app-04-full-dashboard.py) — full styled dashboard with theme + value boxes
+- [`app-07-export-csv.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture04/app-07-export-csv.py) — CSV download button
+- [`app-08-reset-selections.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture04/app-08-reset-selections.py) — reset all filters to defaults
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Styling](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06b-styling.html)
+- [Shiny theming](https://shiny.posit.co/py/docs/theming.html)
+- [Bootswatch themes](https://bootswatch.com/)
+- [Bootstrap utilities](https://getbootstrap.com/docs/5.3/utilities/)
+:::
+:::
+:::
+---
+
+## Block 1 Quiz
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### A data scientist built an analysis notebook. When does it make sense to turn it into a Shiny app?
+
+> Think about audience and interaction.
+
+- [ ] Whenever the analysis uses Python
+  > Python notebooks and Shiny apps both use Python — the language isn't the deciding factor.
+- [x] When non-technical stakeholders need to explore the results without editing code
+  > Correct! Shiny wraps the analysis in a UI so users can change inputs without touching code.
+- [ ] When you want to version-control the analysis
+  > Git works equally well for notebooks — this isn't a reason to switch to Shiny.
+- [ ] When the analysis takes more than 10 seconds to run
+  > Slow analysis benefits from caching, not necessarily from Shiny. Both tools can cache.
+
+### Where should filters and controls go in a standard dashboard layout?
+
+> Think about scanning direction and the filter → output relationship.
+
+- [x] Left sidebar — inputs on the left, outputs to the right
+  > Correct! Left-to-right scanning means users set filters first (left) then read results (right). Cards + sidebar is the default Shiny skeleton.
+- [ ] Top navigation bar — filters in a dropdown menu
+  > Works for global filters shared across all pages, but sidebar is the standard for per-chart controls.
+- [ ] Floating panel over the charts
+  > Floating panels obscure content and add interaction complexity without benefit.
+- [ ] Bottom of the page, below the charts
+  > Putting filters below outputs reverses the logical flow — users must scroll down to change inputs, then back up to see results.
+
+### Match each Shiny UI component to its primary purpose.
+
+> Think about what each element communicates or contains.
+
+- `ui.value_box()` :: Highlight a KPI metric with supporting context (changes, dynamics, icons)
+  > Value boxes are purpose-built for prominent KPI display — not for wrapping charts or forms.
+- `ui.card()` :: Group related outputs (chart + title + caption) into a visual container
+  > Cards are general containers — use them to give charts a bordered, padded frame.
+- `ui.sidebar()` :: Hold input widgets separate from the main output area
+  > The sidebar pattern keeps controls visually distinct and leaves the main panel for outputs.
+- `shinyswatch.theme.*` :: Apply a Bootstrap colour palette globally across all components
+  > Shinyswatch themes swap the entire Bootstrap colour scheme in one line — no per-component styling needed.
+```
+---
+
+# Block 2 Reactivity {background-color="#2c3e50"}
+
+---
+
+## The Reactive Graph
+
+::: {.columns}
+::: {.column width="55%"}
+**When I first add interactivity to a Python web app,**
+I use Shiny's reactive graph (inputs → reactive contexts → outputs),
+so I can write plain Python functions and let Shiny handle re-execution automatically.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- Reading `input.x()` inside a reactive context registers a dependency on that input
+- `@render.*` functions are reactive endpoints — they re-run only when their upstream inputs change
+- Dependency tracking is automatic: Shiny records what each context reads at runtime
+- Changing an input invalidates only the outputs that depend on it — not the whole server
+:::
+
+**When NOT to use:**
+The reactive graph underlies every Shiny app — it's not a choice. Understanding it is essential for debugging why outputs don't update (missing reactive context) or update too often (shared mutable state outside reactive scope).
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-05-core-altair-first_app.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-05-core-altair-first_app.py) — minimal reactive graph: one input → one render
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Reactivity](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html)
+- [Shiny reactive foundations](https://shiny.posit.co/py/docs/reactive-foundations.html)
+:::
+:::
+:::
+---
+
+## `@reactive.calc` — Shared Computation
+
+::: {.columns}
+::: {.column width="55%"}
+**When I have an expensive filter or aggregation used by multiple outputs,**  
+I use `@reactive.calc` to cache the result,  
+so I can avoid re-running the same computation for every output that depends on it.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- Wrap shared logic in `@reactive.calc`
+- Shiny caches the result and re-runs only when upstream inputs change
+- Without it, each `@render.*` reruns the full pipeline independently
+:::
+
+
+**When NOT to use:**  
+Logic used by only one output → just compute inline inside `@render.*`. `@reactive.calc` adds indirection without benefit for single consumers.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-05-reactive_calc_reuse.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture02/core/app-05-reactive_calc_reuse.py) — `@reactive.calc` shared across multiple outputs
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Reactivity](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html)
+- [Slides: Build a dashboard](https://dsci532-review-pages.netlify.app/slides/04-dashboard-core.html)
+- [Shiny reactive foundations](https://shiny.posit.co/py/docs/reactive-foundations.html)
+- [Shiny reactive patterns](https://shiny.posit.co/py/docs/reactive-patterns.html)
+:::
+:::
+:::
+---
+
+## Reactivity: Deferred Execution & Side Effects
+
+::: {.columns}
+::: {.column width="55%"}
+**When I need computation or a write to fire only on user action,**
+I use `@reactive.event`, `@reactive.effect`, and `req()`,
+so I can control exactly when side effects run and guard against partial input.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- `@reactive.event(input.btn)` and `ui.input_action_button("btn", "Submit")`: defers any render, calc, or effect to a button click
+- `@reactive.effect`: runs a side effect (e.g. write to DB) when dependencies change — returns nothing
+- `req(input.x)`: silently stops execution if input is `None` or empty — guards against partial-input errors
+:::
+
+**When NOT to use:**
+`@reactive.event` when the UI should stay live — it freezes updates until the button fires.
+`@reactive.effect` for computation that returns a value — use `@reactive.calc` instead.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-03.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-03.py) — `@reactive.event(input.submit)` gates a MongoDB write behind a button
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Reactivity](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html)
+- [Slides: Build a dashboard](https://dsci532-review-pages.netlify.app/slides/04-dashboard-core.html)
+- [Shiny reactive foundations](https://shiny.posit.co/py/docs/reactive-foundations.html)
+- [Shiny: req() docs](https://shiny.posit.co/py/api/core/shiny.req.html)
+:::
+:::
+:::
+---
+
+## Block 2 Quiz
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### You have a sidebar filter that 3 different charts all depend on. Where should the filtering logic live?
+
+> Think about caching and avoiding repeated computation.
+
+- [ ] Inside each `@render.plot` separately
+  > Not ideal — the same filter runs three times on every input change, and results aren't shared.
+- [x] In a `@reactive.calc` function called by all three
+  > Correct! `@reactive.calc` caches the result and re-runs only when upstream inputs change — all three renders share the same cached result.
+- [ ] In a `@reactive.event` triggered by a button
+  > `@reactive.event` is for delaying execution until a button click, not for sharing computation across outputs.
+- [ ] In a module-level variable updated on input change
+  > Module-level variables are not reactive — Shiny won't know to re-run outputs when they change.
+
+### Which statement best describes Shiny's reactive graph?
+
+> Think about what "reactive" means — selective re-execution.
+
+- [ ] It runs all server code top-to-bottom on every input change
+  > That's how a simple script works, not Shiny. Shiny tracks dependencies.
+- [x] It re-runs only the outputs whose upstream inputs have changed
+  > Correct! Shiny builds a dependency graph and invalidates only the affected outputs, not the entire server.
+- [ ] It queues all input changes and batches them every 500ms
+  > Shiny does not batch on a timer — it reacts to each input change and propagates invalidation immediately.
+- [ ] It requires you to manually declare which inputs each output depends on
+  > Dependency tracking is automatic — Shiny records which inputs are read inside each reactive context at runtime.
+
+### Match each Shiny concept to its role in the reactive graph.
+
+> Think about what each piece produces, consumes, or controls.
+
+- `input.species()` :: Reactive source: reads user input, invalidates dependents
+    > Reading an input inside a reactive context registers a dependency on it.
+- `@render.plot` / `@render.text` :: Reactive endpoint: re-runs and pushes result to the UI
+    > Render functions are leaves of the reactive graph — they consume but don't share.
+- `@reactive.calc` :: Reactive node: caches a result shared across multiple consumers
+    > Re-runs only when its own inputs change; all downstream outputs share the cached value.
+- `@reactive.event(input.run)` :: Gate: blocks re-execution until a specific input fires
+    > Breaks automatic dependency tracking; only the listed input can trigger it.
+- `ui.output_plot("id")` :: UI placeholder: reserves a layout slot for an output
+    > Without a matching placeholder, the render function's result has nowhere to go.
+
+### You click "Submit" but the app writes to the database even when required fields are empty. Which two fixes work together?
+
+> Think about how to gate execution and validate inputs.
+
+- [ ] Add a `@reactive.calc` that returns the input values
+  > `@reactive.calc` caches computation but doesn't gate execution on a button click.
+- [x] Wrap the write in `@reactive.effect` decorated with `@reactive.event(input.submit)`
+  > Correct! This ensures the effect only fires when the submit button is clicked, not on every keystroke.
+- [x] Add `req(input.name, input.email)` inside the effect
+  > Correct! `req()` silently aborts the effect if any required input is `None` or empty string.
+- [ ] Use `@reactive.event` on the `@render.text` output instead
+  > `@reactive.event` on a render defers the display, not the write — the DB write is in the effect.
+
+### Match each definition to the reactive concept.
+
+> Definition on the left — concept on the right.
+
+- Caches a derived value; re-runs only when its inputs change; result shared across consumers :: `@reactive.calc`
+    > Unlike `@render.*`, the result is shared — all downstream outputs use the same cached value.
+- Runs a side-effectful action (e.g. write to DB) when dependencies change; returns nothing :: `@reactive.effect`
+    > Use when you need something to happen as a consequence of input change, but there's no output to display.
+- Decorator that breaks automatic dependency tracking; defers execution until a specific input fires :: `@reactive.event`
+    > Wrap `@reactive.effect` or `@reactive.calc` with this to gate execution behind a button click.
+- Silently aborts the current reactive context if a value is `None`, empty, or falsy :: `req()`
+    > Prevents partial-input errors — the context simply stops; no error is shown to the user.
+
+### Match each scenario to the right reactive tool.
+
+> Think about caching vs. side effects vs. gating vs. guarding.
+
+- Filter used by 3 charts, should auto-update on input change :: `@reactive.calc`
+  > `@reactive.calc` caches and shares the result — all three charts get the same cached value.
+- Write to database, but only when user clicks Submit :: `@reactive.effect` + `@reactive.event(input.submit)`
+  > `@reactive.event` gates the effect to the button; `@reactive.effect` runs the side-effectful write.
+- Stop execution silently if a text input is blank :: `req(input.query)`
+  > `req()` aborts the reactive context without an error if the value is falsy — guards against empty inputs.
+- Log to console every time a dropdown changes, no return value :: `@reactive.effect` (no event)
+  > `@reactive.effect` with automatic dependency tracking runs whenever its inputs change — no gate needed.
+
+```
+---
+
+# Block 3 Tables & Data {background-color="#2c3e50"}
+
+---
+
+## Tables: DataGrid & `.data_view()`
+
+::: {.columns}
+::: {.column width="55%"}
+**When I want users to sort, filter, or select rows and have the rest of the app react,**  
+I use `DataGrid` with `cell_selection` + `.data_view()`,  
+so I can drive charts and summaries from whatever the user is looking at.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- `render.DataGrid(df, selection_mode="rows")` enables row selection
+- `.data_view(selected=True)` returns selected rows
+- `.data_view()` returns filtered rows
+- Both are reactive
+:::
+
+**When NOT to use:**  
+Read-only display where users just scroll → plain `DataTable` is simpler and styled out of the box. No need for `.data_view()` if nothing reacts to the table.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-04-table-linked.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/tables/app-04-table-linked.py) — DataGrid row selection drives linked Altair chart
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Tables in Shiny](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06a-tables.html)
+- [Shiny DataGrid docs](https://shiny.posit.co/py/components/outputs/data-grid/)
+- [Shiny DataTable docs](https://shiny.posit.co/py/components/outputs/data-table/)
+:::
+:::
+:::
+---
+
+## CSV Export
+
+::: {.columns}
+::: {.column width="55%"}
+**When users need to export the current view of the data,**
+I use `@render.download` with `ui.download_button`,
+so I can give users a file without blocking the UI or writing anything to disk.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- `@render.download` wraps a function that yields file bytes — Shiny serves it as a download link
+- Use `tbl.data_view()` inside to export only the currently filtered rows
+- `io.StringIO` + `.getvalue().encode()` converts a DataFrame to CSV bytes in memory
+:::
+
+**When NOT to use:**  
+Very large files → result is buffered in memory before sending.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-04-table-linked.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/tables/app-04-table-linked.py) — CSV download from DataGrid selection
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Tables in Shiny](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06a-tables.html)
+- [Shiny: download button](https://shiny.posit.co/py/components/outputs/download-button/)
+:::
+:::
+:::
+---
+
+## DB Writes
+
+::: {.columns}
+::: {.column width="55%"}
+**When I need to save user input data or logs from my app across sessions,**
+I use an external database (MongoDB / Postgres / Airtable / Google Sheets) and
+`@reactive.effect` + `@reactive.event(input.save)` to write on button click,
+so I can record submissions without blocking the UI or triggering on every keystroke.
+
+**Choosing a provider:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- **Free-form records / logs / surveys** → MongoDB Atlas (document store, no schema needed)
+- **Structured data with joins** → PostgreSQL via Neon or Supabase (free tier, SQL schema)
+- **Small logs, non-technical team** → Google Sheets (`gspread`) or Airtable (`pyairtable`)
+- **Local prototype only** → SQLite or plain CSV (breaks with multiple workers on Posit Connect)
+- Always use a **cloud-hosted** provider in production — local DB stays on your laptop
+- Store the connection URI in `.env`, never in code
+:::
+
+**When NOT to use:**
+Multi-step transactional writes → wrap in a proper DB transaction. Read-only dashboards → no persistence needed.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-03.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-03.py) — form data → MongoDB Atlas via `@reactive.effect`
+- [`app-04.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-04.py) — querychat + MongoDB logger
+
+**MongoDB quick pattern:**  
+`MongoClient(uri)["db"]["col"].insert_one(doc)` / `.find()`
+
+| Provider | Free tier | Client |
+|---|---|---|
+| [MongoDB Atlas](https://www.mongodb.com/docs/atlas/getting-started/) | M0, 512 MB | `pymongo` |
+| [Neon](https://neon.tech/docs/get-started-with-neon/connect-neon) / [Supabase](https://supabase.com/docs/guides/database/connecting-to-postgres) | Postgres, varies | `psycopg2` |
+| [Airtable](https://pyairtable.readthedocs.io/en/latest/getting-started.html) | 1 000 rows | `pyairtable` |
+| [Google Sheets](https://docs.gspread.org/en/latest/oauth2.html) | Unlimited | `gspread` |
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Databases in Shiny](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html)
+- [Shiny: Persistent data storage](https://shiny.posit.co/py/docs/persistent-data-storage.html)
+- [PyMongo docs](https://pymongo.readthedocs.io/)
+- [Neon (free Postgres)](https://neon.tech)
+:::
+:::
+:::
+---
+
+## Lazy Loading: ibis + DuckDB + Parquet
+
+::: {.columns}
+::: {.column width="55%"}
+**When my dataset is too large to load into memory at app startup,**  
+I use lazy evaluation with ibis + DuckDB over Parquet files,  
+so filters run as queries against the file and only the result is loaded.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- `ibis.duckdb.connect()` → `con.read_parquet(path)` → build ibis expressions → `.execute()` only when rendering
+- The expression is a query plan, not data — nothing loads until you call `.execute()`
+:::
+
+**When NOT to use:**  
+Dataset fits in memory easily (<100MB) → `pd.read_parquet()` at startup is simpler. Shinylive (WASM) → DuckDB file access silently fails; use in-memory sample instead.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-02b-taxi-parquet.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-02b-taxi-parquet.py) — full lazy filtering over NYC taxi Parquet with ibis + DuckDB
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Databases in Shiny](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html)
+- [ibis docs](https://ibis-project.org/)
+- [DuckDB docs](https://duckdb.org/docs/)
+- [Parquet format](https://parquet.apache.org/)
+:::
+:::
+:::
+---
+
+## Block 3 Quiz
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### `tbl.data_view(selected=True)` returns ______ when no rows are selected.
+
+> Think about what "selected rows" means when nothing is highlighted.
+
+- [ ] `None`
+  > Not quite — Shiny returns an actual DataFrame object, not `None`. Always check `.empty` rather than `is None`.
+- [ ] The full unfiltered dataframe
+  > That's what `.data()` returns. `.data_view(selected=True)` is scoped to selection only.
+- [x] An empty DataFrame
+  > Correct! When no rows are selected, `.data_view(selected=True)` returns an empty DataFrame. Use `if not df.empty:` before consuming it downstream.
+- [ ] Raises a `ValueError`
+  > No exception is raised — it returns gracefully with an empty result.
+
+### When should you prefer `DataGrid` over `DataTable`?
+
+> Think about interactivity vs. display.
+
+- [ ] When you want built-in Bootstrap styling with no configuration
+  > That describes `DataTable` — it applies Bootstrap table styles out of the box.
+- [x] When users need to select rows and drive other outputs from that selection
+  > Correct! `DataGrid` supports `cell_selection` and exposes `.data_view(selected=True)` for reactive row-driven outputs.
+- [ ] When displaying a small static summary table
+  > Either works for static display; `DataTable` is simpler for pure read-only use.
+- [ ] When rendering inside a shinylive WASM app
+  > Both work in shinylive — this isn't a differentiator.
+
+### A user wants to download the currently filtered table as a CSV. What's the right pattern?
+
+> Think about which data_view method gives you the visible rows and how Shiny serves files.
+
+- [ ] `@reactive.effect` that writes a CSV file to disk on every filter change
+  > Writing to disk on every change is wasteful and creates race conditions with multiple users.
+- [ ] Return the dataframe from a `@reactive.calc` and let the browser handle the download
+  > Browsers can't pull data from server-side reactive contexts directly — Shiny must serve it.
+- [x] `@render.download` that calls `tbl.data_view()` and yields CSV bytes; trigger with `ui.download_button`
+  > Correct! `@render.download` wraps the function, `.data_view()` gives the visible rows, and Shiny serves the result when the button is clicked.
+- [ ] `ui.download_button` linked directly to a module-level DataFrame variable
+  > Module-level variables aren't reactive — filter changes won't be reflected in the download.
+
+### Your Shiny app loads a 2GB Parquet file at startup. It crashes on Posit Connect due to memory limits. What's the right fix?
+
+> Think about when data actually enters memory.
+
+- [ ] Increase the Posit Connect memory limit
+  > Treating symptoms, not the cause — and you may not control the limit in production.
+- [x] Switch to ibis + DuckDB lazy loading — load only query results
+  > Correct! With ibis, `.execute()` runs a SQL query and loads only the filtered result — the 2GB file never fully enters RAM.
+- [ ] Convert the Parquet to CSV, which compresses better
+  > CSV is larger than Parquet, not smaller — and loading it still puts the full file in memory.
+- [ ] Load the file in a `@reactive.calc` instead of module level
+  > Moving the load inside `@reactive.calc` doesn't change the memory footprint — it still loads the full file, just on first use.
+
+### Match each dataset situation to eager or lazy loading.
+
+> Think about file size, query patterns, and where the filtering happens.
+
+- 80MB CSV, loaded once, no filtering at runtime :: Eager — `read_csv()` at startup
+    > Small and static — load it once into a DataFrame. No query engine needed.
+- 4GB Parquet, users apply filters interactively :: Lazy — ibis + DuckDB
+    > Too large for memory; ibis pushes the filter to DuckDB so only results are loaded.
+- Dataset fits in memory but query is slow — reused by 3 outputs :: Eager load + `@reactive.calc`
+    > Load eagerly, then cache the filtered result with `@reactive.calc` — no need for DuckDB.
+- Shinylive (WASM) app with a large dataset :: Eager — in-memory sample only
+    > DuckDB file access silently fails in WASM; pre-sample the data before embedding.
+
+### Match each task to the right storage approach.
+
+> Think about persistence, concurrency, and deployment constraints.
+
+- User submits a feedback form; data must survive app restarts across multiple workers :: MongoDB Atlas
+    > Cloud document store — no schema needed, free tier available, works across workers.
+- Dashboard reads a static 50MB dataset once at startup :: `read_parquet()` / `read_csv()` in-memory
+    > Small, static data — just load it once. No database overhead needed.
+- App must filter a 5GB Parquet file efficiently on a server :: ibis + DuckDB lazy loading
+    > ibis pushes the filter to DuckDB, which queries the Parquet file directly — only results enter memory.
+- Quick local prototype, one user, data can reset on restart :: SQLite or plain CSV write
+    > For local-only prototypes a simple file write is fine — but this breaks with multiple workers on Posit Connect.
+### Match each data-out scenario to the right Shiny pattern.
+
+> Think about whether data leaves the server as a file or gets persisted on the server.
+
+- User clicks "Download CSV" to get the current filtered table :: `@render.download` + `ui.download_button`
+    > `@render.download` wraps a function yielding file bytes; Shiny streams it to the browser — nothing is written to disk.
+- User submits a form and the data must be saved for future sessions :: `@reactive.effect` + `@reactive.event(input.save)`
+    > `@reactive.effect` runs the write; `@reactive.event` gates it to the button so it doesn't fire on every keystroke.
+- Guard against writing empty fields to the database :: `req(input.field)` before the write
+    > `req()` silently aborts the reactive context if the field is `None` or empty — no error shown, no write executed.
+
+```
+---
+
+# Block 4 LLM & AI Integration {background-color="#2c3e50"}
+
+---
+
+## Conversation Anatomy + First Chat
+
+::: {.columns}
+::: {.column width="55%"}
+**When I want to integrate an LLM into my app and need to understand costs and limits,**  
+I need to be aware of tokens, context windows, and the HTTP request cycle,  
+so I can choose the right architecture, model and provider to avoid nasty surprises in production.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- Every LLM call is a stateless HTTP POST
+- Context = all prior messages resent each turn (cost grows!)
+- Tokens ≠ words (~¾ word each)
+- Context window = max tokens in + out
+- Use `chatlas` (Python) or `ellmer` (R) to abstract the API
+:::
+
+**When NOT to use:**  
+If your "AI feature" is just keyword matching or a lookup table → no need for an LLM at all.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`03-first-chat.ipynb`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/03-first-chat.ipynb) — basic Chatlas conversation
+- [`05-switch-provider.ipynb`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/05-switch-provider.ipynb) — swapping between GitHub Models / Anthropic / OpenAI
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Anatomy of a conversation](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07c-conversation.html)
+- [Slides: Your first chat](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07d-chat.html)
+- [Chatlas docs](https://posit-dev.github.io/chatlas/)
+:::
+:::
+:::
+---
+
+## System Prompt + Greeting Customization
+
+::: {.columns}
+::: {.column width="55%"}
+**When I embed a chat interface in my dashboard using `QueryChat`,**
+I use a custom system prompt and welcome message,
+so the LLM stays on topic and users know what to ask.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- Pass `system_prompt=` to `QueryChat` to constrain behavior — sent with **every** request
+- Set `greeting=` for the opening message — rendered **locally**, not generated by the LLM
+- Use `data_description=` to inject schema context the LLM needs
+:::
+
+`QueryChat(df, "name", system_prompt="You are...", greeting="Hi! Ask me about...")`
+
+**When NOT to use:**  
+If the user should have full open-ended access to any topic → a minimal or no system prompt is better.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-07e-querychat-instructions.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/demo01/app-07e-querychat-instructions.py) — `system_prompt` + `data_description`
+- [`app-07f-two-tabs.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/demo01/app-07f-two-tabs.py) — full two-tab dashboard with querychat
+- [`querychat-explore.ipynb`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/querychat/querychat-explore.ipynb) — greeting + extra instructions walkthrough
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Dashboards with querychat](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07d-dashboards.html)
+- [querychat docs](https://posit-dev.github.io/querychat/)
+- [Chatlas: system prompt](https://posit-dev.github.io/chatlas/reference/Chat.html)
+:::
+:::
+:::
+---
+
+## Tool Calling + MCP
+
+::: {.columns}
+::: {.column width="55%"}
+**When I want the LLM to fetch live data or call functions during a conversation,**  
+I use tool calling (or MCP for multi-tool setups),  
+so the LLM can answer questions it couldn't from training data alone.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- Define a Python function, register it with `chat.register_tool(fn)` (chatlas)
+- The LLM decides when to call it and passes back the result into the next message
+- MCP extends this: a server exposes many tools over a standard protocol — one connection, many capabilities
+:::
+
+**Tool calling vs MCP:** use tool calling for 1-3 custom functions in your app; use MCP when connecting to an existing ecosystem (GitHub, databases, file systems).
+
+**When NOT to use:**  
+Static data the LLM can receive once in the system prompt → just inject it, no tool needed.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`chatlas-weather.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/tools/chatlas-weather.py) — register + call a weather tool
+- [`app-weather-core.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/tools/app-weather-core.py) — tool calling wired into a Shiny app
+- [`querychat-explore.ipynb`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/querychat/querychat-explore.ipynb) — querychat tool loop walkthrough
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Tool calling](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08a-tools.html)
+- [Slides: MCP](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08d-mcp.html)
+- [Chatlas: tool calling](https://posit-dev.github.io/chatlas/tool-calling.html)
+- [Model Context Protocol](https://modelcontextprotocol.io/)
+:::
+:::
+:::
+---
+
+## Structured Output
+
+::: {.columns}
+::: {.column width="55%"}
+**When I need to extract structured fields from unstructured text (documents, reviews, emails),**  
+I use `chat.extract_data()` with a Pydantic schema,  
+so I can get typed, validated JSON instead of prose.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- Define a Pydantic `BaseModel` with field descriptions → pass to `chat.extract_data(text, SentimentResult)`
+- Works for sentiment, entity extraction, classification, and PDF/image parsing
+:::
+
+**When NOT to use:**  
+Data that's already structured (CSV, SQL) → no need. Simple yes/no classification with fixed categories → a rule-based approach is cheaper and more reliable.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`01-simple.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/structured/01-simple.py) — extract typed fields from text with Pydantic
+- [`02-image.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/structured/02-image.py) — multimodal: extract structure from an image
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Structured data](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08b-structured.html)
+- [Chatlas: structured data](https://posit-dev.github.io/chatlas/structured-data.html)
+- [Pydantic docs](https://docs.pydantic.dev/)
+:::
+:::
+:::
+---
+
+## RAG (Retrieval-Augmented Generation)
+
+::: {.columns}
+::: {.column width="55%"}
+**When my LLM doesn't know domain-specific terms or dataset conventions,**  
+I inject relevant context chunks per query,  
+so the LLM answers with correct domain knowledge without fine-tuning.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- Build a knowledge base (plain `.txt` files work; for larger KBs use `llama_index` with `VectorStoreIndex` or ChromaDB)
+- At query time: retrieve top-k matching chunks (TF-IDF for exact terms, embeddings for semantic similarity), prepend them to the user message
+- The LLM sees: `[context] + [user question]`
+:::
+
+**When NOT to use:**  
+General knowledge questions the LLM already knows well → RAG adds latency for no gain. More than ~50 chunks → consider a proper vector DB (Chroma, Pinecone).
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`rag_demo.ipynb`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/rag/rag_demo.ipynb) — full walkthrough: KB → TF-IDF retrieval → per-query injection
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: RAG](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08c-rag.html)
+- [LlamaIndex: starter](https://docs.llamaindex.ai/en/stable/getting_started/starter_example/)
+- [ChromaDB docs](https://docs.trychroma.com/getting-started)
+- [sentence-transformers](https://www.sbert.net/)
+:::
+:::
+:::
+---
+
+## LLM Logging
+
+::: {.columns}
+::: {.column width="55%"}
+**When I want to record what users ask the LLM in my Shiny app,**  
+I use the `on_tool_request` hook on the `QueryChat` client,  
+so I can log queries to a database without blocking the conversation flow.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- `client.on_tool_request(fn)` fires once per query (not per tool call)
+- Write to MongoDB Atlas (or any DB) inside the callback
+- Use `@reactive.effect` only for Shiny-reactive side effects
+- Use the hook for non-reactive logging
+:::
+
+**When NOT to use:**  
+You only need to log for debugging → print to console instead. You need full conversation history → store the entire message thread, not just the query.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-04.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-04.py) — `on_tool_request` hook logs queries to MongoDB Atlas
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Databases in Shiny](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html)
+- [querychat: on_tool_request](https://posit-dev.github.io/querychat/)
+- [PyMongo docs](https://pymongo.readthedocs.io/)
+:::
+:::
+:::
+---
+
+## Evals
+
+::: {.columns}
+::: {.column width="55%"}
+**When I want to know if my LLM prompt changes are actually improvements,**  
+I use a repeatable eval suite that scores model responses,  
+so I can iterate on prompts with evidence instead of vibes.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- Define test cases (input + expected output or rubric)
+- Use `inspect_ai` (or similar) to run the same queries across prompt versions and score with an LLM judge or exact match
+- Track pass rates over prompt iterations
+:::
+
+**When NOT to use:**  
+Prototyping — manual spot-checking is faster. Production with unpredictable input distributions → evals on fixed test sets won't catch all failure modes; combine with logging.
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`evals.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture06/evals/evals.py) — `inspect_ai` task → solver → scorer pipeline
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Evals](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08e-evals_inspect.html)
+- [inspect_ai docs](https://inspect.ai/)
+:::
+:::
+:::
+---
+
+## Block 4 Quiz
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### In QueryChat, the `greeting=` message is displayed when the chat opens. How is it generated?
+
+> Think about what "greeting" means in the context of a chat widget.
+
+- [ ] The LLM generates it on every session start
+  > If the LLM generated it, the greeting would vary per session and cost tokens — that's not how it works.
+- [x] It is a static string rendered locally — the LLM never sees it
+  > Correct! `greeting=` is just a local UI string. It's displayed client-side and never sent to the model.
+- [ ] It is generated once at app startup and cached
+  > There's no LLM call at startup — the string is hardcoded in your `QueryChat(...)` call.
+- [ ] It is injected at the start of the chat history sent to the LLM
+  > The greeting is purely cosmetic — it doesn't appear in the message history the LLM receives.
+
+### Your app needs the LLM to answer questions about your company's internal product catalog (500 items, updated weekly). Which approach fits best?
+
+> Think about context window limits, cost of retraining, and freshness.
+
+- [ ] Include the full catalog in the system prompt
+  > 500 items would likely exceed the context window, and the system prompt is sent with every request — expensive and fragile.
+- [ ] Fine-tune the model on catalog data
+  > Fine-tuning is expensive, requires retraining weekly, and doesn't guarantee factual recall. Use it to change behaviour, not inject knowledge.
+- [x] Use RAG — retrieve relevant items per query
+  > Correct! RAG retrieves only the most relevant chunks at query time, keeps the context small, and naturally handles weekly updates by refreshing the KB.
+- [ ] Use structured output extraction
+  > Structured output extracts fields *from* text you provide — it doesn't retrieve knowledge from a store.
+
+### What does `chat.register_tool(fn)` actually do?
+
+> Think about when `fn` actually runs.
+
+- [ ] Runs `fn` immediately and injects the result into the system prompt
+  > The function is not called at registration — it's called later, on demand, by the LLM.
+- [x] Tells the LLM the function exists; the LLM decides when to call it
+  > Correct! Registration sends the function signature and docstring to the model. The LLM chooses when (and whether) to invoke it based on the conversation.
+- [ ] Wraps `fn` to run in a background thread during streaming
+  > Tool calls block the response until the function returns — they are not threaded by default.
+- [ ] Registers `fn` as a Shiny reactive that updates on each message
+  > Tool functions are plain Python callables — they have no reactive context.
+
+### Match each AI technique to the situation it solves best.
+
+> Think about what information is missing, how dynamic it is, and what output format you need.
+
+- Extract author, date, and sentiment from 1000 customer reviews :: Structured output (Pydantic schema)
+  > Structured output extracts typed, validated fields from unstructured text — perfect for batch document processing.
+- Answer questions about a private 200-page policy document :: RAG (retrieve relevant chunks per query)
+  > RAG keeps the context small and fresh — inject only the sections relevant to each question.
+- Let the LLM check today's weather before answering :: Tool calling (register a weather function)
+  > Tool calling gives the LLM access to live external data it couldn't know from training.
+- Connect the LLM to GitHub, a database, and a file system at once :: MCP (Model Context Protocol)
+  > MCP standardises multi-tool connectivity — one server exposes many capabilities over a single protocol.
+- Constrain the LLM to only discuss your dataset :: System prompt
+  > The system prompt shapes behaviour at session start — ideal for focus and tone constraints.
+```
+---
+
+# Block 5 Geospatial Visualization {background-color="#2c3e50"}
+
+---
+
+## Geospatial Visualization
+
+::: {.columns}
+::: {.column width="55%"}
+**When I need to show geographic patterns in my data,**  
+I use choropleth maps or point maps linked to charts,  
+so I can let users explore regional variation interactively.
+
+**Key points:**
+
+::: {style="line-height:1.3; margin-top:0.2em"}
+- Use Altair's `mark_geoshape()` for choropleths
+- `mark_circle()` on a map for point data
+- Link to a chart via Shiny server logic (click → filter → re-render) or Altair-native selection
+:::
+
+**When NOT to use:**  
+Data without a clear geographic dimension → a standard bar/scatter is less noisy. Fine-grained street-level routing → use a dedicated mapping library (Folium, Leaflet).
+:::
+::: {.column width="45%"}
+::: {.callout-note appearance="minimal"}
+### Starting blocks
+- [`app-04-map-and-chart.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/maps/app-04-map-and-chart.py) — choropleth map linked to bar chart
+- [`app-05-map-click.py`](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/maps/app-05-map-click.py) — Altair-native click selection on map
+:::
+
+::: {.callout-tip appearance="minimal"}
+### References
+- [Slides: Geospatial viz](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/05a-geoviz.html)
+- [Altair maps gallery](https://altair-viz.github.io/gallery/index.html#maps)
+- [Vega datasets](https://github.com/altair-viz/vega_datasets)
+:::
+:::
+:::
+---
+
+## Block 5 Quiz
+
+```{quizdown}
+---
+shuffleAnswers: true
+---
+
+### You need to display geographic data. Match each situation to the right approach.
+
+> Think about what the data represents and what kind of interaction you need.
+
+- Show unemployment rate by US state, colour-encoded :: Altair choropleth (`mark_geoshape`)
+  > Choropleth maps encode a numeric variable as fill colour across geographic regions — the classic use case.
+- Show individual taxi pickup locations across a city :: Point map (`mark_circle` on lat/lon)
+  > Point maps plot individual observations — better than choropleth when the data is already lat/lon coordinates.
+- Let a user click a state and update a bar chart :: Map linked to chart via Shiny server logic
+  > Click → Shiny input → filter → re-render is the standard pattern for cross-widget linking in Shiny.
+- Show two ranked categories side-by-side without a map :: Standard bar chart, no map needed
+  > Not every geographic question needs a map — if the comparison is categorical, a bar chart communicates more clearly.
+```
+---
+
+# Summary Map {background-color="#1a252f"}
+
+## Job Story Map
+
+::: {style="font-size:0.52em; line-height:1.35"}
+
+| When I… | I use… | So I can… |
+|---|---|---|
+| **Reactivity** | | |
+| have a costly filter used by multiple outputs | `@reactive.calc` | cache once, not once per output |
+| need computation to fire only on user action | `@reactive.event` + `@reactive.effect` | control when side effects run |
+| **Data I/O** | | |
+| want users to sort/filter/select rows and the app reacts | `DataGrid` + `.data_view()` | drive outputs from what the user sees |
+| need to give users a file | `@render.download` + `download_button` | export without blocking the UI |
+| need to persist input or logs across sessions | external DB + `@reactive.effect` + `@reactive.event` | record submissions asynchronously |
+| have a dataset too large to load at startup | ibis + DuckDB + Parquet | filters run as queries, only results load |
+| **LLM & AI** | | |
+| embed a chat interface in a dashboard | `QueryChat` + `system_prompt` | keep the LLM on topic |
+| LLM needs to call live data or functions | `chat.register_tool()` (chatlas) | LLM can act mid-conversation |
+| need structured fields from unstructured text | Pydantic + structured output | get typed, validated JSON |
+| LLM lacks domain-specific knowledge | RAG (per-query injection) | correct answers without fine-tuning |
+| want to log what users ask the LLM | `on_tool_request` hook | audit trail without blocking the flow |
+| want to measure if prompt changes improve output | `inspect_ai` evals | iterate with evidence, not vibes |
+| **Geospatial** | | |
+| need to show geographic patterns | Altair choropleth / point map | explore regional variation interactively |
+
+:::
+
+---
+
+## What to reach for
+
+::: {style="font-size:0.50em; line-height:1.35"}
+
+| Situation | Tool | Apps | Slides |
+|---|---|---|---|
+| Interactive web app | Shiny | [app-05](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-05-core-altair-first_app.py) | [01](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/01-intro_shiny.html), [02](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html) |
+| Shared filter logic | `@reactive.calc` | [app-05](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture02/core/app-05-reactive_calc_reuse.py) | [03](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), [04](https://dsci532-review-pages.netlify.app/slides/04-dashboard-core.html) |
+| Large file, server deployment | ibis + DuckDB + Parquet | [app-02b](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-02b-taxi-parquet.py) | [09-db](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html) |
+| Persist user data across restarts | MongoDB Atlas | [app-03](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-03.py), [app-04](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-04.py) | [09-db](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html) |
+| Add AI chat to dashboard | `querychat` + `QueryChat` | [app-07e](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/demo01/app-07e-querychat-instructions.py), [app-07f](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/demo01/app-07f-two-tabs.py) | [07d-dash](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07d-dashboards.html) |
+| LLM needs domain knowledge | RAG (inject per query) | [rag_demo](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/rag/rag_demo.ipynb) | [08c-rag](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08c-rag.html) |
+| Extract fields from documents | Structured output (Pydantic) | | [08b-struct](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08b-structured.html) |
+| LLM needs live external data | Tool calling | | [08a-tools](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08a-tools.html) |
+| Multi-tool LLM ecosystem | MCP | | [08d-mcp](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08d-mcp.html) |
+| Track prompt quality over time | Evals (`inspect_ai`) | | [08e-evals](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08e-evals_inspect.html) |
+| Log what users ask | `on_tool_request` hook | [app-04](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-04.py) | [09-db](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html) |
+| Row selection drives chart | `DataGrid` + `.data_view()` | [app-04-tbl](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/tables/app-04-table-linked.py) | [06a-tbl](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06a-tables.html) |
+| Show geographic patterns | Altair choropleth / point map | [app-04-map](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/maps/app-04-map-and-chart.py), [app-05-map](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/maps/app-05-map-click.py) | [05a-geo](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/05a-geoviz.html) |
+
+:::
