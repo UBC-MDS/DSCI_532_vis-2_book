@@ -399,12 +399,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Review</span></a>
+ <span class="menu-text">Lecture 8</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./100-testing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Testing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./110-timing.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Timing</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./120-modules.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Shiny Modules</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Review</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./review/01-wiring.html" class="sidebar-item-text sidebar-link">
@@ -498,7 +527,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="visualizing-penguin-data" class="level2">
 <h2 class="anchored" data-anchor-id="visualizing-penguin-data">Visualizing penguin data</h2>
 <!--TODO: #| output-location: slide is broken -->
-<div id="3f186c99" class="cell" data-execution_count="1">
+<div id="72fcbe60" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -529,23 +558,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display" data-execution_count="1">
 
 <style>
-  #altair-viz-59cbd958aaf4494585ddc3ec239160a4.vega-embed {
+  #altair-viz-d38a5d36f4a049488e81a7dfcdb5c06d.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-59cbd958aaf4494585ddc3ec239160a4.vega-embed details,
-  #altair-viz-59cbd958aaf4494585ddc3ec239160a4.vega-embed details summary {
+  #altair-viz-d38a5d36f4a049488e81a7dfcdb5c06d.vega-embed details,
+  #altair-viz-d38a5d36f4a049488e81a7dfcdb5c06d.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-59cbd958aaf4494585ddc3ec239160a4"></div>
+<div id="altair-viz-d38a5d36f4a049488e81a7dfcdb5c06d"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-59cbd958aaf4494585ddc3ec239160a4") {
-      outputDiv = document.getElementById("altair-viz-59cbd958aaf4494585ddc3ec239160a4");
+    if (outputDiv.id !== "altair-viz-d38a5d36f4a049488e81a7dfcdb5c06d") {
+      outputDiv = document.getElementById("altair-viz-d38a5d36f4a049488e81a7dfcdb5c06d");
     }
 
     const paths = {
@@ -601,7 +630,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="change-the-species" class="level2">
 <h2 class="anchored" data-anchor-id="change-the-species">Change the species</h2>
 <!-- TODO: #| output-location: slide is broken -->
-<div id="35290b1d" class="cell" data-execution_count="2">
+<div id="facbe45b" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" data-source-line-numbers="nil" data-code-line-numbers="nil"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> altair <span class="im">as</span> alt</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> palmerpenguins <span class="im">import</span> load_penguins</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -632,23 +661,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display" data-execution_count="2">
 
 <style>
-  #altair-viz-0792a2adefbd444cb06f7e3dffc35ed9.vega-embed {
+  #altair-viz-e346f4dfaff34e8d93ca252d1d524dda.vega-embed {
     width: 100%;
     display: flex;
   }
 
-  #altair-viz-0792a2adefbd444cb06f7e3dffc35ed9.vega-embed details,
-  #altair-viz-0792a2adefbd444cb06f7e3dffc35ed9.vega-embed details summary {
+  #altair-viz-e346f4dfaff34e8d93ca252d1d524dda.vega-embed details,
+  #altair-viz-e346f4dfaff34e8d93ca252d1d524dda.vega-embed details summary {
     position: relative;
   }
 </style>
-<div id="altair-viz-0792a2adefbd444cb06f7e3dffc35ed9"></div>
+<div id="altair-viz-e346f4dfaff34e8d93ca252d1d524dda"></div>
 <script type="text/javascript">
   var VEGA_DEBUG = (typeof VEGA_DEBUG == "undefined") ? {} : VEGA_DEBUG;
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-0792a2adefbd444cb06f7e3dffc35ed9") {
-      outputDiv = document.getElementById("altair-viz-0792a2adefbd444cb06f7e3dffc35ed9");
+    if (outputDiv.id !== "altair-viz-e346f4dfaff34e8d93ca252d1d524dda") {
+      outputDiv = document.getElementById("altair-viz-e346f4dfaff34e8d93ca252d1d524dda");
     }
 
     const paths = {
@@ -708,7 +737,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Input Components Gallery: <a href="https://shiny.posit.co/py/components/#inputs" class="uri">https://shiny.posit.co/py/components/#inputs</a></p></li>
 <li><p>What might be a good component to use?</p></li>
 </ul>
-<countdown-timer id="timer_362a702d5651e9c8575b3df6b07f9705104bae7a" minutes="01" seconds="00" class="countdown" warn-when="0" update-every="1" play-sound="false" blink-colon="false" start-immediately="false" tabindex="0" style="right: 0;bottom: 0;">
+<countdown-timer id="timer_4562ec123b0c8e82b4b0af3b81a656230f494d98" minutes="01" seconds="00" class="countdown" warn-when="0" update-every="1" play-sound="false" blink-colon="false" start-immediately="false" tabindex="0" style="right: 0;bottom: 0;">
  </countdown-timer>
 </section>
 <section id="radio-buttons" class="level2">
