@@ -103,6 +103,13 @@
     "text": "Testing\n\nHave the computer make the checks you may be doing visually\nHave the checks done in code"
   },
   {
+    "objectID": "slides/10-testing.html#setup",
+    "href": "slides/10-testing.html#setup",
+    "title": "Testing",
+    "section": "Setup",
+    "text": "Setup\nrequirements.txt\npytest\npytest-playwright\nInstall browers\nplaywright install"
+  },
+  {
     "objectID": "slides/10-testing.html#testing-shiny",
     "href": "slides/10-testing.html#testing-shiny",
     "title": "Testing",

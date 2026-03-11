@@ -8,6 +8,21 @@ title: Testing
 - Have the computer make the checks you may be doing visually
 - Have the checks done in code
 
+## Setup
+
+
+`requirements.txt`
+```
+pytest
+pytest-playwright
+```
+
+Install browers
+
+```bash
+playwright install
+```
+
 ## Testing Shiny
 
 - Testing is always great (nothing new here)

@@ -211,6 +211,14 @@
 <li>Have the checks done in code</li>
 </ul>
 </section>
+<section id="setup" class="slide level2">
+<h2>Setup</h2>
+<p><code>requirements.txt</code></p>
+<pre><code>pytest
+pytest-playwright</code></pre>
+<p>Install browers</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a></a><span class="ex">playwright</span> install</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
 <section id="testing-shiny" class="slide level2">
 <h2>Testing Shiny</h2>
 <ul>
@@ -224,41 +232,41 @@
 </section>
 <section id="pytest-example" class="slide level2">
 <h2>Pytest Example</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers="15,16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-2"><a></a></span>
-<span id="cb1-3"><a></a>idx1 <span class="op">=</span> pd.Index([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>])</span>
-<span id="cb1-4"><a></a>idx2 <span class="op">=</span> pd.Index([<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>])</span>
-<span id="cb1-5"><a></a>idx3 <span class="op">=</span> pd.Index([<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>])</span>
-<span id="cb1-6"><a></a>default <span class="op">=</span> pd.Index([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>])</span>
-<span id="cb1-7"><a></a></span>
-<span id="cb1-8"><a></a><span class="kw">def</span> test_index_intersection_all():</span>
-<span id="cb1-9"><a></a>    to_intersect <span class="op">=</span> [idx1, idx2, idx3]</span>
-<span id="cb1-10"><a></a>    expected <span class="op">=</span> pd.Index([<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>])</span>
-<span id="cb1-11"><a></a>    calculated <span class="op">=</span> index_intersection_all(</span>
-<span id="cb1-12"><a></a>        to_intersect,</span>
-<span id="cb1-13"><a></a>        default<span class="op">=</span>default,</span>
-<span id="cb1-14"><a></a>    )</span>
-<span id="cb1-15"><a></a>    <span class="cf">assert</span> (calculated <span class="op">==</span> expected).<span class="bu">all</span>()</span>
-<span id="cb1-16"><a></a>    <span class="cf">assert</span> calculated.equals(expected)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-code-line-numbers="15,16"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-2"><a></a></span>
+<span id="cb3-3"><a></a>idx1 <span class="op">=</span> pd.Index([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>])</span>
+<span id="cb3-4"><a></a>idx2 <span class="op">=</span> pd.Index([<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>])</span>
+<span id="cb3-5"><a></a>idx3 <span class="op">=</span> pd.Index([<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>])</span>
+<span id="cb3-6"><a></a>default <span class="op">=</span> pd.Index([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>])</span>
+<span id="cb3-7"><a></a></span>
+<span id="cb3-8"><a></a><span class="kw">def</span> test_index_intersection_all():</span>
+<span id="cb3-9"><a></a>    to_intersect <span class="op">=</span> [idx1, idx2, idx3]</span>
+<span id="cb3-10"><a></a>    expected <span class="op">=</span> pd.Index([<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>])</span>
+<span id="cb3-11"><a></a>    calculated <span class="op">=</span> index_intersection_all(</span>
+<span id="cb3-12"><a></a>        to_intersect,</span>
+<span id="cb3-13"><a></a>        default<span class="op">=</span>default,</span>
+<span id="cb3-14"><a></a>    )</span>
+<span id="cb3-15"><a></a>    <span class="cf">assert</span> (calculated <span class="op">==</span> expected).<span class="bu">all</span>()</span>
+<span id="cb3-16"><a></a>    <span class="cf">assert</span> calculated.equals(expected)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="playwright-example" class="slide level2">
 <h2>Playwright Example</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a><span class="im">from</span> shiny.playwright <span class="im">import</span> controller</span>
-<span id="cb2-2"><a></a><span class="im">from</span> shiny.run <span class="im">import</span> ShinyAppProc</span>
-<span id="cb2-3"><a></a><span class="im">from</span> playwright.sync_api <span class="im">import</span> Page</span>
-<span id="cb2-4"><a></a><span class="im">from</span> shiny.pytest <span class="im">import</span> create_app_fixture</span>
-<span id="cb2-5"><a></a></span>
-<span id="cb2-6"><a></a>app <span class="op">=</span> create_app_fixture(<span class="st">"app.py"</span>)</span>
-<span id="cb2-7"><a></a></span>
-<span id="cb2-8"><a></a><span class="kw">def</span> test_basic_app(page: Page, app: ShinyAppProc):</span>
-<span id="cb2-9"><a></a>    page.goto(app.url)</span>
-<span id="cb2-10"><a></a></span>
-<span id="cb2-11"><a></a>    selectize_day <span class="op">=</span> controller.InputSelectize(page, <span class="st">"adaptive-filter_day"</span>)</span>
-<span id="cb2-12"><a></a>    selectize_day.<span class="bu">set</span>(<span class="st">"Fri"</span>)</span>
-<span id="cb2-13"><a></a>    selectize_day.expect_selected([<span class="st">"Fri"</span>])</span>
-<span id="cb2-14"><a></a></span>
-<span id="cb2-15"><a></a>    selectize_time <span class="op">=</span> controller.InputSelectize(page, <span class="st">"adaptive-filter_time"</span>)</span>
-<span id="cb2-16"><a></a>    selectize_time.expect_choices([<span class="st">"Dinner"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a><span class="im">from</span> shiny.playwright <span class="im">import</span> controller</span>
+<span id="cb4-2"><a></a><span class="im">from</span> shiny.run <span class="im">import</span> ShinyAppProc</span>
+<span id="cb4-3"><a></a><span class="im">from</span> playwright.sync_api <span class="im">import</span> Page</span>
+<span id="cb4-4"><a></a><span class="im">from</span> shiny.pytest <span class="im">import</span> create_app_fixture</span>
+<span id="cb4-5"><a></a></span>
+<span id="cb4-6"><a></a>app <span class="op">=</span> create_app_fixture(<span class="st">"app.py"</span>)</span>
+<span id="cb4-7"><a></a></span>
+<span id="cb4-8"><a></a><span class="kw">def</span> test_basic_app(page: Page, app: ShinyAppProc):</span>
+<span id="cb4-9"><a></a>    page.goto(app.url)</span>
+<span id="cb4-10"><a></a></span>
+<span id="cb4-11"><a></a>    selectize_day <span class="op">=</span> controller.InputSelectize(page, <span class="st">"adaptive-filter_day"</span>)</span>
+<span id="cb4-12"><a></a>    selectize_day.<span class="bu">set</span>(<span class="st">"Fri"</span>)</span>
+<span id="cb4-13"><a></a>    selectize_day.expect_selected([<span class="st">"Fri"</span>])</span>
+<span id="cb4-14"><a></a></span>
+<span id="cb4-15"><a></a>    selectize_time <span class="op">=</span> controller.InputSelectize(page, <span class="st">"adaptive-filter_time"</span>)</span>
+<span id="cb4-16"><a></a>    selectize_time.expect_choices([<span class="st">"Dinner"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
