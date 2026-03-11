@@ -12,6 +12,8 @@ project:
     - slides
 website:
   title: "DSCI 532: Data Visualization 2"
+  google-analytics: "G-PDQJ27X42Y"
+
   navbar:
     left:
       - href: setup.qmd
