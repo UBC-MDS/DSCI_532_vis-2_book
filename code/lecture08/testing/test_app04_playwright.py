@@ -9,6 +9,7 @@ app = create_app_fixture("app-04-button-playwright.py")
 def test_initial_value_boxes(page: Page, app: ShinyAppProc) -> None:
     """All three value boxes show correct stats for the full dataset."""
     page.goto(app.url)
+    page.wait_for_load_state("networkidle")
 
     controller.OutputText(page, "total_tippers").expect_value("244")
     controller.OutputText(page, "average_tip").expect_value("16.1%")
