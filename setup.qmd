@@ -10,6 +10,8 @@ You may need more packages for your actual project repository.
 
 Make sure you are installing these packages in a separate virtual enviornment (for the course and project).
 
+As of Q1 2026, keplergl's dependencies only allows Python 3.12 at the latest.
+
 ```
 {{< include requirements.txt >}}
 ```

@@ -15,10 +15,10 @@ ibis-framework[sqlite]
 inspect-ai
 ipykernel
 jupyter
-keplergl
+# keplergl  # incompatible with Python 3.13 (requires pyarrow==16.0.0)
 lxml
 mapclassify
-maplibre
+maplibre[all]
 marimo
 matplotlib
 narwhals
@@ -29,6 +29,7 @@ pandas
 plotly
 plotnine
 polars
+pyarrow
 pymongo
 pyogrio
 pytest
@@ -38,7 +39,7 @@ querychat
 requests
 ridgeplot
 seaborn
-setuptools<81
+setuptools
 shiny
 shinylive
 shinywidgets
