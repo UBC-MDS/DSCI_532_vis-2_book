@@ -96,29 +96,29 @@
     ]
   },
   {
-    "objectID": "slides/100-testing.html#testing",
-    "href": "slides/100-testing.html#testing",
+    "objectID": "slides/10-testing.html#testing",
+    "href": "slides/10-testing.html#testing",
     "title": "Testing",
     "section": "Testing",
     "text": "Testing\n\nHave the computer make the checks you may be doing visually\nHave the checks done in code"
   },
   {
-    "objectID": "slides/100-testing.html#testing-shiny",
-    "href": "slides/100-testing.html#testing-shiny",
+    "objectID": "slides/10-testing.html#testing-shiny",
+    "href": "slides/10-testing.html#testing-shiny",
     "title": "Testing",
     "section": "Testing Shiny",
     "text": "Testing Shiny\n\nTesting is always great (nothing new here)\nPlaywright is the more modern way to test web apps\n\nCompared to Selenium…\n\nShiny makes playwright easier to code against"
   },
   {
-    "objectID": "slides/100-testing.html#pytest-example",
-    "href": "slides/100-testing.html#pytest-example",
+    "objectID": "slides/10-testing.html#pytest-example",
+    "href": "slides/10-testing.html#pytest-example",
     "title": "Testing",
     "section": "Pytest Example",
     "text": "Pytest Example\nimport pandas as pd\n\nidx1 = pd.Index([1, 2, 3, 4, 5])\nidx2 = pd.Index([2, 3, 4, 5, 6])\nidx3 = pd.Index([3, 4, 5, 6, 7])\ndefault = pd.Index([1, 2, 3, 4, 5, 6, 7])\n\ndef test_index_intersection_all():\n    to_intersect = [idx1, idx2, idx3]\n    expected = pd.Index([3, 4, 5])\n    calculated = index_intersection_all(\n        to_intersect,\n        default=default,\n    )\n    assert (calculated == expected).all()\n    assert calculated.equals(expected)"
   },
   {
-    "objectID": "slides/100-testing.html#playwright-example",
-    "href": "slides/100-testing.html#playwright-example",
+    "objectID": "slides/10-testing.html#playwright-example",
+    "href": "slides/10-testing.html#playwright-example",
     "title": "Testing",
     "section": "Playwright Example",
     "text": "Playwright Example\nfrom shiny.playwright import controller\nfrom shiny.run import ShinyAppProc\nfrom playwright.sync_api import Page\nfrom shiny.pytest import create_app_fixture\n\napp = create_app_fixture(\"app.py\")\n\ndef test_basic_app(page: Page, app: ShinyAppProc):\n    page.goto(app.url)\n\n    selectize_day = controller.InputSelectize(page, \"adaptive-filter_day\")\n    selectize_day.set(\"Fri\")\n    selectize_day.expect_selected([\"Fri\"])\n\n    selectize_time = controller.InputSelectize(page, \"adaptive-filter_time\")\n    selectize_time.expect_choices([\"Dinner\"])"
