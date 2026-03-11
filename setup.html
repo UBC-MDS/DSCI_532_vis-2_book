@@ -413,54 +413,57 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="python">Python</h2>
 <p>Here is the working <code>requirements.txt</code> to get started for this course. You may need more packages for your actual project repository.</p>
 <p>Make sure you are installing these packages in a separate virtual enviornment (for the course and project).</p>
-<pre data-code-line-numbers=""><code>jupyter
-ipykernel
-shiny
-shinywidgets
-shinylive
-altair
-vegafusion
-vl-convert-python
-vega-datasets
-pandas
-geopandas
-geoarrow-pandas
-pyogrio
-polars
-narwhals
-plotnine
-plotly
-seaborn
-matplotlib
-ridgeplot
-folium
-branca
-mapclassify
-maplibre
-great-tables
-palmerpenguins
-lxml
-beautifulsoup4
-requests
-openai
+<p>As of Q1 2026, keplergl’s dependencies only allows Python 3.12 at the latest.</p>
+<pre data-code-line-numbers=""><code>altair
 anthropic
+beautifulsoup4
+branca
 chatlas
-inspect-ai
-#keplergl
-querychat
 duckdb
-python-dotenv
-numpy
-tiktoken
+folium
+geoarrow-pandas
+geopandas
+great-tables
 ibis-framework[duckdb]
 ibis-framework[polars]
 ibis-framework[postgres]
 ibis-framework[sqlite]
+inspect-ai
+ipykernel
+jupyter
+# keplergl  # incompatible with Python 3.13 (requires pyarrow==16.0.0)
+lxml
+mapclassify
+maplibre[all]
+marimo
+matplotlib
 narwhals
+numpy
+openai
+palmerpenguins
+pandas
+plotly
+plotnine
+polars
+pyarrow
 pymongo
-snakeviz
+pyogrio
 pytest
 pytest-playwright
+python-dotenv
+querychat
+requests
+ridgeplot
+seaborn
+setuptools
+shiny
+shinylive
+shinywidgets
+snakeviz
+tiktoken
+vega-datasets
+vegafusion
+vl-convert-python
 </code></pre>
 </section>
 <section id="llms" class="level2">
