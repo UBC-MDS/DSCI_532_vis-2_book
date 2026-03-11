@@ -46,3 +46,15 @@ pymongo
 snakeviz
 pytest
 pytest-playwright
+jupyter
+shiny
+altair
+plotnine
+pandas
+polars
+narwhals
+palmerpenguins
+shinylive
+shinywidgets
+keplergl
+setuptools<81
