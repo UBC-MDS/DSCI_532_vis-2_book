@@ -1,3 +1,5 @@
+# run pytest in this directory
+
 import pandas as pd
 import pytest
 

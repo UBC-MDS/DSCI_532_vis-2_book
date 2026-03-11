@@ -1,3 +1,7 @@
+# unit test file in test_summary.py
+# run it by runnign pytest in this directory
+
+
 def calc_tips_summary(df):
     df["tip_pct"] = df.tip / df.total_bill
     summary = (

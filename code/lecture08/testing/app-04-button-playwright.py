@@ -23,6 +23,7 @@ app_ui = ui.page_fluid(
                 min=tips.total_bill.min(),
                 max=tips.total_bill.max(),
                 value=[tips.total_bill.min(), tips.total_bill.max()],
+                step=0.01,
             ),
             ui.input_checkbox_group(
                 id="checkbox_group",
@@ -71,6 +72,15 @@ app_ui = ui.page_fluid(
 
 # Server
 def server(input, output, session):
+
+    @reactive.effect
+    @reactive.event(input.action_button)
+    def reset_filters():
+        ui.update_slider("slider", value=[tips.total_bill.min(), tips.total_bill.max()])
+        ui.update_checkbox_group(
+            "checkbox_group",
+            selected=["Lunch", "Dinner"],
+        )
 
     @reactive.calc
     def filtered_data():
