@@ -1,6 +1,9 @@
 # refactor code where we make and test a function
 # this example
 
+# this app implments the reset button and
+# also changes the tick step in the slider for testing
+
 from shiny import App, render, ui, reactive
 import plotly.express as px
 from ridgeplot import ridgeplot
@@ -23,7 +26,7 @@ app_ui = ui.page_fluid(
                 min=tips.total_bill.min(),
                 max=tips.total_bill.max(),
                 value=[tips.total_bill.min(), tips.total_bill.max()],
-                step=0.01,
+                step=1,
             ),
             ui.input_checkbox_group(
                 id="checkbox_group",

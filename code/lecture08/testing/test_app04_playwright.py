@@ -90,8 +90,8 @@ def test_reset_button_restores_slider(page: Page, app: ShinyAppProc) -> None:
     reset_btn = controller.InputActionButton(page, "action_button")
 
     # Narrow the slider range, then reset
-    slider.set(("3.07", "4.12"), max_err_values=25)
+    slider.set(("10", "30"), max_err_values=25)
     reset_btn.click()
 
-    slider.expect_min(3.07)
-    slider.expect_max(50.81)
+    slider.expect_min("3.07")
+    slider.expect_max("50.81")
