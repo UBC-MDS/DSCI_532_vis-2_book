@@ -1,0 +1,9 @@
+---
+title: "Course Index for Busy People"
+subtitle: "What you learned, what to reach for, and where to find it"
+---
+
+A single-page index of every technique covered in the course: what situation calls for it,
+the key tool, and direct links to the relevant code example, lecture slides, and docs.
+
+{{< include /_job-story-map.qmd >}}

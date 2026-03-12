@@ -1,5 +1,5 @@
 ---
-title: "DSCI 532: Review and pre-Capstone Navigator"
+title: "DSCI 532: Course Review and Recap"
 subtitle: "What you learned, when to use it"
 format:
   revealjs:
@@ -1022,50 +1022,8 @@ shuffleAnswers: true
 
 ## Job Story Map
 
-::: {style="font-size:0.52em; line-height:1.35"}
+::: {style="font-size:0.66em; line-height:1.35"}
 
-| When I… | I use… | So I can… |
-|---|---|---|
-| **Reactivity** | | |
-| have a costly filter used by multiple outputs | `@reactive.calc` | cache once, not once per output |
-| need computation to fire only on user action | `@reactive.event` + `@reactive.effect` | control when side effects run |
-| **Data I/O** | | |
-| want users to sort/filter/select rows and the app reacts | `DataGrid` + `.data_view()` | drive outputs from what the user sees |
-| need to give users a file | `@render.download` + `download_button` | export without blocking the UI |
-| need to persist input or logs across sessions | external DB + `@reactive.effect` + `@reactive.event` | record submissions asynchronously |
-| have a dataset too large to load at startup | ibis + DuckDB + Parquet | filters run as queries, only results load |
-| **LLM & AI** | | |
-| embed a chat interface in a dashboard | `QueryChat` + `system_prompt` | keep the LLM on topic |
-| LLM needs to call live data or functions | `chat.register_tool()` (chatlas) | LLM can act mid-conversation |
-| need structured fields from unstructured text | Pydantic + structured output | get typed, validated JSON |
-| LLM lacks domain-specific knowledge | RAG (per-query injection) | correct answers without fine-tuning |
-| want to log what users ask the LLM | `on_tool_request` hook | audit trail without blocking the flow |
-| want to measure if prompt changes improve output | `inspect_ai` evals | iterate with evidence, not vibes |
-| **Geospatial** | | |
-| need to show geographic patterns | Altair choropleth / point map | explore regional variation interactively |
-
-:::
-
----
-
-## What to reach for
-
-::: {style="font-size:0.50em; line-height:1.35"}
-
-| Situation | Tool | Apps | Slides |
-|---|---|---|---|
-| Interactive web app | Shiny | [app-05](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture01/app-05-core-altair-first_app.py) | [01](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/01-intro_shiny.html), [02](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/02-first_shiny.html) |
-| Shared filter logic | `@reactive.calc` | [app-05](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture02/core/app-05-reactive_calc_reuse.py) | [03](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/03-reactivity.html), [04](https://dsci532-review-pages.netlify.app/slides/04-dashboard-core.html) |
-| Large file, server deployment | ibis + DuckDB + Parquet | [app-02b](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-02b-taxi-parquet.py) | [09-db](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html) |
-| Persist user data across restarts | MongoDB Atlas | [app-03](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-03.py), [app-04](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-04.py) | [09-db](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html) |
-| Add AI chat to dashboard | `querychat` + `QueryChat` | [app-07e](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/demo01/app-07e-querychat-instructions.py), [app-07f](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture05/demo01/app-07f-two-tabs.py) | [07d-dash](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/07d-dashboards.html) |
-| LLM needs domain knowledge | RAG (inject per query) | [rag_demo](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/rag/rag_demo.ipynb) | [08c-rag](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08c-rag.html) |
-| Extract fields from documents | Structured output (Pydantic) | | [08b-struct](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08b-structured.html) |
-| LLM needs live external data | Tool calling | | [08a-tools](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08a-tools.html) |
-| Multi-tool LLM ecosystem | MCP | | [08d-mcp](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08d-mcp.html) |
-| Track prompt quality over time | Evals (`inspect_ai`) | | [08e-evals](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/08e-evals_inspect.html) |
-| Log what users ask | `on_tool_request` hook | [app-04](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture07/app-04.py) | [09-db](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/09-databases.html) |
-| Row selection drives chart | `DataGrid` + `.data_view()` | [app-04-tbl](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/tables/app-04-table-linked.py) | [06a-tbl](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/06a-tables.html) |
-| Show geographic patterns | Altair choropleth / point map | [app-04-map](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/maps/app-04-map-and-chart.py), [app-05-map](https://github.com/UBC-MDS/DSCI_532_vis-2_book/blob/main/code/lecture03/maps/app-05-map-click.py) | [05a-geo](https://ubc-mds.github.io/DSCI_532_vis-2_book/slides/05a-geoviz.html) |
+{{< include /_job-story-map.qmd >}}
 
 :::
