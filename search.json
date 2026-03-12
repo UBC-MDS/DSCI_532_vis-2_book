@@ -3598,7 +3598,7 @@
     "href": "020-dashboard.html#add-data-frame",
     "title": "Tips Dashboard",
     "section": "Add data frame",
-    "text": "Add data frame\n\n\n/tmp/ipykernel_2797/3163269639.py:3: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.\n  df.groupby(\"day\").agg(\n\n\n\n\n\n\n\n\n\nday\ncount\navg_bill\navg_tip\navg_tip_pct\n\n\n\n\n0\nThur\n62\n17.68\n2.77\n0.16\n\n\n1\nFri\n19\n17.15\n2.73\n0.17\n\n\n2\nSat\n87\n20.44\n2.99\n0.15\n\n\n3\nSun\n76\n21.41\n3.26\n0.17\n\n\n\n\n\n\n\nUI: ui.output_data_frame(\"id\") — Server: @render.data_frame — Mutable objects\n# UI placeholder inside the card\nui.card(\n    ui.card_header(\"Tips by day\"),\n    ui.output_data_frame(\"tips_data\"),\n    full_screen=True,\n),\n# Server function — aggregate by day\n@render.data_frame\ndef tips_data():\n    df = filtered_data().copy()\n    df[\"tip_pct\"] = df.tip / df.total_bill\n    summary = df.groupby(\"day\").agg(\n        count=(\"tip\", \"size\"),\n        avg_bill=(\"total_bill\", \"mean\"),\n        avg_tip=(\"tip\", \"mean\"),\n        avg_tip_pct=(\"tip_pct\", \"mean\"),\n    ).round(2).reset_index()\n    return summary",
+    "text": "Add data frame\n\n\n/tmp/ipykernel_2741/3163269639.py:3: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.\n  df.groupby(\"day\").agg(\n\n\n\n\n\n\n\n\n\nday\ncount\navg_bill\navg_tip\navg_tip_pct\n\n\n\n\n0\nThur\n62\n17.68\n2.77\n0.16\n\n\n1\nFri\n19\n17.15\n2.73\n0.17\n\n\n2\nSat\n87\n20.44\n2.99\n0.15\n\n\n3\nSun\n76\n21.41\n3.26\n0.17\n\n\n\n\n\n\n\nUI: ui.output_data_frame(\"id\") — Server: @render.data_frame — Mutable objects\n# UI placeholder inside the card\nui.card(\n    ui.card_header(\"Tips by day\"),\n    ui.output_data_frame(\"tips_data\"),\n    full_screen=True,\n),\n# Server function — aggregate by day\n@render.data_frame\ndef tips_data():\n    df = filtered_data().copy()\n    df[\"tip_pct\"] = df.tip / df.total_bill\n    summary = df.groupby(\"day\").agg(\n        count=(\"tip\", \"size\"),\n        avg_bill=(\"total_bill\", \"mean\"),\n        avg_tip=(\"tip\", \"mean\"),\n        avg_tip_pct=(\"tip_pct\", \"mean\"),\n    ).round(2).reset_index()\n    return summary",
     "crumbs": [
       "Setup",
       "Lecture 2",
@@ -5110,7 +5110,7 @@
     "href": "120-modules.html#code-smell---repeated-elements",
     "title": "Shiny Modules",
     "section": "Code smell - Repeated elements",
-    "text": "Code smell - Repeated elements\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\n\nfrom shiny import App, ui\n\napp_ui = ui.page_fluid(\n    ui.input_slider(\"n1\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n2\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n3\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n4\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n5\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n6\", \"N\", 0, 100, 20),\n)\n\napp = App(app_ui, None)",
+    "text": "Code smell - Repeated elements\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\n\nfrom shiny import App, ui\n\napp_ui = ui.page_fluid(\n    ui.input_slider(\"n1\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n2\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n3\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n4\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n5\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n6\", \"N\", 0, 100, 20),\n)\n\napp = App(app_ui, None)",
     "crumbs": [
       "Setup",
       "Lecture 8",
@@ -5122,7 +5122,7 @@
     "href": "120-modules.html#code-smell---multiple-function-calls",
     "title": "Shiny Modules",
     "section": "Code smell - multiple function calls",
-    "text": "Code smell - multiple function calls\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\n\nfrom shiny import App, ui\n\n\ndef my_slider(id):\n    return ui.input_slider(id, \"N\", 0, 100, 20)\n\n\napp_ui = ui.page_fluid(\n    my_slider(\"n1\"),\n    my_slider(\"n2\"),\n    my_slider(\"n3\"),\n    my_slider(\"n4\"),\n    my_slider(\"n5\"),\n)\n\napp = App(app_ui, None)",
+    "text": "Code smell - multiple function calls\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\n\nfrom shiny import App, ui\n\n\ndef my_slider(id):\n    return ui.input_slider(id, \"N\", 0, 100, 20)\n\n\napp_ui = ui.page_fluid(\n    my_slider(\"n1\"),\n    my_slider(\"n2\"),\n    my_slider(\"n3\"),\n    my_slider(\"n4\"),\n    my_slider(\"n5\"),\n)\n\napp = App(app_ui, None)",
     "crumbs": [
       "Setup",
       "Lecture 8",
@@ -5134,7 +5134,7 @@
     "href": "120-modules.html#code-smell---ui-via-list-iteration",
     "title": "Shiny Modules",
     "section": "Code smell - UI via list iteration",
-    "text": "Code smell - UI via list iteration\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\nfrom shiny import App, ui\n\n\ndef my_slider(id):\n    return ui.input_slider(id, \"N\", 0, 100, 20)\n\n\nids = [\"n1\", \"n2\", \"n3\", \"n4\", \"n5\"]\n\napp_ui = ui.page_fluid([my_slider(x) for x in ids])\n\napp = App(app_ui, None)",
+    "text": "Code smell - UI via list iteration\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\nfrom shiny import App, ui\n\n\ndef my_slider(id):\n    return ui.input_slider(id, \"N\", 0, 100, 20)\n\n\nids = [\"n1\", \"n2\", \"n3\", \"n4\", \"n5\"]\n\napp_ui = ui.page_fluid([my_slider(x) for x in ids])\n\napp = App(app_ui, None)",
     "crumbs": [
       "Setup",
       "Lecture 8",
@@ -5146,7 +5146,7 @@
     "href": "120-modules.html#code-smell---iterating-over-multiple-lists",
     "title": "Shiny Modules",
     "section": "Code smell - iterating over multiple lists",
-    "text": "Code smell - iterating over multiple lists\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\nfrom shiny import App, ui\n\ndef my_slider(id, label):\n    return ui.input_slider(id, label + \" Number\", 0, 100, 20)\n\nnumbers = [\"n1\", \"n2\", \"n3\", \"n4\", \"n5\"]\nlabels = [\"First\", \"Second\", \"Third\", \"Fourth\", \"Fifth\"]\n\napp_ui = ui.page_fluid(\n    [my_slider(x, y) for x, y in zip(numbers, labels)]\n)\n\napp = App(app_ui, None)",
+    "text": "Code smell - iterating over multiple lists\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\nfrom shiny import App, ui\n\ndef my_slider(id, label):\n    return ui.input_slider(id, label + \" Number\", 0, 100, 20)\n\nnumbers = [\"n1\", \"n2\", \"n3\", \"n4\", \"n5\"]\nlabels = [\"First\", \"Second\", \"Third\", \"Fourth\", \"Fifth\"]\n\napp_ui = ui.page_fluid(\n    [my_slider(x, y) for x, y in zip(numbers, labels)]\n)\n\napp = App(app_ui, None)",
     "crumbs": [
       "Setup",
       "Lecture 8",
@@ -5158,7 +5158,7 @@
     "href": "120-modules.html#ids-need-to-be-unique",
     "title": "Shiny Modules",
     "section": "IDs need to be unique",
-    "text": "IDs need to be unique\nThis will work once, not more.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\nfrom shiny import App, ui\nfrom shiny import App, render, ui\n\ndef io_row():\n    return ui.layout_columns(\n        ui.card(ui.input_text(\"text_input\", \"Enter text\")),\n        ui.card(ui.output_text(\"text_output\")),\n    )\n\napp_ui = ui.page_fluid(\n    io_row(),\n)\n\ndef server(input, output, session):\n    @render.text\n    def text_output():\n        return f'You entered \"{input.text_input()}\"'\n\napp = App(app_ui, server)",
+    "text": "IDs need to be unique\nThis will work once, not more.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\nfrom shiny import App, ui\nfrom shiny import App, render, ui\n\ndef io_row():\n    return ui.layout_columns(\n        ui.card(ui.input_text(\"text_input\", \"Enter text\")),\n        ui.card(ui.output_text(\"text_output\")),\n    )\n\napp_ui = ui.page_fluid(\n    io_row(),\n)\n\ndef server(input, output, session):\n    @render.text\n    def text_output():\n        return f'You entered \"{input.text_input()}\"'\n\napp = App(app_ui, server)",
     "crumbs": [
       "Setup",
       "Lecture 8",
@@ -5182,7 +5182,7 @@
     "href": "120-modules.html#shiny-module",
     "title": "Shiny Modules",
     "section": "Shiny module",
-    "text": "Shiny module\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\n\nfrom shiny import App, module, render, ui\n\n\n@module.ui\ndef row_ui():\n    return ui.layout_columns(\n        ui.card(ui.input_text(\"text_in\", \"Enter text\")),\n        ui.card(ui.output_text(\"text_out\")),\n    )\n\n\n@module.server\ndef row_server(input, output, session):\n    @output\n    @render.text\n    def text_out():\n        return f'You entered \"{input.text_in()}\"'\n\n\nextra_ids = [\"row_3\", \"row_4\", \"row_5\"]\n\napp_ui = ui.page_fluid(row_ui(\"row_1\"), row_ui(\"row_2\"), [row_ui(x) for x in extra_ids])\n\n\ndef server(input, output, session):\n    row_server(\"row_1\")\n    row_server(\"row_2\")\n    [row_server(x) for x in extra_ids]\n\n\napp = App(app_ui, server)",
+    "text": "Shiny module\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\n\nfrom shiny import App, module, render, ui\n\n\n@module.ui\ndef row_ui():\n    return ui.layout_columns(\n        ui.card(ui.input_text(\"text_in\", \"Enter text\")),\n        ui.card(ui.output_text(\"text_out\")),\n    )\n\n\n@module.server\ndef row_server(input, output, session):\n    @output\n    @render.text\n    def text_out():\n        return f'You entered \"{input.text_in()}\"'\n\n\nextra_ids = [\"row_3\", \"row_4\", \"row_5\"]\n\napp_ui = ui.page_fluid(row_ui(\"row_1\"), row_ui(\"row_2\"), [row_ui(x) for x in extra_ids])\n\n\ndef server(input, output, session):\n    row_server(\"row_1\")\n    row_server(\"row_2\")\n    [row_server(x) for x in extra_ids]\n\n\napp = App(app_ui, server)",
     "crumbs": [
       "Setup",
       "Lecture 8",
@@ -6349,35 +6349,35 @@
     "href": "slides/12-modules.html#code-smell---repeated-elements",
     "title": "Shiny Modules",
     "section": "Code smell - Repeated elements",
-    "text": "Code smell - Repeated elements\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\n\nfrom shiny import App, ui\n\napp_ui = ui.page_fluid(\n    ui.input_slider(\"n1\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n2\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n3\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n4\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n5\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n6\", \"N\", 0, 100, 20),\n)\n\napp = App(app_ui, None)"
+    "text": "Code smell - Repeated elements\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\n\nfrom shiny import App, ui\n\napp_ui = ui.page_fluid(\n    ui.input_slider(\"n1\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n2\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n3\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n4\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n5\", \"N\", 0, 100, 20),\n    ui.input_slider(\"n6\", \"N\", 0, 100, 20),\n)\n\napp = App(app_ui, None)"
   },
   {
     "objectID": "slides/12-modules.html#code-smell---multiple-function-calls",
     "href": "slides/12-modules.html#code-smell---multiple-function-calls",
     "title": "Shiny Modules",
     "section": "Code smell - multiple function calls",
-    "text": "Code smell - multiple function calls\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\n\nfrom shiny import App, ui\n\n\ndef my_slider(id):\n    return ui.input_slider(id, \"N\", 0, 100, 20)\n\n\napp_ui = ui.page_fluid(\n    my_slider(\"n1\"),\n    my_slider(\"n2\"),\n    my_slider(\"n3\"),\n    my_slider(\"n4\"),\n    my_slider(\"n5\"),\n)\n\napp = App(app_ui, None)"
+    "text": "Code smell - multiple function calls\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\n\nfrom shiny import App, ui\n\n\ndef my_slider(id):\n    return ui.input_slider(id, \"N\", 0, 100, 20)\n\n\napp_ui = ui.page_fluid(\n    my_slider(\"n1\"),\n    my_slider(\"n2\"),\n    my_slider(\"n3\"),\n    my_slider(\"n4\"),\n    my_slider(\"n5\"),\n)\n\napp = App(app_ui, None)"
   },
   {
     "objectID": "slides/12-modules.html#code-smell---ui-via-list-iteration",
     "href": "slides/12-modules.html#code-smell---ui-via-list-iteration",
     "title": "Shiny Modules",
     "section": "Code smell - UI via list iteration",
-    "text": "Code smell - UI via list iteration\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\nfrom shiny import App, ui\n\n\ndef my_slider(id):\n    return ui.input_slider(id, \"N\", 0, 100, 20)\n\n\nids = [\"n1\", \"n2\", \"n3\", \"n4\", \"n5\"]\n\napp_ui = ui.page_fluid([my_slider(x) for x in ids])\n\napp = App(app_ui, None)"
+    "text": "Code smell - UI via list iteration\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\nfrom shiny import App, ui\n\n\ndef my_slider(id):\n    return ui.input_slider(id, \"N\", 0, 100, 20)\n\n\nids = [\"n1\", \"n2\", \"n3\", \"n4\", \"n5\"]\n\napp_ui = ui.page_fluid([my_slider(x) for x in ids])\n\napp = App(app_ui, None)"
   },
   {
     "objectID": "slides/12-modules.html#code-smell---iterating-over-multiple-lists",
     "href": "slides/12-modules.html#code-smell---iterating-over-multiple-lists",
     "title": "Shiny Modules",
     "section": "Code smell - iterating over multiple lists",
-    "text": "Code smell - iterating over multiple lists\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\nfrom shiny import App, ui\n\ndef my_slider(id, label):\n    return ui.input_slider(id, label + \" Number\", 0, 100, 20)\n\nnumbers = [\"n1\", \"n2\", \"n3\", \"n4\", \"n5\"]\nlabels = [\"First\", \"Second\", \"Third\", \"Fourth\", \"Fifth\"]\n\napp_ui = ui.page_fluid(\n    [my_slider(x, y) for x, y in zip(numbers, labels)]\n)\n\napp = App(app_ui, None)"
+    "text": "Code smell - iterating over multiple lists\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\nfrom shiny import App, ui\n\ndef my_slider(id, label):\n    return ui.input_slider(id, label + \" Number\", 0, 100, 20)\n\nnumbers = [\"n1\", \"n2\", \"n3\", \"n4\", \"n5\"]\nlabels = [\"First\", \"Second\", \"Third\", \"Fourth\", \"Fifth\"]\n\napp_ui = ui.page_fluid(\n    [my_slider(x, y) for x, y in zip(numbers, labels)]\n)\n\napp = App(app_ui, None)"
   },
   {
     "objectID": "slides/12-modules.html#ids-need-to-be-unique",
     "href": "slides/12-modules.html#ids-need-to-be-unique",
     "title": "Shiny Modules",
     "section": "IDs need to be unique",
-    "text": "IDs need to be unique\nThis will work once, not more.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\nfrom shiny import App, ui\nfrom shiny import App, render, ui\n\ndef io_row():\n    return ui.layout_columns(\n        ui.card(ui.input_text(\"text_input\", \"Enter text\")),\n        ui.card(ui.output_text(\"text_output\")),\n    )\n\napp_ui = ui.page_fluid(\n    io_row(),\n)\n\ndef server(input, output, session):\n    @render.text\n    def text_output():\n        return f'You entered \"{input.text_input()}\"'\n\napp = App(app_ui, server)"
+    "text": "IDs need to be unique\nThis will work once, not more.\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\nfrom shiny import App, ui\nfrom shiny import App, render, ui\n\ndef io_row():\n    return ui.layout_columns(\n        ui.card(ui.input_text(\"text_input\", \"Enter text\")),\n        ui.card(ui.output_text(\"text_output\")),\n    )\n\napp_ui = ui.page_fluid(\n    io_row(),\n)\n\ndef server(input, output, session):\n    @render.text\n    def text_output():\n        return f'You entered \"{input.text_input()}\"'\n\napp = App(app_ui, server)"
   },
   {
     "objectID": "slides/12-modules.html#modules-are-functions",
@@ -6391,7 +6391,7 @@
     "href": "slides/12-modules.html#shiny-module",
     "title": "Shiny Modules",
     "section": "Shiny module",
-    "text": "Shiny module\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n# | standalone: true\n# | #| components: [editor, viewer]\n# | layout: horizontal\n# | viewerHeight: 500\n\nfrom shiny import App, module, render, ui\n\n\n@module.ui\ndef row_ui():\n    return ui.layout_columns(\n        ui.card(ui.input_text(\"text_in\", \"Enter text\")),\n        ui.card(ui.output_text(\"text_out\")),\n    )\n\n\n@module.server\ndef row_server(input, output, session):\n    @output\n    @render.text\n    def text_out():\n        return f'You entered \"{input.text_in()}\"'\n\n\nextra_ids = [\"row_3\", \"row_4\", \"row_5\"]\n\napp_ui = ui.page_fluid(row_ui(\"row_1\"), row_ui(\"row_2\"), [row_ui(x) for x in extra_ids])\n\n\ndef server(input, output, session):\n    row_server(\"row_1\")\n    row_server(\"row_2\")\n    [row_server(x) for x in extra_ids]\n\n\napp = App(app_ui, server)"
+    "text": "Shiny module\n#| '!! shinylive warning !!': |\n#|   shinylive does not work in self-contained HTML documents.\n#|   Please set `embed-resources: false` in your metadata.\n#|  standalone: true\n#|  components: [editor, viewer]\n#|  layout: horizontal\n#|  viewerHeight: 500\n\nfrom shiny import App, module, render, ui\n\n\n@module.ui\ndef row_ui():\n    return ui.layout_columns(\n        ui.card(ui.input_text(\"text_in\", \"Enter text\")),\n        ui.card(ui.output_text(\"text_out\")),\n    )\n\n\n@module.server\ndef row_server(input, output, session):\n    @output\n    @render.text\n    def text_out():\n        return f'You entered \"{input.text_in()}\"'\n\n\nextra_ids = [\"row_3\", \"row_4\", \"row_5\"]\n\napp_ui = ui.page_fluid(row_ui(\"row_1\"), row_ui(\"row_2\"), [row_ui(x) for x in extra_ids])\n\n\ndef server(input, output, session):\n    row_server(\"row_1\")\n    row_server(\"row_2\")\n    [row_server(x) for x in extra_ids]\n\n\napp = App(app_ui, server)"
   },
   {
     "objectID": "review/04-llm-basics.html",
