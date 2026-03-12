@@ -1,119 +1,279 @@
 ---
-title: Retrival Augmented Generation (RAG)
+title: Retrieval Augmented Generation (RAG)
 ---
 
 
-## What is RAG?
+## Case: NYC Taxi Trips
 
-Retrieval Augmented Generation
+[NYC TLC Trip Record Data](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) — 50K trips, Jan 2024
 
-- Give additional context to the LLM by providing trusted content
-- Inserts a information retrieval step to find relevant information from a knowledge store
-- Retrieved information is then provided to the model's context for LLM response
+::: {.columns}
+::: {.column width="55%"}
+```
+tpep_pickup_datetime  RatecodeID  payment_type
+2024-01-15 08:23:11   1.0         1.0
+2024-01-15 08:31:44   2.0         1.0
+2024-01-15 09:02:58   5.0         2.0
+2024-01-15 09:17:03   1.0         2.0
+```
+:::
+::: {.column width="42%"}
+| Column | Value | Meaning |
+|--------|-------|---------|
+| `RatecodeID` | 1 | Standard rate |
+| | **2** | **JFK flat rate ($70)** |
+| | 3 | Newark airport |
+| | 5 | Negotiated fare |
+| `payment_type` | 1 | Credit card |
+| | 2 | Cash — *tip not recorded* |
+:::
+:::
 
-- Can help with hallucinations
-- Not always predictable which queries will retrieve which knowledge stores
+LLM sees column names and numeric values. The codebook is external.
 
-## Do you need RAG?
+## The problem
 
-- Can you provide the relevant context into the system prompt?
-- Can you register a tool to look up content
-- Need to manage the index and possibly more complex RAG pipeline
+**Option 1:** Put the entire codebook in the system prompt
 
-## Can you use a tool instead?
+> ❌ 20+ paragraphs, every query pays the token cost, hard to keep updated
 
-- Data lives in an API, database, structured source
-- Use look ups on demand (RAG process happens on each query)
+. . .
 
-## When is RAG more useful?
+**Option 2:** Find the relevant part and inject it per query
 
-- Lots of unstructured data (PDFs, documents, notes, etc)
+> ✅ Only the chunks that match this question — retrieval cost < 1ms
 
-...
+. . .
 
-But can you add structure to it?
+*How do you find the right chunks automatically?* → **RAG**
 
-## Create a vector store
+## RAG applies whenever...
 
-```python
-from llama_index.core import SimpleDirectoryReader, VectorStoreIndex
+The LLM needs domain knowledge that's too large for the system prompt:
 
-docs = SimpleDirectoryReader("data").load_data()
-index = VectorStoreIndex.from_documents(docs)
+::: {.incremental}
+- 🚕 **Codebook / data dictionary** — numeric codes that need human-readable labels *(our demo)*: large codebook you don't want to fit in system prompt
+- 🎓 **University rulebook,** 200-page calendar: program requirements, major electives, accommodation procedures, concession rules, course prerequisites. Student asks "Can I take DSCI 532 as a CS elective?" — LLM needs current program rules, not its training data
+- 🔒 **Privacy + local model,** patient records, HR data you can't send to a cloud API. Run a local Llama / Mistral with a local knowledge base — RAG works the same way, fully offline
+:::
+
+## RAG pipeline
+
+::: {.columns}
+::: {.column width="30%"}
+**Without RAG**
+
+```{mermaid}
+flowchart TD
+    Q(["❓ JFK trips?"]) --> LLM[LLM]
+    LLM --> Ans(["RatecodeID = 99 ❌"])
+```
+:::
+::: {.column width="65%"}
+**With RAG**
+
+```{mermaid}
+flowchart LR
+    KB[("Knowledge Base<br/>(built once)")] --> R
+    Q([❓ question]) --> R["Retrieve<br/>top-k chunks"]
+    R --> A["Augmented message =<br/>❓ question<br/>+ context from KB"]
+    A --> LLM[LLM]
+    LLM --> Ans([Answer ✓])
+```
+:::
+:::
+
+The knowledge base is built once — but can be rapidly updated (add/edit text files, re-index).
+
+. . .
+
+**Key questions:**
+
+- 📦 *Knowledge base:* what format? how do you build it?
+- 🔍 *Retrieve:* how does it find the right chunks? TF-IDF? embeddings?
+- 💬 *Augmented message:* what does it actually look like?
+- 🤔 *When to use RAG at all?* vs. system prompt, vs. tool
+
+## 📦 Knowledge base
+
+Can be just plain text chunks:
+
+```
+RatecodeID defines the fare rate type applied for the trip:
+1 = Standard rate (most trips)
+2 = JFK airport flat rate ($70 + tolls)
+3 = Newark airport
+4 = Nassau or Westchester
+5 = Negotiated fare (pre-arranged price, not metered)
+6 = Group ride
+
+payment_type codes (how the passenger paid):
+1 = Credit card  2 = Cash  3 = No charge
+4 = Dispute      5 = Unknown  6 = Voided trip
 ```
 
-## Optional: save vector store
+One topic per paragraph. No special format needed — plain `.txt` is enough to start.
 
-```python
-index.storage_context.persist(persist_dir="./storage")
+. . .
+
+**When I want to scale storage beyond flat files:**
+
+- **When I have 1K+ docs and need fast similarity search** → [`ChromaDB`](https://www.trychroma.com/): local, no server, `pip install chromadb`
+- **When I need a production-grade vector DB** → [`Qdrant`](https://qdrant.tech/) or [`Pinecone`](https://www.pinecone.io/): hosted, scalable, filter by metadata
+- **When my data is already in MongoDB** → [MongoDB Atlas Vector Search](https://www.mongodb.com/products/platform/atlas-vector-search): no separate DB needed
+
+## 🔍 Retrieve
+
+TF-IDF (Term Frequency–Inverse Document Frequency):
+
+- Represents each chunk as a *sparse* vector: one dimension per vocabulary word
+- Non-zero only where the word appears; weighted by how rare it is across all chunks
+- Query is vectorized the same way → **cosine similarity** ranks chunks by overlap
+
+. . .
+
+Good enough for structured glossaries and codebooks where exact keywords appear in queries.
+
+*No API key. No model download. Runs in < 1ms.*
+
+## 🔍 Retrieve: how it works
+
+```{mermaid}
+flowchart LR
+    Q([User query]) --> EQ["Vectorize query<br/>(same method as KB)"]
+    DOCS[("KB vectors<br/>(pre-built)")] --> COS
+    EQ --> COS["Cosine similarity<br/>query ↔ each chunk"]
+    COS --> RANK[Rank by score]
+    RANK --> THR{"score ≥<br/>threshold?"}
+    THR -->|"yes → top-k"| CTX[Selected chunks]
+    THR -->|no match| SKIP[No injection]
+    CTX --> AUG[Inject into<br/>user prompt]
 ```
 
-## Retrieve concent
+## 🔍 Retrieve: plain text + word frequency vector (TF-IDF)
 
 ```python
-from llama_index.core import StorageContext, load_index_from_storage
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
-# Load the knowledge store (index) from disk
-storage_context = StorageContext.from_defaults(persist_dir="./storage")
-index = load_index_from_storage(storage_context)
+# Build index once
+chunks = Path("taxi_glossary.txt").read_text().split("\n\n")
+vectorizer = TfidfVectorizer()
+kb_vectors = vectorizer.fit_transform(chunks)
 
-def retrieve_trusted_content(query):
-    retriever = index.as_retriever(similarity_top_k=5)
-    nodes = retriever.retrieve(query)
-    return [f"<excerpt>{x.text}</excerpt>" for x in nodes]
+# Retrieve on every query
+def retrieve(query: str, top_k: int = 3) -> list[str]:
+    q_vec = vectorizer.transform([query])
+    scores = cosine_similarity(q_vec, kb_vectors).flatten()
+    top_idx = np.argsort(scores)[::-1][:top_k]
+    return [chunks[i] for i in top_idx if scores[i] > 0]
 ```
 
-## Dynamic retrieval
+No framework. No API key. ~10 lines.
 
-- Makes the retrieval step a tool for the LLM
+## 🔍 Retrieve: TF-IDF vs. dense embeddings
 
-...
+TF-IDF represents text as word counts. Dense embeddings represent text as meaning: a neural network maps each chunk to a point in high-dimensional space where semantically similar text lands nearby.
 
-- More flexible and robust
+| | TF-IDF | Dense embeddings |
+|---|---|---|
+| Vector type | Sparse (word counts) | Dense (all dims non-zero) |
+| Matches | Exact keyword overlap | Semantic meaning |
+| "JFK" ↔ "airport" | ❌ different words | ✅ similar meaning |
+| Setup | `sklearn`, instant | model download or API |
+| Speed | < 1ms | 5–50ms |
+| Best for | Structured glossaries | Natural language docs |
 
-## Dynamic retrieval: Function
+. . .
 
-Create a function
+*Start with TF-IDF. Switch to embeddings when vocabulary mismatch causes misses.*
 
-```python
-from chatlas import ChatOpenAI
-from llama_index.core import StorageContext, load_index_from_storage
+For codebooks, exact match is actually the point: `RatecodeID` should only match chunks about `RatecodeID`, not semantically similar fare-related paragraphs.
 
-# Load the knowledge store (index) from disk
-storage_context = StorageContext.from_defaults(persist_dir="./storage")
-index = load_index_from_storage(storage_context)
+## 🔍 Retrieve: scale up with dense embeddings
 
-def retrieve_trusted_content(query: str, top_k: int = 5):
-    """
-    Retrieve relevant content from the knowledge store.
+When exact keyword overlap isn't enough, switch to dense embeddings:
 
-    Parameters
-    ----------
-    query
-        The query used to semantically search the knowledge store.
-    top_k
-        The number of results to retrieve from the knowledge store.
-    """
-    retriever = index.as_retriever(similarity_top_k=top_k)
-    nodes = retriever.retrieve(query)
-    return [f"<excerpt>{x.text}</excerpt>" for x in nodes]
-```
-## Dynamic retrieval: Register tool
+- **When I want free local embeddings, no API key, no internet:** → [`sentence-transformers`](https://www.sbert.net/): download once, run forever
 
-```python
-chat = ChatOpenAI(
-    system_prompt="You are a helpful, but terse, assistant. "
-    "If you can't answer the question based on the trusted content, say so."
-)
+  ```python
+  from sentence_transformers import SentenceTransformer
+  model = SentenceTransformer("all-MiniLM-L6-v2")  # ~90MB, 384-dim
+  kb_vectors = model.encode(chunks)
+  ```
 
-chat.register_tool(retrieve_trusted_content)
-```
-## Dynamic retrieval: Chat
+- **When I want a free API with no model download:** → [Jina AI](https://jina.ai/): 1M tokens free, no credit card, 1024-dim vectors
 
-```python
-chat.chat("Who created the unicorn programming language?")
-```
+- **When I need production-quality embeddings:** → [OpenAI `text-embedding-3-small`](https://platform.openai.com/docs/guides/embeddings) or [Cohere Embed](https://cohere.com/embed)
 
-## Demo: Local RAG example
+- **When I want retrieval + storage + indexing in one framework:** → [`llama_index`](https://docs.llamaindex.ai/): loads docs, builds vector index, persists to disk
 
-<https://github.com/chendaniely/nydsaic2025-llm/tree/main/code/06-rag>
+  ```python
+  from llama_index.core import SimpleDirectoryReader, VectorStoreIndex
+  index = VectorStoreIndex.from_documents(SimpleDirectoryReader("data").load_data())
+  index.storage_context.persist(persist_dir="./storage")
+  ```
+
+## RAG is a spectrum
+
+| Level | Approach | When |
+|---|---|---|
+| 0: No RAG | All context in system prompt | < 10 short paragraphs |
+| 1: Simple RAG | TF-IDF + flat files | Structured glossary, < 1ms |
+| 2: Embedding RAG | Sentence-transformers + vector DB | 1K+ docs, semantic search |
+| 3: Agentic RAG | LLM decides when and what to retrieve | Multi-step reasoning |
+
+. . .
+
+*Start at 0. Move up only when you hit the wall at the current level.*
+
+## When to use RAG
+
+**✅ Use RAG when:**
+
+- Domain has codes, acronyms, or jargon the LLM doesn't know
+- Knowledge base changes — update KB, not the model
+- Large glossary / rulebook — inject only the relevant slice per query
+
+. . .
+
+**❌ Skip RAG when:**
+
+- LLM already knows the domain (standard Python, SQL, common APIs)
+- Tiny KB (< 10 paragraphs) — just put it all in the system prompt
+- Guaranteed accuracy required — retrieval can fail silently
+
+. . .
+
+**⚠️ Failure modes:** retrieval miss · hallucination despite context · stale KB · context overflow
+
+## Where to go next
+
+**Connect RAG to your Shiny app:**
+
+- Hook into `@reactive.event(input.querychat_user_input)`: retrieve context, prepend to the user message before calling the model
+- Register `retrieve()` as a **tool**: LLM decides when to call it (→ tools lecture)
+
+→ [Walkthrough and Demo with QueryChat](../code/lecture07/rag/rag_demo.py)
+
+. . .
+
+**Scale up when ready:**
+
+*Storage:*
+
+- When KB grows beyond flat files → [`ChromaDB`](https://www.trychroma.com/): local, no server, `pip install chromadb`
+- When you need hosted + metadata filtering → [`Qdrant`](https://qdrant.tech/) or [`Pinecone`](https://www.pinecone.io/)
+- When data is already in MongoDB → [MongoDB Atlas Vector Search](https://www.mongodb.com/products/platform/atlas-vector-search)
+
+*Retrieval:*
+
+- When TF-IDF misses semantic matches → [`sentence-transformers`](https://www.sbert.net()): local, ~90MB, no API key
+- When you want a free embedding API → [Jina AI](https://jina.ai/): 1M tokens, no credit card
+- When you need production-quality embeddings → [OpenAI `text-embedding-3-small`](https://platform.openai.com/docs/guides/embeddings) or [Cohere Embed](https://cohere.com/embed)
+
+*Eval:*
+
+- When you want to measure retrieval quality → [RAGAS](https://docs.ragas.io/)
+

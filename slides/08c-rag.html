@@ -13,7 +13,7 @@
 <script src="../site_libs/quarto-contrib/quizdown-0.6.0/quizdown-init.js"></script><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.27">
 
-  <title>DSCI 532: Data Visualization 2 – Retrival Augmented Generation (RAG)</title>
+  <title>DSCI 532: Data Visualization 2 – Retrieval Augmented Generation (RAG)</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -201,129 +201,386 @@
       margin-right: 0; 
     }
   </style>
+  <script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Retrival Augmented Generation (RAG)</h1>
+  <h1 class="title">Retrieval Augmented Generation (RAG)</h1>
 
 <div class="quarto-title-authors">
 </div>
 
 </section>
-<section id="what-is-rag" class="slide level2">
-<h2>What is RAG?</h2>
-<p>Retrieval Augmented Generation</p>
+<section id="case-nyc-taxi-trips" class="slide level2">
+<h2>Case: NYC Taxi Trips</h2>
+<p><a href="https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page">NYC TLC Trip Record Data</a> — 50K trips, Jan 2024</p>
+<div class="columns">
+<div class="column" style="width:55%;">
+<pre><code>tpep_pickup_datetime  RatecodeID  payment_type
+2024-01-15 08:23:11   1.0         1.0
+2024-01-15 08:31:44   2.0         1.0
+2024-01-15 09:02:58   5.0         2.0
+2024-01-15 09:17:03   1.0         2.0</code></pre>
+</div><div class="column" style="width:42%;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Column</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>RatecodeID</code></td>
+<td>1</td>
+<td>Standard rate</td>
+</tr>
+<tr class="even">
+<td></td>
+<td><strong>2</strong></td>
+<td><strong>JFK flat rate ($70)</strong></td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>3</td>
+<td>Newark airport</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>5</td>
+<td>Negotiated fare</td>
+</tr>
+<tr class="odd">
+<td><code>payment_type</code></td>
+<td>1</td>
+<td>Credit card</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>2</td>
+<td>Cash — <em>tip not recorded</em></td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>LLM sees column names and numeric values. The codebook is external.</p>
+</section>
+<section id="the-problem" class="slide level2">
+<h2>The problem</h2>
+<p><strong>Option 1:</strong> Put the entire codebook in the system prompt</p>
+<blockquote>
+<p>❌ 20+ paragraphs, every query pays the token cost, hard to keep updated</p>
+</blockquote>
+<div class="fragment">
+<p><strong>Option 2:</strong> Find the relevant part and inject it per query</p>
+<blockquote>
+<p>✅ Only the chunks that match this question — retrieval cost &lt; 1ms</p>
+</blockquote>
+</div>
+<div class="fragment">
+<p><em>How do you find the right chunks automatically?</em> → <strong>RAG</strong></p>
+</div>
+</section>
+<section id="rag-applies-whenever" class="slide level2">
+<h2>RAG applies whenever…</h2>
+<p>The LLM needs domain knowledge that’s too large for the system prompt:</p>
 <ul>
-<li><p>Give additional context to the LLM by providing trusted content</p></li>
-<li><p>Inserts a information retrieval step to find relevant information from a knowledge store</p></li>
-<li><p>Retrieved information is then provided to the model’s context for LLM response</p></li>
-<li><p>Can help with hallucinations</p></li>
-<li><p>Not always predictable which queries will retrieve which knowledge stores</p></li>
+<li class="fragment">🚕 <strong>Codebook / data dictionary</strong> — numeric codes that need human-readable labels <em>(our demo)</em>: large codebook you don’t want to fit in system prompt</li>
+<li class="fragment">🎓 <strong>University rulebook,</strong> 200-page calendar: program requirements, major electives, accommodation procedures, concession rules, course prerequisites. Student asks “Can I take DSCI 532 as a CS elective?” — LLM needs current program rules, not its training data</li>
+<li class="fragment">🔒 <strong>Privacy + local model,</strong> patient records, HR data you can’t send to a cloud API. Run a local Llama / Mistral with a local knowledge base — RAG works the same way, fully offline</li>
 </ul>
 </section>
-<section id="do-you-need-rag" class="slide level2">
-<h2>Do you need RAG?</h2>
+<section id="rag-pipeline" class="slide level2">
+<h2>RAG pipeline</h2>
+<div class="columns">
+<div class="column" style="width:30%;">
+<p><strong>Without RAG</strong></p>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    Q(["❓ JFK trips?"]) --&gt; LLM[LLM]
+    LLM --&gt; Ans(["RatecodeID = 99 ❌"])
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:65%;">
+<p><strong>With RAG</strong></p>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    KB[("Knowledge Base&lt;br/&gt;(built once)")] --&gt; R
+    Q([❓ question]) --&gt; R["Retrieve&lt;br/&gt;top-k chunks"]
+    R --&gt; A["Augmented message =&lt;br/&gt;❓ question&lt;br/&gt;+ context from KB"]
+    A --&gt; LLM[LLM]
+    LLM --&gt; Ans([Answer ✓])
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div></div>
+<p>The knowledge base is built once — but can be rapidly updated (add/edit text files, re-index).</p>
+<div class="fragment">
+<p><strong>Key questions:</strong></p>
 <ul>
-<li>Can you provide the relevant context into the system prompt?</li>
-<li>Can you register a tool to look up content</li>
-<li>Need to manage the index and possibly more complex RAG pipeline</li>
+<li>📦 <em>Knowledge base:</em> what format? how do you build it?</li>
+<li>🔍 <em>Retrieve:</em> how does it find the right chunks? TF-IDF? embeddings?</li>
+<li>💬 <em>Augmented message:</em> what does it actually look like?</li>
+<li>🤔 <em>When to use RAG at all?</em> vs.&nbsp;system prompt, vs.&nbsp;tool</li>
+</ul>
+</div>
+</section>
+<section id="knowledge-base" class="slide level2">
+<h2>📦 Knowledge base</h2>
+<p>Can be just plain text chunks:</p>
+<pre><code>RatecodeID defines the fare rate type applied for the trip:
+1 = Standard rate (most trips)
+2 = JFK airport flat rate ($70 + tolls)
+3 = Newark airport
+4 = Nassau or Westchester
+5 = Negotiated fare (pre-arranged price, not metered)
+6 = Group ride
+
+payment_type codes (how the passenger paid):
+1 = Credit card  2 = Cash  3 = No charge
+4 = Dispute      5 = Unknown  6 = Voided trip</code></pre>
+<p>One topic per paragraph. No special format needed — plain <code>.txt</code> is enough to start.</p>
+<div class="fragment">
+<p><strong>When I want to scale storage beyond flat files:</strong></p>
+<ul>
+<li><strong>When I have 1K+ docs and need fast similarity search</strong> → <a href="https://www.trychroma.com/"><code>ChromaDB</code></a>: local, no server, <code>pip install chromadb</code></li>
+<li><strong>When I need a production-grade vector DB</strong> → <a href="https://qdrant.tech/"><code>Qdrant</code></a> or <a href="https://www.pinecone.io/"><code>Pinecone</code></a>: hosted, scalable, filter by metadata</li>
+<li><strong>When my data is already in MongoDB</strong> → <a href="https://www.mongodb.com/products/platform/atlas-vector-search">MongoDB Atlas Vector Search</a>: no separate DB needed</li>
+</ul>
+</div>
+</section>
+<section id="retrieve" class="slide level2">
+<h2>🔍 Retrieve</h2>
+<p>TF-IDF (Term Frequency–Inverse Document Frequency):</p>
+<ul>
+<li>Represents each chunk as a <em>sparse</em> vector: one dimension per vocabulary word</li>
+<li>Non-zero only where the word appears; weighted by how rare it is across all chunks</li>
+<li>Query is vectorized the same way → <strong>cosine similarity</strong> ranks chunks by overlap</li>
+</ul>
+<div class="fragment">
+<p>Good enough for structured glossaries and codebooks where exact keywords appear in queries.</p>
+<p><em>No API key. No model download. Runs in &lt; 1ms.</em></p>
+</div>
+</section>
+<section id="retrieve-how-it-works" class="slide level2">
+<h2>🔍 Retrieve: how it works</h2>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    Q([User query]) --&gt; EQ["Vectorize query&lt;br/&gt;(same method as KB)"]
+    DOCS[("KB vectors&lt;br/&gt;(pre-built)")] --&gt; COS
+    EQ --&gt; COS["Cosine similarity&lt;br/&gt;query ↔ each chunk"]
+    COS --&gt; RANK[Rank by score]
+    RANK --&gt; THR{"score ≥&lt;br/&gt;threshold?"}
+    THR --&gt;|"yes → top-k"| CTX[Selected chunks]
+    THR --&gt;|no match| SKIP[No injection]
+    CTX --&gt; AUG[Inject into&lt;br/&gt;user prompt]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="retrieve-plain-text-word-frequency-vector-tf-idf" class="slide level2">
+<h2>🔍 Retrieve: plain text + word frequency vector (TF-IDF)</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
+<span id="cb3-2"><a></a><span class="im">from</span> sklearn.metrics.pairwise <span class="im">import</span> cosine_similarity</span>
+<span id="cb3-3"><a></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-4"><a></a></span>
+<span id="cb3-5"><a></a><span class="co"># Build index once</span></span>
+<span id="cb3-6"><a></a>chunks <span class="op">=</span> Path(<span class="st">"taxi_glossary.txt"</span>).read_text().split(<span class="st">"</span><span class="ch">\n\n</span><span class="st">"</span>)</span>
+<span id="cb3-7"><a></a>vectorizer <span class="op">=</span> TfidfVectorizer()</span>
+<span id="cb3-8"><a></a>kb_vectors <span class="op">=</span> vectorizer.fit_transform(chunks)</span>
+<span id="cb3-9"><a></a></span>
+<span id="cb3-10"><a></a><span class="co"># Retrieve on every query</span></span>
+<span id="cb3-11"><a></a><span class="kw">def</span> retrieve(query: <span class="bu">str</span>, top_k: <span class="bu">int</span> <span class="op">=</span> <span class="dv">3</span>) <span class="op">-&gt;</span> <span class="bu">list</span>[<span class="bu">str</span>]:</span>
+<span id="cb3-12"><a></a>    q_vec <span class="op">=</span> vectorizer.transform([query])</span>
+<span id="cb3-13"><a></a>    scores <span class="op">=</span> cosine_similarity(q_vec, kb_vectors).flatten()</span>
+<span id="cb3-14"><a></a>    top_idx <span class="op">=</span> np.argsort(scores)[::<span class="op">-</span><span class="dv">1</span>][:top_k]</span>
+<span id="cb3-15"><a></a>    <span class="cf">return</span> [chunks[i] <span class="cf">for</span> i <span class="kw">in</span> top_idx <span class="cf">if</span> scores[i] <span class="op">&gt;</span> <span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>No framework. No API key. ~10 lines.</p>
+</section>
+<section id="retrieve-tf-idf-vs.-dense-embeddings" class="slide level2">
+<h2>🔍 Retrieve: TF-IDF vs.&nbsp;dense embeddings</h2>
+<p>TF-IDF represents text as word counts. Dense embeddings represent text as meaning: a neural network maps each chunk to a point in high-dimensional space where semantically similar text lands nearby.</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th>TF-IDF</th>
+<th>Dense embeddings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Vector type</td>
+<td>Sparse (word counts)</td>
+<td>Dense (all dims non-zero)</td>
+</tr>
+<tr class="even">
+<td>Matches</td>
+<td>Exact keyword overlap</td>
+<td>Semantic meaning</td>
+</tr>
+<tr class="odd">
+<td>“JFK” ↔︎ “airport”</td>
+<td>❌ different words</td>
+<td>✅ similar meaning</td>
+</tr>
+<tr class="even">
+<td>Setup</td>
+<td><code>sklearn</code>, instant</td>
+<td>model download or API</td>
+</tr>
+<tr class="odd">
+<td>Speed</td>
+<td>&lt; 1ms</td>
+<td>5–50ms</td>
+</tr>
+<tr class="even">
+<td>Best for</td>
+<td>Structured glossaries</td>
+<td>Natural language docs</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><em>Start with TF-IDF. Switch to embeddings when vocabulary mismatch causes misses.</em></p>
+<p>For codebooks, exact match is actually the point: <code>RatecodeID</code> should only match chunks about <code>RatecodeID</code>, not semantically similar fare-related paragraphs.</p>
+</div>
+</section>
+<section id="retrieve-scale-up-with-dense-embeddings" class="slide level2">
+<h2>🔍 Retrieve: scale up with dense embeddings</h2>
+<p>When exact keyword overlap isn’t enough, switch to dense embeddings:</p>
+<ul>
+<li><p><strong>When I want free local embeddings, no API key, no internet:</strong> → <a href="https://www.sbert.net/"><code>sentence-transformers</code></a>: download once, run forever</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a><span class="im">from</span> sentence_transformers <span class="im">import</span> SentenceTransformer</span>
+<span id="cb4-2"><a></a>model <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L6-v2"</span>)  <span class="co"># ~90MB, 384-dim</span></span>
+<span id="cb4-3"><a></a>kb_vectors <span class="op">=</span> model.encode(chunks)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>When I want a free API with no model download:</strong> → <a href="https://jina.ai/">Jina AI</a>: 1M tokens free, no credit card, 1024-dim vectors</p></li>
+<li><p><strong>When I need production-quality embeddings:</strong> → <a href="https://platform.openai.com/docs/guides/embeddings">OpenAI <code>text-embedding-3-small</code></a> or <a href="https://cohere.com/embed">Cohere Embed</a></p></li>
+<li><p><strong>When I want retrieval + storage + indexing in one framework:</strong> → <a href="https://docs.llamaindex.ai/"><code>llama_index</code></a>: loads docs, builds vector index, persists to disk</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a><span class="im">from</span> llama_index.core <span class="im">import</span> SimpleDirectoryReader, VectorStoreIndex</span>
+<span id="cb5-2"><a></a>index <span class="op">=</span> VectorStoreIndex.from_documents(SimpleDirectoryReader(<span class="st">"data"</span>).load_data())</span>
+<span id="cb5-3"><a></a>index.storage_context.persist(persist_dir<span class="op">=</span><span class="st">"./storage"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 </ul>
 </section>
-<section id="can-you-use-a-tool-instead" class="slide level2">
-<h2>Can you use a tool instead?</h2>
+<section id="rag-is-a-spectrum" class="slide level2">
+<h2>RAG is a spectrum</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Level</th>
+<th>Approach</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0: No RAG</td>
+<td>All context in system prompt</td>
+<td>&lt; 10 short paragraphs</td>
+</tr>
+<tr class="even">
+<td>1: Simple RAG</td>
+<td>TF-IDF + flat files</td>
+<td>Structured glossary, &lt; 1ms</td>
+</tr>
+<tr class="odd">
+<td>2: Embedding RAG</td>
+<td>Sentence-transformers + vector DB</td>
+<td>1K+ docs, semantic search</td>
+</tr>
+<tr class="even">
+<td>3: Agentic RAG</td>
+<td>LLM decides when and what to retrieve</td>
+<td>Multi-step reasoning</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><em>Start at 0. Move up only when you hit the wall at the current level.</em></p>
+</div>
+</section>
+<section id="when-to-use-rag" class="slide level2">
+<h2>When to use RAG</h2>
+<p><strong>✅ Use RAG when:</strong></p>
 <ul>
-<li>Data lives in an API, database, structured source</li>
-<li>Use look ups on demand (RAG process happens on each query)</li>
+<li>Domain has codes, acronyms, or jargon the LLM doesn’t know</li>
+<li>Knowledge base changes — update KB, not the model</li>
+<li>Large glossary / rulebook — inject only the relevant slice per query</li>
 </ul>
-</section>
-<section id="when-is-rag-more-useful" class="slide level2">
-<h2>When is RAG more useful?</h2>
+<div class="fragment">
+<p><strong>❌ Skip RAG when:</strong></p>
 <ul>
-<li>Lots of unstructured data (PDFs, documents, notes, etc)</li>
+<li>LLM already knows the domain (standard Python, SQL, common APIs)</li>
+<li>Tiny KB (&lt; 10 paragraphs) — just put it all in the system prompt</li>
+<li>Guaranteed accuracy required — retrieval can fail silently</li>
 </ul>
-<p>…</p>
-<p>But can you add structure to it?</p>
+</div>
+<div class="fragment">
+<p><strong>⚠️ Failure modes:</strong> retrieval miss · hallucination despite context · stale KB · context overflow</p>
+</div>
 </section>
-<section id="create-a-vector-store" class="slide level2">
-<h2>Create a vector store</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="im">from</span> llama_index.core <span class="im">import</span> SimpleDirectoryReader, VectorStoreIndex</span>
-<span id="cb1-2"><a></a></span>
-<span id="cb1-3"><a></a>docs <span class="op">=</span> SimpleDirectoryReader(<span class="st">"data"</span>).load_data()</span>
-<span id="cb1-4"><a></a>index <span class="op">=</span> VectorStoreIndex.from_documents(docs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="optional-save-vector-store" class="slide level2">
-<h2>Optional: save vector store</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a>index.storage_context.persist(persist_dir<span class="op">=</span><span class="st">"./storage"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="retrieve-concent" class="slide level2">
-<h2>Retrieve concent</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="im">from</span> llama_index.core <span class="im">import</span> StorageContext, load_index_from_storage</span>
-<span id="cb3-2"><a></a></span>
-<span id="cb3-3"><a></a><span class="co"># Load the knowledge store (index) from disk</span></span>
-<span id="cb3-4"><a></a>storage_context <span class="op">=</span> StorageContext.from_defaults(persist_dir<span class="op">=</span><span class="st">"./storage"</span>)</span>
-<span id="cb3-5"><a></a>index <span class="op">=</span> load_index_from_storage(storage_context)</span>
-<span id="cb3-6"><a></a></span>
-<span id="cb3-7"><a></a><span class="kw">def</span> retrieve_trusted_content(query):</span>
-<span id="cb3-8"><a></a>    retriever <span class="op">=</span> index.as_retriever(similarity_top_k<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb3-9"><a></a>    nodes <span class="op">=</span> retriever.retrieve(query)</span>
-<span id="cb3-10"><a></a>    <span class="cf">return</span> [<span class="ss">f"&lt;excerpt&gt;</span><span class="sc">{</span>x<span class="sc">.</span>text<span class="sc">}</span><span class="ss">&lt;/excerpt&gt;"</span> <span class="cf">for</span> x <span class="kw">in</span> nodes]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="dynamic-retrieval" class="slide level2">
-<h2>Dynamic retrieval</h2>
+<section id="where-to-go-next" class="slide level2">
+<h2>Where to go next</h2>
+<p><strong>Connect RAG to your Shiny app:</strong></p>
 <ul>
-<li>Makes the retrieval step a tool for the LLM</li>
+<li>Hook into <code>@reactive.event(input.querychat_user_input)</code>: retrieve context, prepend to the user message before calling the model</li>
+<li>Register <code>retrieve()</code> as a <strong>tool</strong>: LLM decides when to call it (→ tools lecture)</li>
 </ul>
-<p>…</p>
+<p>→ <a href="../code/lecture07/rag/rag_demo.py">Walkthrough and Demo with QueryChat</a></p>
+<div class="fragment">
+<p><strong>Scale up when ready:</strong></p>
+<p><em>Storage:</em></p>
 <ul>
-<li>More flexible and robust</li>
+<li>When KB grows beyond flat files → <a href="https://www.trychroma.com/"><code>ChromaDB</code></a>: local, no server, <code>pip install chromadb</code></li>
+<li>When you need hosted + metadata filtering → <a href="https://qdrant.tech/"><code>Qdrant</code></a> or <a href="https://www.pinecone.io/"><code>Pinecone</code></a></li>
+<li>When data is already in MongoDB → <a href="https://www.mongodb.com/products/platform/atlas-vector-search">MongoDB Atlas Vector Search</a></li>
 </ul>
-</section>
-<section id="dynamic-retrieval-function" class="slide level2">
-<h2>Dynamic retrieval: Function</h2>
-<p>Create a function</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a><span class="im">from</span> chatlas <span class="im">import</span> ChatOpenAI</span>
-<span id="cb4-2"><a></a><span class="im">from</span> llama_index.core <span class="im">import</span> StorageContext, load_index_from_storage</span>
-<span id="cb4-3"><a></a></span>
-<span id="cb4-4"><a></a><span class="co"># Load the knowledge store (index) from disk</span></span>
-<span id="cb4-5"><a></a>storage_context <span class="op">=</span> StorageContext.from_defaults(persist_dir<span class="op">=</span><span class="st">"./storage"</span>)</span>
-<span id="cb4-6"><a></a>index <span class="op">=</span> load_index_from_storage(storage_context)</span>
-<span id="cb4-7"><a></a></span>
-<span id="cb4-8"><a></a><span class="kw">def</span> retrieve_trusted_content(query: <span class="bu">str</span>, top_k: <span class="bu">int</span> <span class="op">=</span> <span class="dv">5</span>):</span>
-<span id="cb4-9"><a></a>    <span class="co">"""</span></span>
-<span id="cb4-10"><a></a><span class="co">    Retrieve relevant content from the knowledge store.</span></span>
-<span id="cb4-11"><a></a></span>
-<span id="cb4-12"><a></a><span class="co">    Parameters</span></span>
-<span id="cb4-13"><a></a><span class="co">    ----------</span></span>
-<span id="cb4-14"><a></a><span class="co">    query</span></span>
-<span id="cb4-15"><a></a><span class="co">        The query used to semantically search the knowledge store.</span></span>
-<span id="cb4-16"><a></a><span class="co">    top_k</span></span>
-<span id="cb4-17"><a></a><span class="co">        The number of results to retrieve from the knowledge store.</span></span>
-<span id="cb4-18"><a></a><span class="co">    """</span></span>
-<span id="cb4-19"><a></a>    retriever <span class="op">=</span> index.as_retriever(similarity_top_k<span class="op">=</span>top_k)</span>
-<span id="cb4-20"><a></a>    nodes <span class="op">=</span> retriever.retrieve(query)</span>
-<span id="cb4-21"><a></a>    <span class="cf">return</span> [<span class="ss">f"&lt;excerpt&gt;</span><span class="sc">{</span>x<span class="sc">.</span>text<span class="sc">}</span><span class="ss">&lt;/excerpt&gt;"</span> <span class="cf">for</span> x <span class="kw">in</span> nodes]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="dynamic-retrieval-register-tool" class="slide level2">
-<h2>Dynamic retrieval: Register tool</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a>chat <span class="op">=</span> ChatOpenAI(</span>
-<span id="cb5-2"><a></a>    system_prompt<span class="op">=</span><span class="st">"You are a helpful, but terse, assistant. "</span></span>
-<span id="cb5-3"><a></a>    <span class="st">"If you can't answer the question based on the trusted content, say so."</span></span>
-<span id="cb5-4"><a></a>)</span>
-<span id="cb5-5"><a></a></span>
-<span id="cb5-6"><a></a>chat.register_tool(retrieve_trusted_content)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="dynamic-retrieval-chat" class="slide level2">
-<h2>Dynamic retrieval: Chat</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a>chat.chat(<span class="st">"Who created the unicorn programming language?"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="demo-local-rag-example" class="slide level2">
-<h2>Demo: Local RAG example</h2>
-<p><a href="https://github.com/chendaniely/nydsaic2025-llm/tree/main/code/06-rag" class="uri">https://github.com/chendaniely/nydsaic2025-llm/tree/main/code/06-rag</a></p>
+<p><em>Retrieval:</em></p>
+<ul>
+<li>When TF-IDF misses semantic matches → <a href="https://www.sbert.net()"><code>sentence-transformers</code></a>: local, ~90MB, no API key</li>
+<li>When you want a free embedding API → <a href="https://jina.ai/">Jina AI</a>: 1M tokens, no credit card</li>
+<li>When you need production-quality embeddings → <a href="https://platform.openai.com/docs/guides/embeddings">OpenAI <code>text-embedding-3-small</code></a> or <a href="https://cohere.com/embed">Cohere Embed</a></li>
+</ul>
+<p><em>Eval:</em></p>
+<ul>
+<li>When you want to measure retrieval quality → <a href="https://docs.ragas.io/">RAGAS</a></li>
+</ul>
 
 
+</div>
 </section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">

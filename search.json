@@ -534,88 +534,95 @@
     "text": "Get eval results\ninspect eval code/lecture06/evals/evals.py\ninspect view"
   },
   {
-    "objectID": "slides/08c-rag.html#what-is-rag",
-    "href": "slides/08c-rag.html#what-is-rag",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "What is RAG?",
-    "text": "What is RAG?\nRetrieval Augmented Generation\n\nGive additional context to the LLM by providing trusted content\nInserts a information retrieval step to find relevant information from a knowledge store\nRetrieved information is then provided to the model’s context for LLM response\nCan help with hallucinations\nNot always predictable which queries will retrieve which knowledge stores"
+    "objectID": "slides/08c-rag.html#case-nyc-taxi-trips",
+    "href": "slides/08c-rag.html#case-nyc-taxi-trips",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "Case: NYC Taxi Trips",
+    "text": "Case: NYC Taxi Trips\nNYC TLC Trip Record Data — 50K trips, Jan 2024\n\n\ntpep_pickup_datetime  RatecodeID  payment_type\n2024-01-15 08:23:11   1.0         1.0\n2024-01-15 08:31:44   2.0         1.0\n2024-01-15 09:02:58   5.0         2.0\n2024-01-15 09:17:03   1.0         2.0\n\n\n\n\nColumn\nValue\nMeaning\n\n\n\n\nRatecodeID\n1\nStandard rate\n\n\n\n2\nJFK flat rate ($70)\n\n\n\n3\nNewark airport\n\n\n\n5\nNegotiated fare\n\n\npayment_type\n1\nCredit card\n\n\n\n2\nCash — tip not recorded\n\n\n\n\nLLM sees column names and numeric values. The codebook is external."
   },
   {
-    "objectID": "slides/08c-rag.html#do-you-need-rag",
-    "href": "slides/08c-rag.html#do-you-need-rag",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Do you need RAG?",
-    "text": "Do you need RAG?\n\nCan you provide the relevant context into the system prompt?\nCan you register a tool to look up content\nNeed to manage the index and possibly more complex RAG pipeline"
+    "objectID": "slides/08c-rag.html#the-problem",
+    "href": "slides/08c-rag.html#the-problem",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "The problem",
+    "text": "The problem\nOption 1: Put the entire codebook in the system prompt\n\n❌ 20+ paragraphs, every query pays the token cost, hard to keep updated\n\n\nOption 2: Find the relevant part and inject it per query\n\n✅ Only the chunks that match this question — retrieval cost &lt; 1ms\n\n\n\nHow do you find the right chunks automatically? → RAG"
   },
   {
-    "objectID": "slides/08c-rag.html#can-you-use-a-tool-instead",
-    "href": "slides/08c-rag.html#can-you-use-a-tool-instead",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Can you use a tool instead?",
-    "text": "Can you use a tool instead?\n\nData lives in an API, database, structured source\nUse look ups on demand (RAG process happens on each query)"
+    "objectID": "slides/08c-rag.html#rag-applies-whenever",
+    "href": "slides/08c-rag.html#rag-applies-whenever",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "RAG applies whenever…",
+    "text": "RAG applies whenever…\nThe LLM needs domain knowledge that’s too large for the system prompt:\n\n🚕 Codebook / data dictionary — numeric codes that need human-readable labels (our demo): large codebook you don’t want to fit in system prompt\n🎓 University rulebook, 200-page calendar: program requirements, major electives, accommodation procedures, concession rules, course prerequisites. Student asks “Can I take DSCI 532 as a CS elective?” — LLM needs current program rules, not its training data\n🔒 Privacy + local model, patient records, HR data you can’t send to a cloud API. Run a local Llama / Mistral with a local knowledge base — RAG works the same way, fully offline"
   },
   {
-    "objectID": "slides/08c-rag.html#when-is-rag-more-useful",
-    "href": "slides/08c-rag.html#when-is-rag-more-useful",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "When is RAG more useful?",
-    "text": "When is RAG more useful?\n\nLots of unstructured data (PDFs, documents, notes, etc)\n\n…\nBut can you add structure to it?"
+    "objectID": "slides/08c-rag.html#rag-pipeline",
+    "href": "slides/08c-rag.html#rag-pipeline",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "RAG pipeline",
+    "text": "RAG pipeline\n\n\nWithout RAG\n\n\n\n\n\nflowchart TD\n    Q([\"❓ JFK trips?\"]) --&gt; LLM[LLM]\n    LLM --&gt; Ans([\"RatecodeID = 99 ❌\"])\n\n\n\n\n\n\n\nWith RAG\n\n\n\n\n\nflowchart LR\n    KB[(\"Knowledge Base&lt;br/&gt;(built once)\")] --&gt; R\n    Q([❓ question]) --&gt; R[\"Retrieve&lt;br/&gt;top-k chunks\"]\n    R --&gt; A[\"Augmented message =&lt;br/&gt;❓ question&lt;br/&gt;+ context from KB\"]\n    A --&gt; LLM[LLM]\n    LLM --&gt; Ans([Answer ✓])\n\n\n\n\n\n\n\nThe knowledge base is built once — but can be rapidly updated (add/edit text files, re-index).\n\nKey questions:\n\n📦 Knowledge base: what format? how do you build it?\n🔍 Retrieve: how does it find the right chunks? TF-IDF? embeddings?\n💬 Augmented message: what does it actually look like?\n🤔 When to use RAG at all? vs. system prompt, vs. tool"
   },
   {
-    "objectID": "slides/08c-rag.html#create-a-vector-store",
-    "href": "slides/08c-rag.html#create-a-vector-store",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Create a vector store",
-    "text": "Create a vector store\nfrom llama_index.core import SimpleDirectoryReader, VectorStoreIndex\n\ndocs = SimpleDirectoryReader(\"data\").load_data()\nindex = VectorStoreIndex.from_documents(docs)"
+    "objectID": "slides/08c-rag.html#knowledge-base",
+    "href": "slides/08c-rag.html#knowledge-base",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "📦 Knowledge base",
+    "text": "📦 Knowledge base\nCan be just plain text chunks:\nRatecodeID defines the fare rate type applied for the trip:\n1 = Standard rate (most trips)\n2 = JFK airport flat rate ($70 + tolls)\n3 = Newark airport\n4 = Nassau or Westchester\n5 = Negotiated fare (pre-arranged price, not metered)\n6 = Group ride\n\npayment_type codes (how the passenger paid):\n1 = Credit card  2 = Cash  3 = No charge\n4 = Dispute      5 = Unknown  6 = Voided trip\nOne topic per paragraph. No special format needed — plain .txt is enough to start.\n\nWhen I want to scale storage beyond flat files:\n\nWhen I have 1K+ docs and need fast similarity search → ChromaDB: local, no server, pip install chromadb\nWhen I need a production-grade vector DB → Qdrant or Pinecone: hosted, scalable, filter by metadata\nWhen my data is already in MongoDB → MongoDB Atlas Vector Search: no separate DB needed"
   },
   {
-    "objectID": "slides/08c-rag.html#optional-save-vector-store",
-    "href": "slides/08c-rag.html#optional-save-vector-store",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Optional: save vector store",
-    "text": "Optional: save vector store\nindex.storage_context.persist(persist_dir=\"./storage\")"
+    "objectID": "slides/08c-rag.html#retrieve",
+    "href": "slides/08c-rag.html#retrieve",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "🔍 Retrieve",
+    "text": "🔍 Retrieve\nTF-IDF (Term Frequency–Inverse Document Frequency):\n\nRepresents each chunk as a sparse vector: one dimension per vocabulary word\nNon-zero only where the word appears; weighted by how rare it is across all chunks\nQuery is vectorized the same way → cosine similarity ranks chunks by overlap\n\n\nGood enough for structured glossaries and codebooks where exact keywords appear in queries.\nNo API key. No model download. Runs in &lt; 1ms."
   },
   {
-    "objectID": "slides/08c-rag.html#retrieve-concent",
-    "href": "slides/08c-rag.html#retrieve-concent",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Retrieve concent",
-    "text": "Retrieve concent\nfrom llama_index.core import StorageContext, load_index_from_storage\n\n# Load the knowledge store (index) from disk\nstorage_context = StorageContext.from_defaults(persist_dir=\"./storage\")\nindex = load_index_from_storage(storage_context)\n\ndef retrieve_trusted_content(query):\n    retriever = index.as_retriever(similarity_top_k=5)\n    nodes = retriever.retrieve(query)\n    return [f\"&lt;excerpt&gt;{x.text}&lt;/excerpt&gt;\" for x in nodes]"
+    "objectID": "slides/08c-rag.html#retrieve-how-it-works",
+    "href": "slides/08c-rag.html#retrieve-how-it-works",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "🔍 Retrieve: how it works",
+    "text": "🔍 Retrieve: how it works\n\n\n\n\n\nflowchart LR\n    Q([User query]) --&gt; EQ[\"Vectorize query&lt;br/&gt;(same method as KB)\"]\n    DOCS[(\"KB vectors&lt;br/&gt;(pre-built)\")] --&gt; COS\n    EQ --&gt; COS[\"Cosine similarity&lt;br/&gt;query ↔ each chunk\"]\n    COS --&gt; RANK[Rank by score]\n    RANK --&gt; THR{\"score ≥&lt;br/&gt;threshold?\"}\n    THR --&gt;|\"yes → top-k\"| CTX[Selected chunks]\n    THR --&gt;|no match| SKIP[No injection]\n    CTX --&gt; AUG[Inject into&lt;br/&gt;user prompt]"
   },
   {
-    "objectID": "slides/08c-rag.html#dynamic-retrieval",
-    "href": "slides/08c-rag.html#dynamic-retrieval",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Dynamic retrieval",
-    "text": "Dynamic retrieval\n\nMakes the retrieval step a tool for the LLM\n\n…\n\nMore flexible and robust"
+    "objectID": "slides/08c-rag.html#retrieve-plain-text-word-frequency-vector-tf-idf",
+    "href": "slides/08c-rag.html#retrieve-plain-text-word-frequency-vector-tf-idf",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "🔍 Retrieve: plain text + word frequency vector (TF-IDF)",
+    "text": "🔍 Retrieve: plain text + word frequency vector (TF-IDF)\nfrom sklearn.feature_extraction.text import TfidfVectorizer\nfrom sklearn.metrics.pairwise import cosine_similarity\nimport numpy as np\n\n# Build index once\nchunks = Path(\"taxi_glossary.txt\").read_text().split(\"\\n\\n\")\nvectorizer = TfidfVectorizer()\nkb_vectors = vectorizer.fit_transform(chunks)\n\n# Retrieve on every query\ndef retrieve(query: str, top_k: int = 3) -&gt; list[str]:\n    q_vec = vectorizer.transform([query])\n    scores = cosine_similarity(q_vec, kb_vectors).flatten()\n    top_idx = np.argsort(scores)[::-1][:top_k]\n    return [chunks[i] for i in top_idx if scores[i] &gt; 0]\nNo framework. No API key. ~10 lines."
   },
   {
-    "objectID": "slides/08c-rag.html#dynamic-retrieval-function",
-    "href": "slides/08c-rag.html#dynamic-retrieval-function",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Dynamic retrieval: Function",
-    "text": "Dynamic retrieval: Function\nCreate a function\nfrom chatlas import ChatOpenAI\nfrom llama_index.core import StorageContext, load_index_from_storage\n\n# Load the knowledge store (index) from disk\nstorage_context = StorageContext.from_defaults(persist_dir=\"./storage\")\nindex = load_index_from_storage(storage_context)\n\ndef retrieve_trusted_content(query: str, top_k: int = 5):\n    \"\"\"\n    Retrieve relevant content from the knowledge store.\n\n    Parameters\n    ----------\n    query\n        The query used to semantically search the knowledge store.\n    top_k\n        The number of results to retrieve from the knowledge store.\n    \"\"\"\n    retriever = index.as_retriever(similarity_top_k=top_k)\n    nodes = retriever.retrieve(query)\n    return [f\"&lt;excerpt&gt;{x.text}&lt;/excerpt&gt;\" for x in nodes]"
+    "objectID": "slides/08c-rag.html#retrieve-tf-idf-vs.-dense-embeddings",
+    "href": "slides/08c-rag.html#retrieve-tf-idf-vs.-dense-embeddings",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "🔍 Retrieve: TF-IDF vs. dense embeddings",
+    "text": "🔍 Retrieve: TF-IDF vs. dense embeddings\nTF-IDF represents text as word counts. Dense embeddings represent text as meaning: a neural network maps each chunk to a point in high-dimensional space where semantically similar text lands nearby.\n\n\n\n\nTF-IDF\nDense embeddings\n\n\n\n\nVector type\nSparse (word counts)\nDense (all dims non-zero)\n\n\nMatches\nExact keyword overlap\nSemantic meaning\n\n\n“JFK” ↔︎ “airport”\n❌ different words\n✅ similar meaning\n\n\nSetup\nsklearn, instant\nmodel download or API\n\n\nSpeed\n&lt; 1ms\n5–50ms\n\n\nBest for\nStructured glossaries\nNatural language docs\n\n\n\n\nStart with TF-IDF. Switch to embeddings when vocabulary mismatch causes misses.\nFor codebooks, exact match is actually the point: RatecodeID should only match chunks about RatecodeID, not semantically similar fare-related paragraphs."
   },
   {
-    "objectID": "slides/08c-rag.html#dynamic-retrieval-register-tool",
-    "href": "slides/08c-rag.html#dynamic-retrieval-register-tool",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Dynamic retrieval: Register tool",
-    "text": "Dynamic retrieval: Register tool\nchat = ChatOpenAI(\n    system_prompt=\"You are a helpful, but terse, assistant. \"\n    \"If you can't answer the question based on the trusted content, say so.\"\n)\n\nchat.register_tool(retrieve_trusted_content)"
+    "objectID": "slides/08c-rag.html#retrieve-scale-up-with-dense-embeddings",
+    "href": "slides/08c-rag.html#retrieve-scale-up-with-dense-embeddings",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "🔍 Retrieve: scale up with dense embeddings",
+    "text": "🔍 Retrieve: scale up with dense embeddings\nWhen exact keyword overlap isn’t enough, switch to dense embeddings:\n\nWhen I want free local embeddings, no API key, no internet: → sentence-transformers: download once, run forever\nfrom sentence_transformers import SentenceTransformer\nmodel = SentenceTransformer(\"all-MiniLM-L6-v2\")  # ~90MB, 384-dim\nkb_vectors = model.encode(chunks)\nWhen I want a free API with no model download: → Jina AI: 1M tokens free, no credit card, 1024-dim vectors\nWhen I need production-quality embeddings: → OpenAI text-embedding-3-small or Cohere Embed\nWhen I want retrieval + storage + indexing in one framework: → llama_index: loads docs, builds vector index, persists to disk\nfrom llama_index.core import SimpleDirectoryReader, VectorStoreIndex\nindex = VectorStoreIndex.from_documents(SimpleDirectoryReader(\"data\").load_data())\nindex.storage_context.persist(persist_dir=\"./storage\")"
   },
   {
-    "objectID": "slides/08c-rag.html#dynamic-retrieval-chat",
-    "href": "slides/08c-rag.html#dynamic-retrieval-chat",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Dynamic retrieval: Chat",
-    "text": "Dynamic retrieval: Chat\nchat.chat(\"Who created the unicorn programming language?\")"
+    "objectID": "slides/08c-rag.html#rag-is-a-spectrum",
+    "href": "slides/08c-rag.html#rag-is-a-spectrum",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "RAG is a spectrum",
+    "text": "RAG is a spectrum\n\n\n\n\n\n\n\n\nLevel\nApproach\nWhen\n\n\n\n\n0: No RAG\nAll context in system prompt\n&lt; 10 short paragraphs\n\n\n1: Simple RAG\nTF-IDF + flat files\nStructured glossary, &lt; 1ms\n\n\n2: Embedding RAG\nSentence-transformers + vector DB\n1K+ docs, semantic search\n\n\n3: Agentic RAG\nLLM decides when and what to retrieve\nMulti-step reasoning\n\n\n\n\nStart at 0. Move up only when you hit the wall at the current level."
   },
   {
-    "objectID": "slides/08c-rag.html#demo-local-rag-example",
-    "href": "slides/08c-rag.html#demo-local-rag-example",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Demo: Local RAG example",
-    "text": "Demo: Local RAG example\nhttps://github.com/chendaniely/nydsaic2025-llm/tree/main/code/06-rag"
+    "objectID": "slides/08c-rag.html#when-to-use-rag",
+    "href": "slides/08c-rag.html#when-to-use-rag",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "When to use RAG",
+    "text": "When to use RAG\n✅ Use RAG when:\n\nDomain has codes, acronyms, or jargon the LLM doesn’t know\nKnowledge base changes — update KB, not the model\nLarge glossary / rulebook — inject only the relevant slice per query\n\n\n❌ Skip RAG when:\n\nLLM already knows the domain (standard Python, SQL, common APIs)\nTiny KB (&lt; 10 paragraphs) — just put it all in the system prompt\nGuaranteed accuracy required — retrieval can fail silently\n\n\n\n⚠️ Failure modes: retrieval miss · hallucination despite context · stale KB · context overflow"
+  },
+  {
+    "objectID": "slides/08c-rag.html#where-to-go-next",
+    "href": "slides/08c-rag.html#where-to-go-next",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "Where to go next",
+    "text": "Where to go next\nConnect RAG to your Shiny app:\n\nHook into @reactive.event(input.querychat_user_input): retrieve context, prepend to the user message before calling the model\nRegister retrieve() as a tool: LLM decides when to call it (→ tools lecture)\n\n→ Walkthrough and Demo with QueryChat\n\nScale up when ready:\nStorage:\n\nWhen KB grows beyond flat files → ChromaDB: local, no server, pip install chromadb\nWhen you need hosted + metadata filtering → Qdrant or Pinecone\nWhen data is already in MongoDB → MongoDB Atlas Vector Search\n\nRetrieval:\n\nWhen TF-IDF misses semantic matches → sentence-transformers: local, ~90MB, no API key\nWhen you want a free embedding API → Jina AI: 1M tokens, no credit card\nWhen you need production-quality embeddings → OpenAI text-embedding-3-small or Cohere Embed\n\nEval:\n\nWhen you want to measure retrieval quality → RAGAS"
   },
   {
     "objectID": "slides/08a2-models-providers.html#models-vs-developers-vs-providers",
@@ -3591,7 +3598,7 @@
     "href": "020-dashboard.html#add-data-frame",
     "title": "Tips Dashboard",
     "section": "Add data frame",
-    "text": "Add data frame\n\n\n/tmp/ipykernel_2702/3163269639.py:3: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.\n  df.groupby(\"day\").agg(\n\n\n\n\n\n\n\n\n\nday\ncount\navg_bill\navg_tip\navg_tip_pct\n\n\n\n\n0\nThur\n62\n17.68\n2.77\n0.16\n\n\n1\nFri\n19\n17.15\n2.73\n0.17\n\n\n2\nSat\n87\n20.44\n2.99\n0.15\n\n\n3\nSun\n76\n21.41\n3.26\n0.17\n\n\n\n\n\n\n\nUI: ui.output_data_frame(\"id\") — Server: @render.data_frame — Mutable objects\n# UI placeholder inside the card\nui.card(\n    ui.card_header(\"Tips by day\"),\n    ui.output_data_frame(\"tips_data\"),\n    full_screen=True,\n),\n# Server function — aggregate by day\n@render.data_frame\ndef tips_data():\n    df = filtered_data().copy()\n    df[\"tip_pct\"] = df.tip / df.total_bill\n    summary = df.groupby(\"day\").agg(\n        count=(\"tip\", \"size\"),\n        avg_bill=(\"total_bill\", \"mean\"),\n        avg_tip=(\"tip\", \"mean\"),\n        avg_tip_pct=(\"tip_pct\", \"mean\"),\n    ).round(2).reset_index()\n    return summary",
+    "text": "Add data frame\n\n\n/tmp/ipykernel_2797/3163269639.py:3: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.\n  df.groupby(\"day\").agg(\n\n\n\n\n\n\n\n\n\nday\ncount\navg_bill\navg_tip\navg_tip_pct\n\n\n\n\n0\nThur\n62\n17.68\n2.77\n0.16\n\n\n1\nFri\n19\n17.15\n2.73\n0.17\n\n\n2\nSat\n87\n20.44\n2.99\n0.15\n\n\n3\nSun\n76\n21.41\n3.26\n0.17\n\n\n\n\n\n\n\nUI: ui.output_data_frame(\"id\") — Server: @render.data_frame — Mutable objects\n# UI placeholder inside the card\nui.card(\n    ui.card_header(\"Tips by day\"),\n    ui.output_data_frame(\"tips_data\"),\n    full_screen=True,\n),\n# Server function — aggregate by day\n@render.data_frame\ndef tips_data():\n    df = filtered_data().copy()\n    df[\"tip_pct\"] = df.tip / df.total_bill\n    summary = df.groupby(\"day\").agg(\n        count=(\"tip\", \"size\"),\n        avg_bill=(\"total_bill\", \"mean\"),\n        avg_tip=(\"tip\", \"mean\"),\n        avg_tip_pct=(\"tip_pct\", \"mean\"),\n    ).round(2).reset_index()\n    return summary",
     "crumbs": [
       "Setup",
       "Lecture 2",
@@ -4729,157 +4736,169 @@
   {
     "objectID": "060-03-rag.html",
     "href": "060-03-rag.html",
-    "title": "Retrival Augmented Generation (RAG)",
+    "title": "Retrieval Augmented Generation (RAG)",
     "section": "",
     "text": "View slides in full screen",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#what-is-rag",
-    "href": "060-03-rag.html#what-is-rag",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "What is RAG?",
-    "text": "What is RAG?\nRetrieval Augmented Generation\n\nGive additional context to the LLM by providing trusted content\nInserts a information retrieval step to find relevant information from a knowledge store\nRetrieved information is then provided to the model’s context for LLM response\nCan help with hallucinations\nNot always predictable which queries will retrieve which knowledge stores",
+    "objectID": "060-03-rag.html#case-nyc-taxi-trips",
+    "href": "060-03-rag.html#case-nyc-taxi-trips",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "Case: NYC Taxi Trips",
+    "text": "Case: NYC Taxi Trips\nNYC TLC Trip Record Data — 50K trips, Jan 2024\n\n\ntpep_pickup_datetime  RatecodeID  payment_type\n2024-01-15 08:23:11   1.0         1.0\n2024-01-15 08:31:44   2.0         1.0\n2024-01-15 09:02:58   5.0         2.0\n2024-01-15 09:17:03   1.0         2.0\n\n\n\n\nColumn\nValue\nMeaning\n\n\n\n\nRatecodeID\n1\nStandard rate\n\n\n\n2\nJFK flat rate ($70)\n\n\n\n3\nNewark airport\n\n\n\n5\nNegotiated fare\n\n\npayment_type\n1\nCredit card\n\n\n\n2\nCash — tip not recorded\n\n\n\n\n\nLLM sees column names and numeric values. The codebook is external.",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#do-you-need-rag",
-    "href": "060-03-rag.html#do-you-need-rag",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Do you need RAG?",
-    "text": "Do you need RAG?\n\nCan you provide the relevant context into the system prompt?\nCan you register a tool to look up content\nNeed to manage the index and possibly more complex RAG pipeline",
+    "objectID": "060-03-rag.html#the-problem",
+    "href": "060-03-rag.html#the-problem",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "The problem",
+    "text": "The problem\nOption 1: Put the entire codebook in the system prompt\n\n❌ 20+ paragraphs, every query pays the token cost, hard to keep updated\n\n. . .\nOption 2: Find the relevant part and inject it per query\n\n✅ Only the chunks that match this question — retrieval cost &lt; 1ms\n\n. . .\nHow do you find the right chunks automatically? → RAG",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#can-you-use-a-tool-instead",
-    "href": "060-03-rag.html#can-you-use-a-tool-instead",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Can you use a tool instead?",
-    "text": "Can you use a tool instead?\n\nData lives in an API, database, structured source\nUse look ups on demand (RAG process happens on each query)",
+    "objectID": "060-03-rag.html#rag-applies-whenever",
+    "href": "060-03-rag.html#rag-applies-whenever",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "RAG applies whenever…",
+    "text": "RAG applies whenever…\nThe LLM needs domain knowledge that’s too large for the system prompt:\n\n\n🚕 Codebook / data dictionary — numeric codes that need human-readable labels (our demo): large codebook you don’t want to fit in system prompt\n🎓 University rulebook, 200-page calendar: program requirements, major electives, accommodation procedures, concession rules, course prerequisites. Student asks “Can I take DSCI 532 as a CS elective?” — LLM needs current program rules, not its training data\n🔒 Privacy + local model, patient records, HR data you can’t send to a cloud API. Run a local Llama / Mistral with a local knowledge base — RAG works the same way, fully offline",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#when-is-rag-more-useful",
-    "href": "060-03-rag.html#when-is-rag-more-useful",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "When is RAG more useful?",
-    "text": "When is RAG more useful?\n\nLots of unstructured data (PDFs, documents, notes, etc)\n\n…\nBut can you add structure to it?",
+    "objectID": "060-03-rag.html#rag-pipeline",
+    "href": "060-03-rag.html#rag-pipeline",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "RAG pipeline",
+    "text": "RAG pipeline\n\n\nWithout RAG\n\n\n\n\n\nflowchart TD\n    Q([\"❓ JFK trips?\"]) --&gt; LLM[LLM]\n    LLM --&gt; Ans([\"RatecodeID = 99 ❌\"])\n\n\n\n\n\n\n\nWith RAG\n\n\n\n\n\nflowchart LR\n    KB[(\"Knowledge Base&lt;br/&gt;(built once)\")] --&gt; R\n    Q([❓ question]) --&gt; R[\"Retrieve&lt;br/&gt;top-k chunks\"]\n    R --&gt; A[\"Augmented message =&lt;br/&gt;❓ question&lt;br/&gt;+ context from KB\"]\n    A --&gt; LLM[LLM]\n    LLM --&gt; Ans([Answer ✓])\n\n\n\n\n\n\n\n\nThe knowledge base is built once — but can be rapidly updated (add/edit text files, re-index).\n. . .\nKey questions:\n\n📦 Knowledge base: what format? how do you build it?\n🔍 Retrieve: how does it find the right chunks? TF-IDF? embeddings?\n💬 Augmented message: what does it actually look like?\n🤔 When to use RAG at all? vs. system prompt, vs. tool",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#create-a-vector-store",
-    "href": "060-03-rag.html#create-a-vector-store",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Create a vector store",
-    "text": "Create a vector store\nfrom llama_index.core import SimpleDirectoryReader, VectorStoreIndex\n\ndocs = SimpleDirectoryReader(\"data\").load_data()\nindex = VectorStoreIndex.from_documents(docs)",
+    "objectID": "060-03-rag.html#knowledge-base",
+    "href": "060-03-rag.html#knowledge-base",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "📦 Knowledge base",
+    "text": "📦 Knowledge base\nCan be just plain text chunks:\nRatecodeID defines the fare rate type applied for the trip:\n1 = Standard rate (most trips)\n2 = JFK airport flat rate ($70 + tolls)\n3 = Newark airport\n4 = Nassau or Westchester\n5 = Negotiated fare (pre-arranged price, not metered)\n6 = Group ride\n\npayment_type codes (how the passenger paid):\n1 = Credit card  2 = Cash  3 = No charge\n4 = Dispute      5 = Unknown  6 = Voided trip\nOne topic per paragraph. No special format needed — plain .txt is enough to start.\n. . .\nWhen I want to scale storage beyond flat files:\n\nWhen I have 1K+ docs and need fast similarity search → ChromaDB: local, no server, pip install chromadb\nWhen I need a production-grade vector DB → Qdrant or Pinecone: hosted, scalable, filter by metadata\nWhen my data is already in MongoDB → MongoDB Atlas Vector Search: no separate DB needed",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#optional-save-vector-store",
-    "href": "060-03-rag.html#optional-save-vector-store",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Optional: save vector store",
-    "text": "Optional: save vector store\nindex.storage_context.persist(persist_dir=\"./storage\")",
+    "objectID": "060-03-rag.html#retrieve",
+    "href": "060-03-rag.html#retrieve",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "🔍 Retrieve",
+    "text": "🔍 Retrieve\nTF-IDF (Term Frequency–Inverse Document Frequency):\n\nRepresents each chunk as a sparse vector: one dimension per vocabulary word\nNon-zero only where the word appears; weighted by how rare it is across all chunks\nQuery is vectorized the same way → cosine similarity ranks chunks by overlap\n\n. . .\nGood enough for structured glossaries and codebooks where exact keywords appear in queries.\nNo API key. No model download. Runs in &lt; 1ms.",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#retrieve-concent",
-    "href": "060-03-rag.html#retrieve-concent",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Retrieve concent",
-    "text": "Retrieve concent\nfrom llama_index.core import StorageContext, load_index_from_storage\n\n# Load the knowledge store (index) from disk\nstorage_context = StorageContext.from_defaults(persist_dir=\"./storage\")\nindex = load_index_from_storage(storage_context)\n\ndef retrieve_trusted_content(query):\n    retriever = index.as_retriever(similarity_top_k=5)\n    nodes = retriever.retrieve(query)\n    return [f\"&lt;excerpt&gt;{x.text}&lt;/excerpt&gt;\" for x in nodes]",
+    "objectID": "060-03-rag.html#retrieve-how-it-works",
+    "href": "060-03-rag.html#retrieve-how-it-works",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "🔍 Retrieve: how it works",
+    "text": "🔍 Retrieve: how it works\n\n\n\n\n\nflowchart LR\n    Q([User query]) --&gt; EQ[\"Vectorize query&lt;br/&gt;(same method as KB)\"]\n    DOCS[(\"KB vectors&lt;br/&gt;(pre-built)\")] --&gt; COS\n    EQ --&gt; COS[\"Cosine similarity&lt;br/&gt;query ↔ each chunk\"]\n    COS --&gt; RANK[Rank by score]\n    RANK --&gt; THR{\"score ≥&lt;br/&gt;threshold?\"}\n    THR --&gt;|\"yes → top-k\"| CTX[Selected chunks]\n    THR --&gt;|no match| SKIP[No injection]\n    CTX --&gt; AUG[Inject into&lt;br/&gt;user prompt]",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#dynamic-retrieval",
-    "href": "060-03-rag.html#dynamic-retrieval",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Dynamic retrieval",
-    "text": "Dynamic retrieval\n\nMakes the retrieval step a tool for the LLM\n\n…\n\nMore flexible and robust",
+    "objectID": "060-03-rag.html#retrieve-plain-text-word-frequency-vector-tf-idf",
+    "href": "060-03-rag.html#retrieve-plain-text-word-frequency-vector-tf-idf",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "🔍 Retrieve: plain text + word frequency vector (TF-IDF)",
+    "text": "🔍 Retrieve: plain text + word frequency vector (TF-IDF)\nfrom sklearn.feature_extraction.text import TfidfVectorizer\nfrom sklearn.metrics.pairwise import cosine_similarity\nimport numpy as np\n\n# Build index once\nchunks = Path(\"taxi_glossary.txt\").read_text().split(\"\\n\\n\")\nvectorizer = TfidfVectorizer()\nkb_vectors = vectorizer.fit_transform(chunks)\n\n# Retrieve on every query\ndef retrieve(query: str, top_k: int = 3) -&gt; list[str]:\n    q_vec = vectorizer.transform([query])\n    scores = cosine_similarity(q_vec, kb_vectors).flatten()\n    top_idx = np.argsort(scores)[::-1][:top_k]\n    return [chunks[i] for i in top_idx if scores[i] &gt; 0]\nNo framework. No API key. ~10 lines.",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#dynamic-retrieval-function",
-    "href": "060-03-rag.html#dynamic-retrieval-function",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Dynamic retrieval: Function",
-    "text": "Dynamic retrieval: Function\nCreate a function\nfrom chatlas import ChatOpenAI\nfrom llama_index.core import StorageContext, load_index_from_storage\n\n# Load the knowledge store (index) from disk\nstorage_context = StorageContext.from_defaults(persist_dir=\"./storage\")\nindex = load_index_from_storage(storage_context)\n\ndef retrieve_trusted_content(query: str, top_k: int = 5):\n    \"\"\"\n    Retrieve relevant content from the knowledge store.\n\n    Parameters\n    ----------\n    query\n        The query used to semantically search the knowledge store.\n    top_k\n        The number of results to retrieve from the knowledge store.\n    \"\"\"\n    retriever = index.as_retriever(similarity_top_k=top_k)\n    nodes = retriever.retrieve(query)\n    return [f\"&lt;excerpt&gt;{x.text}&lt;/excerpt&gt;\" for x in nodes]",
+    "objectID": "060-03-rag.html#retrieve-tf-idf-vs.-dense-embeddings",
+    "href": "060-03-rag.html#retrieve-tf-idf-vs.-dense-embeddings",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "🔍 Retrieve: TF-IDF vs. dense embeddings",
+    "text": "🔍 Retrieve: TF-IDF vs. dense embeddings\nTF-IDF represents text as word counts. Dense embeddings represent text as meaning: a neural network maps each chunk to a point in high-dimensional space where semantically similar text lands nearby.\n\n\n\n\nTF-IDF\nDense embeddings\n\n\n\n\nVector type\nSparse (word counts)\nDense (all dims non-zero)\n\n\nMatches\nExact keyword overlap\nSemantic meaning\n\n\n“JFK” ↔︎ “airport”\n❌ different words\n✅ similar meaning\n\n\nSetup\nsklearn, instant\nmodel download or API\n\n\nSpeed\n&lt; 1ms\n5–50ms\n\n\nBest for\nStructured glossaries\nNatural language docs\n\n\n\n. . .\nStart with TF-IDF. Switch to embeddings when vocabulary mismatch causes misses.\nFor codebooks, exact match is actually the point: RatecodeID should only match chunks about RatecodeID, not semantically similar fare-related paragraphs.",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#dynamic-retrieval-register-tool",
-    "href": "060-03-rag.html#dynamic-retrieval-register-tool",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Dynamic retrieval: Register tool",
-    "text": "Dynamic retrieval: Register tool\nchat = ChatOpenAI(\n    system_prompt=\"You are a helpful, but terse, assistant. \"\n    \"If you can't answer the question based on the trusted content, say so.\"\n)\n\nchat.register_tool(retrieve_trusted_content)",
+    "objectID": "060-03-rag.html#retrieve-scale-up-with-dense-embeddings",
+    "href": "060-03-rag.html#retrieve-scale-up-with-dense-embeddings",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "🔍 Retrieve: scale up with dense embeddings",
+    "text": "🔍 Retrieve: scale up with dense embeddings\nWhen exact keyword overlap isn’t enough, switch to dense embeddings:\n\nWhen I want free local embeddings, no API key, no internet: → sentence-transformers: download once, run forever\nfrom sentence_transformers import SentenceTransformer\nmodel = SentenceTransformer(\"all-MiniLM-L6-v2\")  # ~90MB, 384-dim\nkb_vectors = model.encode(chunks)\nWhen I want a free API with no model download: → Jina AI: 1M tokens free, no credit card, 1024-dim vectors\nWhen I need production-quality embeddings: → OpenAI text-embedding-3-small or Cohere Embed\nWhen I want retrieval + storage + indexing in one framework: → llama_index: loads docs, builds vector index, persists to disk\nfrom llama_index.core import SimpleDirectoryReader, VectorStoreIndex\nindex = VectorStoreIndex.from_documents(SimpleDirectoryReader(\"data\").load_data())\nindex.storage_context.persist(persist_dir=\"./storage\")",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#dynamic-retrieval-chat",
-    "href": "060-03-rag.html#dynamic-retrieval-chat",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Dynamic retrieval: Chat",
-    "text": "Dynamic retrieval: Chat\nchat.chat(\"Who created the unicorn programming language?\")",
+    "objectID": "060-03-rag.html#rag-is-a-spectrum",
+    "href": "060-03-rag.html#rag-is-a-spectrum",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "RAG is a spectrum",
+    "text": "RAG is a spectrum\n\n\n\n\n\n\n\n\nLevel\nApproach\nWhen\n\n\n\n\n0: No RAG\nAll context in system prompt\n&lt; 10 short paragraphs\n\n\n1: Simple RAG\nTF-IDF + flat files\nStructured glossary, &lt; 1ms\n\n\n2: Embedding RAG\nSentence-transformers + vector DB\n1K+ docs, semantic search\n\n\n3: Agentic RAG\nLLM decides when and what to retrieve\nMulti-step reasoning\n\n\n\n. . .\nStart at 0. Move up only when you hit the wall at the current level.",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
-    "objectID": "060-03-rag.html#demo-local-rag-example",
-    "href": "060-03-rag.html#demo-local-rag-example",
-    "title": "Retrival Augmented Generation (RAG)",
-    "section": "Demo: Local RAG example",
-    "text": "Demo: Local RAG example\nhttps://github.com/chendaniely/nydsaic2025-llm/tree/main/code/06-rag",
+    "objectID": "060-03-rag.html#when-to-use-rag",
+    "href": "060-03-rag.html#when-to-use-rag",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "When to use RAG",
+    "text": "When to use RAG\n✅ Use RAG when:\n\nDomain has codes, acronyms, or jargon the LLM doesn’t know\nKnowledge base changes — update KB, not the model\nLarge glossary / rulebook — inject only the relevant slice per query\n\n. . .\n❌ Skip RAG when:\n\nLLM already knows the domain (standard Python, SQL, common APIs)\nTiny KB (&lt; 10 paragraphs) — just put it all in the system prompt\nGuaranteed accuracy required — retrieval can fail silently\n\n. . .\n⚠️ Failure modes: retrieval miss · hallucination despite context · stale KB · context overflow",
     "crumbs": [
       "Setup",
       "Lecture 6",
-      "Retrival Augmented Generation (RAG)"
+      "Retrieval Augmented Generation (RAG)"
+    ]
+  },
+  {
+    "objectID": "060-03-rag.html#where-to-go-next",
+    "href": "060-03-rag.html#where-to-go-next",
+    "title": "Retrieval Augmented Generation (RAG)",
+    "section": "Where to go next",
+    "text": "Where to go next\nConnect RAG to your Shiny app:\n\nHook into @reactive.event(input.querychat_user_input): retrieve context, prepend to the user message before calling the model\nRegister retrieve() as a tool: LLM decides when to call it (→ tools lecture)\n\n→ Walkthrough and Demo with QueryChat\n. . .\nScale up when ready:\nStorage:\n\nWhen KB grows beyond flat files → ChromaDB: local, no server, pip install chromadb\nWhen you need hosted + metadata filtering → Qdrant or Pinecone\nWhen data is already in MongoDB → MongoDB Atlas Vector Search\n\nRetrieval:\n\nWhen TF-IDF misses semantic matches → sentence-transformers: local, ~90MB, no API key\nWhen you want a free embedding API → Jina AI: 1M tokens, no credit card\nWhen you need production-quality embeddings → OpenAI text-embedding-3-small or Cohere Embed\n\nEval:\n\nWhen you want to measure retrieval quality → RAGAS",
+    "crumbs": [
+      "Setup",
+      "Lecture 6",
+      "Retrieval Augmented Generation (RAG)"
     ]
   },
   {
