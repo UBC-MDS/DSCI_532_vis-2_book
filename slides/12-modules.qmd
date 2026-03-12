@@ -35,10 +35,10 @@ subtitle: Not to be confused with a Python Module
 ## Code smell - Repeated elements
 
 ```{shinylive-python}
-# | standalone: true
-# | #| components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+#|  standalone: true
+#|  components: [editor, viewer]
+#|  layout: horizontal
+#|  viewerHeight: 500
 
 from shiny import App, ui
 
@@ -58,10 +58,10 @@ app = App(app_ui, None)
 ## Code smell - multiple function calls
 
 ```{shinylive-python}
-# | standalone: true
-# | #| components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+#|  standalone: true
+#|  components: [editor, viewer]
+#|  layout: horizontal
+#|  viewerHeight: 500
 
 from shiny import App, ui
 
@@ -84,10 +84,10 @@ app = App(app_ui, None)
 ## Code smell - UI via list iteration
 
 ```{shinylive-python}
-# | standalone: true
-# | #| components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+#|  standalone: true
+#|  components: [editor, viewer]
+#|  layout: horizontal
+#|  viewerHeight: 500
 from shiny import App, ui
 
 
@@ -105,10 +105,10 @@ app = App(app_ui, None)
 ## Code smell - iterating over multiple lists
 
 ```{shinylive-python}
-# | standalone: true
-# | #| components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+#|  standalone: true
+#|  components: [editor, viewer]
+#|  layout: horizontal
+#|  viewerHeight: 500
 from shiny import App, ui
 
 def my_slider(id, label):
@@ -130,10 +130,10 @@ app = App(app_ui, None)
 This will work once, not more.
 
 ```{shinylive-python}
-# | standalone: true
-# | #| components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+#|  standalone: true
+#|  components: [editor, viewer]
+#|  layout: horizontal
+#|  viewerHeight: 500
 from shiny import App, ui
 from shiny import App, render, ui
 
@@ -163,10 +163,10 @@ app = App(app_ui, server)
 ## Shiny module
 
 ```{shinylive-python}
-# | standalone: true
-# | #| components: [editor, viewer]
-# | layout: horizontal
-# | viewerHeight: 500
+#|  standalone: true
+#|  components: [editor, viewer]
+#|  layout: horizontal
+#|  viewerHeight: 500
 
 from shiny import App, module, render, ui
 
