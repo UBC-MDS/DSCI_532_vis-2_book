@@ -76,6 +76,8 @@ website:
           - 110-timing.qmd
           - 120-modules.qmd
 
+      - 130-course-map.qmd
+
       - section: "Review"
         contents:
           - review/01-wiring.qmd
